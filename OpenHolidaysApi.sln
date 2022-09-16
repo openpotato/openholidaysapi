@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32602.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenHolidaysApi.WebService", "src\webservice\OpenHolidaysApi.WebService.csproj", "{43181F3A-3E51-46DE-8C03-B1E7F5DC2019}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenHolidaysApi.DataLayer", "src\datalayer\OpenHolidaysApi.DataLayer.csproj", "{033762DC-69C4-4191-B44A-30D1A701333E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenHolidaysApi.CLI", "src\cli\OpenHolidaysApi.CLI.csproj", "{379FA71A-72E5-465E-8237-EE2D649DD75D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{43181F3A-3E51-46DE-8C03-B1E7F5DC2019}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43181F3A-3E51-46DE-8C03-B1E7F5DC2019}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43181F3A-3E51-46DE-8C03-B1E7F5DC2019}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43181F3A-3E51-46DE-8C03-B1E7F5DC2019}.Release|Any CPU.Build.0 = Release|Any CPU
+		{033762DC-69C4-4191-B44A-30D1A701333E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{033762DC-69C4-4191-B44A-30D1A701333E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{033762DC-69C4-4191-B44A-30D1A701333E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{033762DC-69C4-4191-B44A-30D1A701333E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{379FA71A-72E5-465E-8237-EE2D649DD75D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{379FA71A-72E5-465E-8237-EE2D649DD75D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{379FA71A-72E5-465E-8237-EE2D649DD75D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{379FA71A-72E5-465E-8237-EE2D649DD75D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CE0BEBD5-EF45-45E7-8D65-C5F3A8E3F42E}
+	EndGlobalSection
+EndGlobal

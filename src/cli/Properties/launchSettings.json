@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "OpenHolidaysApi.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "initdb -p"
+    }
+  }
+}

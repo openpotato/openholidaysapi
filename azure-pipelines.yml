@@ -1,0 +1,106 @@
+pool:
+  vmImage: 'windows-2022'
+
+variables:
+- group: 'dotnet-config'
+- group: 'github-config'
+
+steps:
+- checkout: self
+  persistCredentials: true
+- task: PowerShell@2
+  displayName: 'Get Version Number'
+  inputs:
+    filePath: 'azure-gitversion.ps1'
+    failOnStderr: true
+- task: Assembly-Info-NetCore@2
+  displayName: 'Apply Assembly Infos'
+  inputs:
+    Path: '$(Build.SourcesDirectory)'
+    FileNames: '**/*.csproj'
+    InsertAttributes: true
+    FileEncoding: 'auto'
+    WriteBOM: false
+    VersionNumber: '$(MajorVersion).$(MinorVersion).$(PatchVersion).$(Build.BuildId)'
+    FileVersionNumber: '$(MajorVersion).$(MinorVersion).$(PatchVersion).$(Build.BuildId)'
+    InformationalVersion: '$(SemVersion)'
+    LogLevel: 'verbose'
+    FailOnWarning: false
+- task: DotNetCoreCLI@2
+  displayName: 'Restore'
+  inputs:
+    command: 'restore'
+    projects: '*.sln'
+    feedsToUse: 'select'
+    vstsFeed: '340e7a34-33ea-4418-8b72-d55dcb74efa7/dd1a6c3c-4e29-44c2-a80d-9d6c7004ac57'
+- task: DotNetCoreCLI@2
+  displayName: 'Build'
+  inputs:
+    command: 'build'
+    projects: '*.sln'
+    arguments: '-c $(BuildConfiguration)'
+- task: DotNetCoreCLI@2
+  displayName: 'Test'
+  inputs:
+    command: 'test'
+    projects: '*.sln'
+    arguments: '-c $(BuildConfiguration)'
+    testRunTitle: 'Perform unit tests'
+- task: DotNetCoreCLI@2
+  displayName: 'Publish CLI'
+  inputs:
+    command: 'publish'
+    publishWebProjects: false
+    projects: 'src/cli/OpenHolidaysApi.CLI.csproj'
+    arguments: '-c $(BuildConfiguration) -o src/cli/publish /p:Version=$(SemVersion)'
+    zipAfterPublish: false
+    modifyOutputPath: false
+- task: DotNetCoreCLI@2
+  displayName: 'Publish WebService'
+  inputs:
+    command: 'publish'
+    publishWebProjects: false
+    projects: 'src/webservice/OpenHolidaysApi.WebService.csproj'
+    arguments: '-c $(BuildConfiguration) -o src/webservice/publish /p:Version=$(SemVersion)'
+    zipAfterPublish: false
+    modifyOutputPath: false
+- task: ArchiveFiles@2
+  displayName: 'Create Zip archive for CLI'
+  inputs:
+    rootFolderOrFile: 'src/cli/publish'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/OpenHolidaysApi.CLI.zip'
+    replaceExistingArchive: true
+- task: ArchiveFiles@2
+  displayName: 'Create Zip archive for WebService'
+  inputs:
+    rootFolderOrFile: 'src/webservice/publish'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/OpenHolidaysApi.WebService.zip'
+    replaceExistingArchive: true
+- task: CopyFiles@2
+  displayName: 'Copy Maintenance Page'
+  inputs:
+    Contents: 'nginx-maintenance.html'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    OverWrite: true
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish build artifacts'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+- task: PowerShell@2
+  displayName: 'Push to GitHub'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  inputs:
+    targetType: 'inline'
+    script: |
+      git remote add github https://$(PAT)@github.com/openpotato/openholidaysapi.git
+      git fetch github
+      git checkout .
+      git push github HEAD:main
+      git push --tags github HEAD:main
+    pwsh: true
