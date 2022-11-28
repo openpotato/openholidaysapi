@@ -32,7 +32,7 @@ namespace OpenHolidaysApi.CLI
         public DatabaseConfiguration Database { get; set; } = new DatabaseConfiguration();
 
         /// <summary>
-        /// Raw data soruces
+        /// Raw data sources
         /// </summary>
         public SourcesConfiguration Sources { get; set; } = new SourcesConfiguration();
     }
