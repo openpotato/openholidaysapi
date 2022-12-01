@@ -24,17 +24,20 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace OpenHolidaysApi.DataLayer
 {
+    /// <summary>
+    ///  A factory for creating derived <see cref="DbContext" /> instances for EF design-time tools.
+    /// </summary>
+    /// <remarks>
+    /// Please note that you have to use `remove-migration` with the `-Force` option, as there is no database 
+    /// connection available.
+    /// </remarks>
     class OpenHolidaysApiDbContextDesignTimeFactory : IDesignTimeDbContextFactory<OpenHolidaysApiDbContext>
     {
         public OpenHolidaysApiDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<OpenHolidaysApiDbContext>();
 
-            /* 
-             * dummy connection string
-             * add-migration checks that DBProvider exists and has not empty connection string
-             * remove-migration fails while checking in the db already applied migrations. use with -Force option
-             */
+            // No connection string
             optionsBuilder.UseNpgsql();
 
             return new OpenHolidaysApiDbContext(optionsBuilder.Options);

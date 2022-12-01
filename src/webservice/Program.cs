@@ -34,12 +34,10 @@ var appConfiguration = builder.Configuration.Get<AppConfiguration>();
 builder.Services
     .AddControllers(setup =>
     {
-        setup.UseDateOnlyTimeOnlyStringConverters();
         setup.OutputFormatters.Insert(0, new IcalOutputFormatter());
     })
     .AddJsonOptions(setup =>
     {
-        setup.UseDateOnlyTimeOnlyStringConverters();
         setup.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
@@ -57,6 +55,11 @@ builder.Services.AddSwaggerGen(setup =>
             {
                 Name = "The OpenHolidays API Project",
                 Url = new Uri("https://www.openholidaysapi.org")
+            },
+            License = new OpenApiLicense
+            {
+                Name = "License",
+                Url = new Uri("https://github.com/openpotato/openholidaysapi/blob/main/LICENSE")
             }
         });
     setup.EnableAnnotations();

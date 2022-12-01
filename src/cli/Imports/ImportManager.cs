@@ -43,7 +43,7 @@ namespace OpenHolidaysApi.CLI
         /// <summary>
         /// Initializes a new instance of the <see cref="ImportManager"/> class.
         /// </summary>
-        /// <param name="configuration">Configuration data</param>
+        /// <param name="appConfiguration">Configuration data</param>
         public ImportManager(AppConfiguration appConfiguration)
         {
             _appConfiguration = appConfiguration;
