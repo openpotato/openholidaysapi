@@ -38,7 +38,7 @@ namespace OpenHolidaysApi
         /// Initializes a new instance of the <see cref="StatisticsController"/> class.
         /// </summary>
         /// <param name="dbContext">Injected database context</param>
-        public StatisticsController(OpenHolidaysApiDbContext dbContext)
+        public StatisticsController(AppDbContext dbContext)
             : base(dbContext)
         {
         }

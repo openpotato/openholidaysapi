@@ -58,7 +58,7 @@ namespace OpenHolidaysApi.CLI
         /// <param name="dbContext">Database context</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken" /> to observe while waiting for the task to complete.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        internal override async Task AddToDatabase(OpenHolidaysApiDbContext dbContext, CancellationToken cancellationToken)
+        internal override async Task AddToDatabase(AppDbContext dbContext, CancellationToken cancellationToken)
         {
             var country = new Country();
 

@@ -21,6 +21,7 @@
 
 using Enbrea.Progress;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using OpenHolidaysApi.DataLayer;
 using System;
 using System.Threading;
@@ -31,18 +32,18 @@ namespace OpenHolidaysApi.CLI
     /// <summary>
     /// Manager for migrating/creating the database
     /// </summary>
-    public class MigrationManager
+    public class DbMigrator
     {
-        private readonly IDbContextFactory<OpenHolidaysApiDbContext> _dbContextFactory;
+        private readonly IDbContextFactory<AppDbContext> _dbContextFactory;
         private readonly ProgressReport _progressReport;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MigrationManager"/> class.
+        /// Initializes a new instance of the <see cref="DbMigrator"/> class.
         /// </summary>
         /// <param name="appConfiguration">Configuration data</param>
-        public MigrationManager(AppConfiguration appConfiguration)
+        public DbMigrator(AppConfiguration appConfiguration)
         {
-            _dbContextFactory = new OpenHolidaysApiDbContextFactory(appConfiguration.Database);
+            _dbContextFactory = new PooledDbContextFactory<AppDbContext>(AppDbContextOptionsFactory.CreateDbContextOptions(appConfiguration.Database));
             _progressReport = ProgressReportFactory.CreateProgressReport(ProgressUnit.Count);
         }
 

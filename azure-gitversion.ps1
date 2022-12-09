@@ -24,14 +24,7 @@ $CurrentBranch = $Env:BUILD_SOURCEBRANCH
 $CurrentBranchName = $Env:BUILD_SOURCEBRANCHNAME
 
 # Try to extract version info from Git tag
-try
-{
-	$Tag = git describe --tags --match "$TagPrefix[0-9]*"
-}
-catch
-{
-	
-}
+$Tag = git describe --tags --match "$TagPrefix[0-9]*"
 if ($Tag)
 {
     if ($Tag -match $GitDescribePattern)

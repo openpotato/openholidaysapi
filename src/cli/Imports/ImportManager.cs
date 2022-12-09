@@ -22,6 +22,7 @@
 using Enbrea.Csv;
 using Enbrea.Progress;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using OpenHolidaysApi.DataLayer;
 using System;
 using System.Collections.Generic;
@@ -36,8 +37,8 @@ namespace OpenHolidaysApi.CLI
     /// </summary>
     public class ImportManager
     {
-        private readonly AppConfiguration _appConfiguration = new();
-        private readonly IDbContextFactory<OpenHolidaysApiDbContext> _dbContextFactory;
+        private readonly AppConfiguration _appConfiguration;
+        private readonly IDbContextFactory<AppDbContext> _dbContextFactory;
         private readonly ProgressReport _progressReport;
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace OpenHolidaysApi.CLI
         public ImportManager(AppConfiguration appConfiguration)
         {
             _appConfiguration = appConfiguration;
-            _dbContextFactory = new OpenHolidaysApiDbContextFactory(_appConfiguration.Database);
+            _dbContextFactory = new PooledDbContextFactory<AppDbContext>(AppDbContextOptionsFactory.CreateDbContextOptions(_appConfiguration.Database));
             _progressReport = ProgressReportFactory.CreateProgressReport(ProgressUnit.Count);
         }
 
@@ -142,7 +143,7 @@ namespace OpenHolidaysApi.CLI
             }
         }
 
-        private async Task ImportToDatabaseAsync<T>(OpenHolidaysApiDbContext dbContext, FileInfo csvFile, CancellationToken cancellationToken)
+        private async Task ImportToDatabaseAsync<T>(AppDbContext dbContext, FileInfo csvFile, CancellationToken cancellationToken)
             where T : CsvBase
         {
             uint recordCount = 0;

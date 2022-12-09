@@ -25,29 +25,31 @@ namespace OpenHolidaysApi.CLI
 {
     public static class CommandDefinitions
     {
+        public static Command ImportDb(AppConfiguration appConfiguration)
+        {
+            var command = new Command("importdb", "Imports public data to the OpenHolidays API database")
+            {
+            };
+
+            command.SetHandler(async ()
+                => await CommandHandlers.ImportDb(appConfiguration));
+
+            return command;
+        }
+
         public static Command InitDb(AppConfiguration appConfiguration)
         {
-            var command = new Command("initdb", "Creates a new OpenHolidaysAPI database")
+            var command = new Command("initdb", "Creates or migrates an OpenHolidays API database")
             {
-                new Option<bool>(new[] { "--populate", "-p" }, "Populate database with data")
+                new Option<bool>(new[] { "--import", "-i" }, "Imports public data")
                 {
                     IsRequired = false
                 }
             };
 
-            command.SetHandler(async (bool populate)
-                => await CommandHandlers.InitDb(appConfiguration, populate),
+            command.SetHandler(async (bool import)
+                => await CommandHandlers.InitDb(appConfiguration, import),
                     command.Options[0] as Option<bool>);
-
-            return command;
-        }
-
-        public static Command PopulateDb(AppConfiguration appConfiguration)
-        {
-            var command = new Command("populatedb", "Populates an OpenHolidaysAPI database");
-
-            command.SetHandler(async ()
-                => await CommandHandlers.PopulateDb(appConfiguration));
 
             return command;
         }

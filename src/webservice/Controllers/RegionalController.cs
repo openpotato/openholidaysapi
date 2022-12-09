@@ -37,7 +37,7 @@ namespace OpenHolidaysApi
         /// Initializes a new instance of the <see cref="RegionalController"/> class.
         /// </summary>
         /// <param name="dbContext">Injected database context</param>
-        public RegionalController(OpenHolidaysApiDbContext dbContext)
+        public RegionalController(AppDbContext dbContext)
             : base(dbContext)
         {
         }

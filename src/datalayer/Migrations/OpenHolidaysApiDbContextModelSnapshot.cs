@@ -11,7 +11,7 @@ using OpenHolidaysApi.DataLayer;
 
 namespace OpenHolidaysApi.DataLayer.Migrations
 {
-    [DbContext(typeof(OpenHolidaysApiDbContext))]
+    [DbContext(typeof(AppDbContext))]
     partial class OpenHolidaysApiDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

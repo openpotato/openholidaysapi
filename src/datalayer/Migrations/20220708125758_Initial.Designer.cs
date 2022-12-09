@@ -12,7 +12,7 @@ using OpenHolidaysApi.DataLayer;
 
 namespace OpenHolidaysApi.DataLayer.Migrations
 {
-    [DbContext(typeof(OpenHolidaysApiDbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20220708125758_Initial")]
     partial class Initial
     {

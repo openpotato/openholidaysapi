@@ -43,7 +43,7 @@ The following instructions show you how to set up a development environment on y
 ### Create and populate the database
 
 + Build the `OpenHolidaysApi.CLI` project. 
-+ Run the `OpenHolidaysApi.CLI` project with parameter `initdb -p`. This will create and populate the PostgreSQL database.
++ Run the `OpenHolidaysApi.CLI` project with parameter `initdb --import`. This will create and populate the PostgreSQL database.
 
 ### Configure the OpenHolidaysApi WebService
 
