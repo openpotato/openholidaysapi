@@ -64,7 +64,7 @@ namespace OpenHolidaysApi.DataLayer
         [Required]
         [Column(TypeName = "jsonb")]
         [Comment("ISO 3166-1 official country names")]
-        public ICollection<string> OfficialNames { get; set; } = new List<string>();
+        public ICollection<LocalizedText> OfficialNames { get; set; } = new List<LocalizedText>();
 
         /// <summary>
         /// List of relevant subdivisions 

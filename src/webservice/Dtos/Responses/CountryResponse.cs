@@ -40,7 +40,7 @@ namespace OpenHolidaysApi
         {
             IsoCode = country.IsoCode;
             Names = country.Names.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList();
-            OfficialNames = country.OfficialNames;
+            OfficialNames = country.OfficialNames.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList(); 
             OfficialLanguages = country.OfficialLanguages;
         }
 
@@ -74,6 +74,6 @@ namespace OpenHolidaysApi
         /// <example>[{"language":"EN","text":"The Federal Republic of Germany"},{"language":"DE","text":"Bundesrepublik Deutschland"}]</example>
         [Required]
         [JsonPropertyOrder(3)]
-        public ICollection<string> OfficialNames { get; set; }
+        public ICollection<LocalizedText> OfficialNames { get; set; }
     }
 }

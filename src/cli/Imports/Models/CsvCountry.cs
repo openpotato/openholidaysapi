@@ -50,7 +50,7 @@ namespace OpenHolidaysApi.CLI
         /// <summary>
         /// ISO 3166-1 official country names
         /// </summary>
-        public ICollection<string> OfficialNames { get; set; } = new List<string>();
+        public ICollection<CsvLocalizedText> OfficialNames { get; set; } = new List<CsvLocalizedText>();
 
         /// <summary>
         /// Adds this CSV record to the database
@@ -91,9 +91,9 @@ namespace OpenHolidaysApi.CLI
 
             if (OfficialNames != null && OfficialNames.Count > 0)
             {
-                foreach (var language in OfficialNames)
+                foreach (var csvOfficialName in OfficialNames)
                 {
-                    country.OfficialNames.Add(language);
+                    country.OfficialNames.Add(new LocalizedText { Language = csvOfficialName.Language, Text = csvOfficialName.Text });
                 }
             }
             else

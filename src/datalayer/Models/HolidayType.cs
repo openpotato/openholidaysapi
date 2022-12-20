@@ -36,5 +36,7 @@ namespace OpenHolidaysApi.DataLayer
         /// School holiday
         /// </summary>
         School = 1
+
+       // Public, Bank, School, SchoolInfo
     }
 }
