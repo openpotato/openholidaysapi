@@ -43,14 +43,14 @@ namespace OpenHolidaysApi.CLI
         public ICollection<CsvLocalizedText> Names { get; set; } = new List<CsvLocalizedText>();
 
         /// <summary>
-        /// Official languages as ISO-639-1 codes
+        /// ISO-639-1 languages codes
         /// </summary>
         public ICollection<string> OfficialLanguages { get; set; } = new List<string>();
 
         /// <summary>
-        /// Official state name
+        /// ISO 3166-1 official country names
         /// </summary>
-        public string OfficialName { get; set; }
+        public ICollection<string> OfficialNames { get; set; } = new List<string>();
 
         /// <summary>
         /// Adds this CSV record to the database
@@ -60,10 +60,10 @@ namespace OpenHolidaysApi.CLI
         /// <returns>A task that represents the asynchronous operation.</returns>
         internal override async Task AddToDatabase(AppDbContext dbContext, CancellationToken cancellationToken)
         {
-            var country = new Country();
-
-            country.IsoCode = IsoCode;
-            country.OfficialName = OfficialName;
+            var country = new Country
+            {
+                IsoCode = IsoCode
+            };
 
             if (Names != null && Names.Count > 0)
             {
@@ -82,6 +82,18 @@ namespace OpenHolidaysApi.CLI
                 foreach (var language in OfficialLanguages)
                 {
                     country.OfficialLanguages.Add(language);
+                }
+            }
+            else
+            {
+                throw new Exception("Error");
+            }
+
+            if (OfficialNames != null && OfficialNames.Count > 0)
+            {
+                foreach (var language in OfficialNames)
+                {
+                    country.OfficialNames.Add(language);
                 }
             }
             else
