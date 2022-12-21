@@ -19,31 +19,29 @@
  */
 #endregion
 
-namespace OpenHolidaysApi.DataLayer
+using Swashbuckle.AspNetCore.Annotations;
+
+namespace OpenHolidayApi
 {
     /// <summary>
-    /// Type of holiday
+    /// Detailed information
     /// </summary>
-    public enum HolidayType
+    [SwaggerSchema(ReadOnly = true)]
+    public enum HolidayDetails
     {
         /// <summary>
-        /// No holiday (for information purposes only)
+        /// No more details
         /// </summary>
         None = 0,
 
         /// <summary>
-        /// Public holiday
+        /// End of lessons
         /// </summary>
-        Public = 1,
+        EndOfLessons = 1,
 
         /// <summary>
-        /// Bank holiday
+        /// Back to school
         /// </summary>
-        Bank = 2,
-
-        /// <summary>
-        /// School holiday
-        /// </summary>
-        School = 3
+        BackToSchool = 2
     }
 }

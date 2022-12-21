@@ -13,7 +13,7 @@ using OpenHolidaysApi.DataLayer;
 namespace OpenHolidaysApi.DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221220223444_Initial")]
+    [Migration("20221221110305_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -93,10 +93,10 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .HasColumnType("jsonb")
                         .HasComment("ISO-639-1 language codes");
 
-                    b.Property<ICollection<string>>("OfficialNames")
+                    b.Property<ICollection<LocalizedText>>("OfficialNames")
                         .IsRequired()
                         .HasColumnType("jsonb")
-                        .HasComment("ISO 3166-1 official country names");
+                        .HasComment("Localized official country names");
 
                     b.Property<DateOnly>("TimeStamp")
                         .HasColumnType("date")
@@ -128,6 +128,10 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                     b.Property<Guid>("CountryId")
                         .HasColumnType("uuid")
                         .HasComment("Reference to country");
+
+                    b.Property<int>("Details")
+                        .HasColumnType("integer")
+                        .HasComment("Additional detailed information");
 
                     b.Property<DateOnly>("EndDate")
                         .HasColumnType("date")

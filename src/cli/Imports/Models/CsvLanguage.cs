@@ -64,7 +64,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("Error");
+                throw new Exception("No language names definied");
             }
 
             dbContext.Set<Language>().Add(language);

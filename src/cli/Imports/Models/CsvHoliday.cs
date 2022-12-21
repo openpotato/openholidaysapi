@@ -45,6 +45,11 @@ namespace OpenHolidaysApi.CLI
         public string Country { get; set; }
 
         /// <summary>
+        /// Additional detail information
+        /// </summary>
+        public HolidayDetails? Details { get; set; }
+
+        /// <summary>
         /// End date
         /// </summary>
         public DateOnly EndDate { get; set; }
@@ -59,6 +64,11 @@ namespace OpenHolidaysApi.CLI
         /// </summary>
         public ICollection<CsvLocalizedText> Names { get; set; } = new List<CsvLocalizedText>();
         /// <summary>
+        /// List of organizational units
+        /// </summary>
+        public ICollection<string> OUnits { get; set; } = new List<string>();
+
+        /// <summary>
         /// Start date
         /// </summary>
         public DateOnly StartDate { get; set; }
@@ -67,11 +77,6 @@ namespace OpenHolidaysApi.CLI
         /// List of subdivisions
         /// </summary>
         public ICollection<string> Subdivisions { get; set; } = new List<string>();
-
-        /// <summary>
-        /// List of organizational units
-        /// </summary>
-        public ICollection<string> OUnits { get; set; } = new List<string>();
 
         /// <summary>
         /// Type of holiday
@@ -90,6 +95,7 @@ namespace OpenHolidaysApi.CLI
             {
                 Id = Id,
                 Type = Type,
+                Details = Details != null ? (HolidayDetails)Details : HolidayDetails.None,
                 StartDate = StartDate,
                 EndDate = EndDate != DateOnly.MinValue ? EndDate : StartDate
             };
@@ -103,7 +109,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("Error");
+                throw new Exception("No names definied");
             }
 
             var countryId = await dbContext.Set<Country>().Where(x => x.IsoCode == Country).Select(x => x.Id).FirstOrDefaultAsync(cancellationToken);
@@ -113,7 +119,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("Error");
+                throw new Exception("Unkown country");
             }
 
             if (Subdivisions != null && Subdivisions.Count > 0)
@@ -147,6 +153,7 @@ namespace OpenHolidaysApi.CLI
                         holiday.OUnits.Add(oUnit);
                     }
                 }
+                holiday.Nationwide = false;
             }
 
             if (Comments != null && Comments.Count > 0)

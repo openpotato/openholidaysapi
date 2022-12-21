@@ -20,6 +20,7 @@
 #endregion
 
 using Enbrea.Ics;
+using Microsoft.EntityFrameworkCore;
 using OpenHolidaysApi.DataLayer;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
@@ -44,11 +45,12 @@ namespace OpenHolidaysApi
             StartDate = holiday.StartDate;
             EndDate = holiday.EndDate;
             Type = holiday.Type;
+            Details = holiday.Details;
             Nationwide = holiday.Nationwide;
             Subdivisions = holiday.Subdivisions.Select(x => new SubdivisionReference() { IsoCode = x.IsoCode, ShortName = x.ShortName }).ToList();
             OUnits = holiday.OUnits.Select(x => new OUnitReference() { Code = x.Code, ShortName = x.ShortName }).ToList();
-            Names = FiltertLocalizedText(holiday.Names, languageCode);
-            Comments = FiltertLocalizedText(holiday.Comments, languageCode);
+            Names = FilteredLocalizedText(holiday.Names, languageCode);
+            Comments = FilteredLocalizedText(holiday.Comments, languageCode);
         }
 
         /// <summary>
@@ -77,15 +79,22 @@ namespace OpenHolidaysApi
         /// Localized names of the holiday
         /// </summary>
         [Required]
-        [JsonPropertyOrder(4)]
+        [JsonPropertyOrder(5)]
         public ICollection<LocalizedText> Names { get; set; }
+
+        /// <summary>
+        /// Additional detailed information
+        /// </summary>
+        [Required]
+        [JsonPropertyOrder(4)]
+        public HolidayDetails Details { get; set; }
 
         /// <summary>
         /// Is the holiday nationwide?
         /// </summary>
         /// <example>true</example>
         [Required]
-        [JsonPropertyOrder(5)]
+        [JsonPropertyOrder(6)]
         public bool Nationwide { get; set; }
 
         /// <summary>
@@ -100,14 +109,14 @@ namespace OpenHolidaysApi
         /// List of organizational unit references
         /// </summary>
         [Required]
-        [JsonPropertyOrder(6)]
+        [JsonPropertyOrder(8)]
         public ICollection<OUnitReference> OUnits { get; set; }
 
         /// <summary>
         /// List of subdivision references
         /// </summary>
         [Required]
-        [JsonPropertyOrder(6)]
+        [JsonPropertyOrder(7)]
         public ICollection<SubdivisionReference> Subdivisions { get; set; }
 
         /// <summary>
@@ -173,7 +182,7 @@ namespace OpenHolidaysApi
         /// <param name="localizedTextList">List of localized text instances</param>
         /// <param name="languageCode">ISO-639-1 language code </param>
         /// <returns>A reduced list of localized text instances</returns>
-        private ICollection<LocalizedText> FiltertLocalizedText(ICollection<DataLayer.LocalizedText> localizedTextList, string languageCode)
+        private ICollection<LocalizedText> FilteredLocalizedText(ICollection<DataLayer.LocalizedText> localizedTextList, string languageCode)
         {
             if (string.IsNullOrEmpty(languageCode))
             {

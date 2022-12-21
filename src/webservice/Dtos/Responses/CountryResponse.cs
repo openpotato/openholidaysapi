@@ -69,9 +69,9 @@ namespace OpenHolidaysApi
         public ICollection<string> OfficialLanguages { get; set; }
 
         /// <summary>
-        /// Official ISO-3166-1 country names
+        /// Localized official country names
         /// </summary>
-        /// <example>[{"language":"EN","text":"The Federal Republic of Germany"},{"language":"DE","text":"Bundesrepublik Deutschland"}]</example>
+        /// <example>[{"language":"EN","text":"Federal Republic of Germany"},{"language":"DE","text":"Bundesrepublik Deutschland"}]</example>
         [Required]
         [JsonPropertyOrder(3)]
         public ICollection<LocalizedText> OfficialNames { get; set; }

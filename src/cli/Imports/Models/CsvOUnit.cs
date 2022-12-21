@@ -92,7 +92,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("Error");
+                throw new Exception("No ounit names definied");
             }
 
             var countryId = await dbContext.Set<Country>().Where(x => x.IsoCode == Country).Select(x => x.Id).FirstOrDefaultAsync(cancellationToken);
@@ -102,7 +102,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("Error");
+                throw new Exception("Unkown country");
             }
 
             if (Subdivisions != null && Subdivisions.Count > 0)

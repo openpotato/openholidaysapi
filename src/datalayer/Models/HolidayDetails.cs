@@ -22,28 +22,23 @@
 namespace OpenHolidaysApi.DataLayer
 {
     /// <summary>
-    /// Type of holiday
+    /// Detail information
     /// </summary>
-    public enum HolidayType
+    public enum HolidayDetails
     {
         /// <summary>
-        /// No holiday (for information purposes only)
+        /// No more detials
         /// </summary>
         None = 0,
 
         /// <summary>
-        /// Public holiday
+        /// End of lessons
         /// </summary>
-        Public = 1,
+        EndOfLessons = 1,
 
         /// <summary>
-        /// Bank holiday
+        /// Back to school
         /// </summary>
-        Bank = 2,
-
-        /// <summary>
-        /// School holiday
-        /// </summary>
-        School = 3
+        BackToSchool = 2
     }
 }

@@ -74,7 +74,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("Error");
+                throw new Exception("No country names definied");
             }
 
             if (OfficialLanguages != null && OfficialLanguages.Count > 0)
@@ -86,7 +86,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("Error");
+                throw new Exception("No official languages definied");
             }
 
             if (OfficialNames != null && OfficialNames.Count > 0)
@@ -98,7 +98,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("Error");
+                throw new Exception("No official country names definied");
             }
 
             dbContext.Set<Country>().Add(country);

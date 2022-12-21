@@ -59,11 +59,11 @@ namespace OpenHolidaysApi.DataLayer
         public ICollection<string> OfficialLanguages { get; set; } = new List<string>();
 
         /// <summary>
-        /// ISO 3166-1 official country names
+        /// Localized official country names
         /// </summary>
         [Required]
         [Column(TypeName = "jsonb")]
-        [Comment("ISO 3166-1 official country names")]
+        [Comment("Localized official country names")]
         public ICollection<LocalizedText> OfficialNames { get; set; } = new List<LocalizedText>();
 
         /// <summary>

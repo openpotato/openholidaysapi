@@ -20,7 +20,6 @@
 #endregion
 
 using Microsoft.EntityFrameworkCore;
-using OpenHolidaysApi.DataLayer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -47,6 +46,13 @@ namespace OpenHolidaysApi.DataLayer
         /// </summary>
         [Required]
         public Country Country { get; set; }
+
+        /// <summary>
+        /// Additional detailed information
+        /// </summary>
+        [Required]
+        [Comment("Additional detailed information")]
+        public HolidayDetails Details { get; set; }
 
         /// <summary>
         /// End date of the holiday
