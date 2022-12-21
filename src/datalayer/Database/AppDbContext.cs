@@ -23,14 +23,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace OpenHolidaysApi.DataLayer
 {
-    public class OpenHolidaysApiDbContext : DbContext
+    public class AppDbContext : DbContext
     {
-        public OpenHolidaysApiDbContext()
+        public AppDbContext()
             : base()
         {
         }
 
-        public OpenHolidaysApiDbContext(DbContextOptions<OpenHolidaysApiDbContext> options)
+        public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
         }

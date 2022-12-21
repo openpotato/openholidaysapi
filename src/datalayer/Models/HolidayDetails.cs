@@ -19,23 +19,26 @@
  */
 #endregion
 
-using OpenHolidaysApi.DataLayer;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace OpenHolidaysApi.CLI
+namespace OpenHolidaysApi.DataLayer
 {
     /// <summary>
-    /// An abstract CSV record
+    /// Detail information
     /// </summary>
-    public abstract class CsvBase
+    public enum HolidayDetails
     {
         /// <summary>
-        /// Adds this CSV record to the database
+        /// No more detials
         /// </summary>
-        /// <param name="dbContext">Database context</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken" /> to observe while waiting for the task to complete.</param>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        internal abstract Task AddToDatabase(AppDbContext dbContext, CancellationToken cancellationToken);
+        None = 0,
+
+        /// <summary>
+        /// End of lessons
+        /// </summary>
+        EndOfLessons = 1,
+
+        /// <summary>
+        /// Back to school
+        /// </summary>
+        BackToSchool = 2
     }
 }

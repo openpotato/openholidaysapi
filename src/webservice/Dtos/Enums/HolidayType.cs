@@ -1,6 +1,6 @@
-﻿#region OpenPLZ - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
 /*    
- *    OpenPLZ 
+ *    OpenHolidays API 
  *    
  *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
  *
@@ -30,13 +30,23 @@ namespace OpenHolidayApi
     public enum HolidayType
     {
         /// <summary>
+        /// No holiday (for information purposes only)
+        /// </summary>
+        None = 0,
+
+        /// <summary>
         /// Public holiday
         /// </summary>
-        Public = 0,
+        Public = 1,
+
+        /// <summary>
+        /// Bank holiday
+        /// </summary>
+        Bank = 2,
 
         /// <summary>
         /// School holiday
         /// </summary>
-        School = 1
+        School = 3
     }
 }

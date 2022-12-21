@@ -48,7 +48,7 @@ namespace OpenHolidaysApi.CLI
         /// <param name="dbContext">Database context</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken" /> to observe while waiting for the task to complete.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        internal override async Task AddToDatabase(OpenHolidaysApiDbContext dbContext, CancellationToken cancellationToken)
+        internal override async Task AddToDatabase(AppDbContext dbContext, CancellationToken cancellationToken)
         {
             var language = new Language
             {
@@ -64,7 +64,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("Error");
+                throw new Exception("No language names definied");
             }
 
             dbContext.Set<Language>().Add(language);

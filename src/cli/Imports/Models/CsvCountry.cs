@@ -43,14 +43,14 @@ namespace OpenHolidaysApi.CLI
         public ICollection<CsvLocalizedText> Names { get; set; } = new List<CsvLocalizedText>();
 
         /// <summary>
-        /// Official languages as ISO-639-1 codes
+        /// ISO-639-1 languages codes
         /// </summary>
         public ICollection<string> OfficialLanguages { get; set; } = new List<string>();
 
         /// <summary>
-        /// Official state name
+        /// ISO 3166-1 official country names
         /// </summary>
-        public string OfficialName { get; set; }
+        public ICollection<CsvLocalizedText> OfficialNames { get; set; } = new List<CsvLocalizedText>();
 
         /// <summary>
         /// Adds this CSV record to the database
@@ -58,12 +58,12 @@ namespace OpenHolidaysApi.CLI
         /// <param name="dbContext">Database context</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken" /> to observe while waiting for the task to complete.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        internal override async Task AddToDatabase(OpenHolidaysApiDbContext dbContext, CancellationToken cancellationToken)
+        internal override async Task AddToDatabase(AppDbContext dbContext, CancellationToken cancellationToken)
         {
-            var country = new Country();
-
-            country.IsoCode = IsoCode;
-            country.OfficialName = OfficialName;
+            var country = new Country
+            {
+                IsoCode = IsoCode
+            };
 
             if (Names != null && Names.Count > 0)
             {
@@ -74,7 +74,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("Error");
+                throw new Exception("No country names definied");
             }
 
             if (OfficialLanguages != null && OfficialLanguages.Count > 0)
@@ -86,7 +86,19 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("Error");
+                throw new Exception("No official languages definied");
+            }
+
+            if (OfficialNames != null && OfficialNames.Count > 0)
+            {
+                foreach (var csvOfficialName in OfficialNames)
+                {
+                    country.OfficialNames.Add(new LocalizedText { Language = csvOfficialName.Language, Text = csvOfficialName.Text });
+                }
+            }
+            else
+            {
+                throw new Exception("No official country names definied");
             }
 
             dbContext.Set<Country>().Add(country);

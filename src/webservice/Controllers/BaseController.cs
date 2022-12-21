@@ -33,13 +33,13 @@ namespace OpenHolidaysApi
         /// <summary>
         /// Injected database context
         /// </summary>
-        protected readonly OpenHolidaysApiDbContext _dbContext;
+        protected readonly AppDbContext _dbContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseController"/> class.
         /// </summary>
         /// <param name="dbContext">Injected database context</param>
-        public BaseController(OpenHolidaysApiDbContext dbContext)
+        public BaseController(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }

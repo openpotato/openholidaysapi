@@ -52,7 +52,7 @@ namespace OpenHolidaysApi.CLI
             var rootCommand = new RootCommand(description: "OpenHolidaysAPI CLI")
             {
                 CommandDefinitions.InitDb(appConfiguration),
-                CommandDefinitions.PopulateDb(appConfiguration)
+                CommandDefinitions.ImportDb(appConfiguration)
             };
 
             // Parse the incoming args and invoke the handler

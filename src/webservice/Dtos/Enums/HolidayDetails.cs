@@ -19,24 +19,29 @@
  */
 #endregion
 
-using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Annotations;
 
-namespace OpenHolidaysApi.DataLayer
+namespace OpenHolidayApi
 {
-    public class OpenHolidaysApiDbContextFactory : IDbContextFactory<OpenHolidaysApiDbContext>
+    /// <summary>
+    /// Detailed information
+    /// </summary>
+    [SwaggerSchema(ReadOnly = true)]
+    public enum HolidayDetails
     {
-        private readonly IDbConfiguration _configuration;
+        /// <summary>
+        /// No more details
+        /// </summary>
+        None = 0,
 
-        public OpenHolidaysApiDbContextFactory(IDbConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        /// <summary>
+        /// End of lessons
+        /// </summary>
+        EndOfLessons = 1,
 
-        public OpenHolidaysApiDbContext CreateDbContext()
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<OpenHolidaysApiDbContext>();
-            optionsBuilder.UseNpgsql(DbConnectionFactory.CreateNpgsqlConnection(_configuration));
-            return new OpenHolidaysApiDbContext(optionsBuilder.Options);
-        }
+        /// <summary>
+        /// Back to school
+        /// </summary>
+        BackToSchool = 2
     }
 }

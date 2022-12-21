@@ -19,23 +19,28 @@
  */
 #endregion
 
-using OpenHolidaysApi.DataLayer;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
-namespace OpenHolidaysApi.CLI
+namespace OpenHolidaysApi.DataLayer
 {
     /// <summary>
-    /// An abstract CSV record
+    ///  A factory for creating derived <see cref="DbContext" /> instances for EF design-time tools.
     /// </summary>
-    public abstract class CsvBase
+    /// <remarks>
+    /// Please note that you have to use `remove-migration` with the `-Force` option, as there is no database 
+    /// connection available.
+    /// </remarks>
+    class AppDbContextDesignTimeFactory : IDesignTimeDbContextFactory<AppDbContext>
     {
-        /// <summary>
-        /// Adds this CSV record to the database
-        /// </summary>
-        /// <param name="dbContext">Database context</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken" /> to observe while waiting for the task to complete.</param>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        internal abstract Task AddToDatabase(AppDbContext dbContext, CancellationToken cancellationToken);
+        public AppDbContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+
+            // No connection string
+            optionsBuilder.UseNpgsql();
+
+            return new AppDbContext(optionsBuilder.Options);
+        }
     }
 }

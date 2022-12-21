@@ -75,7 +75,7 @@ namespace OpenHolidaysApi.CLI
         /// <param name="dbContext">Database context</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken" /> to observe while waiting for the task to complete.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        internal override async Task AddToDatabase(OpenHolidaysApiDbContext dbContext, CancellationToken cancellationToken)
+        internal override async Task AddToDatabase(AppDbContext dbContext, CancellationToken cancellationToken)
         {
             var oUnit = new OUnit
             {
@@ -92,7 +92,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("Error");
+                throw new Exception("No ounit names definied");
             }
 
             var countryId = await dbContext.Set<Country>().Where(x => x.IsoCode == Country).Select(x => x.Id).FirstOrDefaultAsync(cancellationToken);
@@ -102,7 +102,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("Error");
+                throw new Exception("Unkown country");
             }
 
             if (Subdivisions != null && Subdivisions.Count > 0)

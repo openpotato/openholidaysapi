@@ -42,7 +42,7 @@ namespace OpenHolidaysApi
         /// Initializes a new instance of the <see cref="HolidaysController"/> class.
         /// </summary>
         /// <param name="dbContext">Injected database context</param>
-        public HolidaysController(OpenHolidaysApiDbContext dbContext)
+        public HolidaysController(AppDbContext dbContext)
             : base(dbContext)
         {
         }
@@ -76,7 +76,9 @@ namespace OpenHolidaysApi
                         (
                             string.IsNullOrEmpty(oUnitCode) || x.OUnits.Any(ou => ou.Code == oUnitCode || ou.Children.Any(c => c.Code == oUnitCode))
                         ) &&
-                        x.Type == HolidayType.School &&
+                        (
+                            x.Type == HolidayType.School || (x.Type == HolidayType.None && x.Details != HolidayDetails.None)
+                        ) &&
                         x.StartDate >= validFrom &&
                         x.StartDate <= validTo)
                     .OrderBy(x => x.StartDate)
@@ -114,7 +116,9 @@ namespace OpenHolidaysApi
                         (
                             string.IsNullOrEmpty(subdivisionIsoCode) || x.Subdivisions.Any(sd => sd.IsoCode == subdivisionIsoCode)
                         ) &&
-                        x.Type == HolidayType.Public &&
+                        (
+                            x.Type == HolidayType.Public
+                        ) &&
                         x.StartDate >= validFrom &&
                         x.StartDate <= validTo)
                     .OrderBy(x => x.StartDate)

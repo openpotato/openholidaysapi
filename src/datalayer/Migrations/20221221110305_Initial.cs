@@ -7,8 +7,10 @@ using OpenHolidaysApi.DataLayer;
 
 namespace OpenHolidaysApi.DataLayer.Migrations
 {
+    /// <inheritdoc />
     public partial class Initial : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -19,8 +21,8 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                     TimeStamp = table.Column<DateOnly>(type: "date", nullable: false, comment: "Time stamp"),
                     IsoCode = table.Column<string>(type: "text", nullable: false, comment: "ISO 3166-1 country code"),
                     Names = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: false, comment: "Localized country names"),
-                    OfficialLanguages = table.Column<ICollection<string>>(type: "jsonb", nullable: false, comment: "Official languages as ISO-639-1 codes"),
-                    OfficialName = table.Column<string>(type: "text", nullable: false, comment: "ISO 3166-1 full name")
+                    OfficialLanguages = table.Column<ICollection<string>>(type: "jsonb", nullable: false, comment: "ISO-639-1 language codes"),
+                    OfficialNames = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: false, comment: "Localized official country names")
                 },
                 constraints: table =>
                 {
@@ -50,6 +52,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false, comment: "Unique Id"),
                     TimeStamp = table.Column<DateOnly>(type: "date", nullable: false, comment: "Time stamp"),
                     Comments = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: true, comment: "Additional localized comments"),
+                    Details = table.Column<int>(type: "integer", nullable: false, comment: "Additional detailed information"),
                     EndDate = table.Column<DateOnly>(type: "date", nullable: false, comment: "End date of the holiday"),
                     Names = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: false, comment: "Localized names of the holiday"),
                     Nationwide = table.Column<bool>(type: "boolean", nullable: false, comment: "Is this a nationwide holiday?"),
@@ -269,6 +272,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                 column: "ParentId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

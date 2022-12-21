@@ -20,27 +20,19 @@
 #endregion
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 
 namespace OpenHolidaysApi.DataLayer
 {
-    /// <summary>
-    ///  A factory for creating derived <see cref="DbContext" /> instances for EF design-time tools.
-    /// </summary>
-    /// <remarks>
-    /// Please note that you have to use `remove-migration` with the `-Force` option, as there is no database 
-    /// connection available.
-    /// </remarks>
-    class OpenHolidaysApiDbContextDesignTimeFactory : IDesignTimeDbContextFactory<OpenHolidaysApiDbContext>
+    public static class AppDbContextOptionsFactory
     {
-        public OpenHolidaysApiDbContext CreateDbContext(string[] args)
+        public static DbContextOptions<AppDbContext> CreateDbContextOptions(IDbConfiguration configuration)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<OpenHolidaysApiDbContext>();
-
-            // No connection string
-            optionsBuilder.UseNpgsql();
-
-            return new OpenHolidaysApiDbContext(optionsBuilder.Options);
+            return new DbContextOptionsBuilder<AppDbContext>()
+                .UseNpgsql(DbConnectionFactory.CreateNpgsqlConnection(configuration), options =>
+                {
+                    options.EnableRetryOnFailure();
+                })
+                .Options;
         }
     }
 }

@@ -38,7 +38,7 @@ namespace OpenHolidaysApi
         /// Initializes a new instance of the <see cref="StatisticsController"/> class.
         /// </summary>
         /// <param name="dbContext">Injected database context</param>
-        public StatisticsController(OpenHolidaysApiDbContext dbContext)
+        public StatisticsController(AppDbContext dbContext)
             : base(dbContext)
         {
         }
@@ -63,7 +63,9 @@ namespace OpenHolidaysApi
                     (
                         string.IsNullOrEmpty(subdivisionIsoCode) || x.Subdivisions.Any(sd => sd.IsoCode == subdivisionIsoCode)
                     ) &&
-                    x.Type == DataLayer.HolidayType.School)
+                    (
+                        x.Type == HolidayType.School || (x.Type == HolidayType.None && x.Details != HolidayDetails.None)
+                    ))
                 .OrderBy(x => x.StartDate)
                 .Select(x => x.StartDate)
                 .FirstOrDefaultAsync();
@@ -103,7 +105,7 @@ namespace OpenHolidaysApi
                     (
                         string.IsNullOrEmpty(subdivisionIsoCode) || x.Subdivisions.Any(sd => sd.IsoCode == subdivisionIsoCode)
                     ) &&
-                    x.Type == DataLayer.HolidayType.Public)
+                    x.Type == HolidayType.Public)
                 .OrderBy(x => x.StartDate)
                 .Select(x => x.StartDate)
                 .FirstOrDefaultAsync();
@@ -115,7 +117,7 @@ namespace OpenHolidaysApi
                     (
                         string.IsNullOrEmpty(subdivisionIsoCode) || x.Subdivisions.Any(sd => sd.IsoCode == subdivisionIsoCode)
                     ) &&
-                    x.Type == DataLayer.HolidayType.Public)
+                    x.Type == HolidayType.Public)
                 .OrderByDescending(x => x.StartDate)
                 .Select(x => x.StartDate)
                 .FirstOrDefaultAsync();

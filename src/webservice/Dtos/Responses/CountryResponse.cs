@@ -40,7 +40,7 @@ namespace OpenHolidaysApi
         {
             IsoCode = country.IsoCode;
             Names = country.Names.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList();
-            OfficialName = country.OfficialName;
+            OfficialNames = country.OfficialNames.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList(); 
             OfficialLanguages = country.OfficialLanguages;
         }
 
@@ -61,7 +61,7 @@ namespace OpenHolidaysApi
         public ICollection<LocalizedText> Names { get; set; }
 
         /// <summary>
-        /// Official languages as ISO-639-1 codes
+        /// Official ISO-639-1 language codes
         /// </summary>
         /// <example>["DE"]</example>
         [Required]
@@ -69,11 +69,11 @@ namespace OpenHolidaysApi
         public ICollection<string> OfficialLanguages { get; set; }
 
         /// <summary>
-        /// Official country name
+        /// Localized official country names
         /// </summary>
-        /// <example>The Federal Republic of Germany</example>
+        /// <example>[{"language":"EN","text":"Federal Republic of Germany"},{"language":"DE","text":"Bundesrepublik Deutschland"}]</example>
         [Required]
         [JsonPropertyOrder(3)]
-        public string OfficialName { get; set; }
+        public ICollection<LocalizedText> OfficialNames { get; set; }
     }
 }

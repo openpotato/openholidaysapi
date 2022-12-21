@@ -28,27 +28,27 @@ namespace OpenHolidaysApi.CLI
 {
     public static class CommandHandlers
     {
-        public static async Task InitDb(AppConfiguration appConfiguration, bool populate)
-        {
-            await Execute(async (cancellationToken) =>
-            {
-                var migrationManager = new MigrationManager(appConfiguration);
-                await migrationManager.ExecuteAsync(cancellationToken);
-
-                if (populate)
-                {
-                    var importManager = new ImportManager(appConfiguration);
-                    await importManager.ExecuteAsync(cancellationToken);
-                }
-            });
-        }
-
-        public static async Task PopulateDb(AppConfiguration appConfiguration)
+        public static async Task ImportDb(AppConfiguration appConfiguration)
         {
             await Execute(async (cancellationToken) =>
             {
                 var importManager = new ImportManager(appConfiguration);
                 await importManager.ExecuteAsync(cancellationToken);
+            });
+        }
+
+        public static async Task InitDb(AppConfiguration appConfiguration, bool import)
+        {
+            await Execute(async (cancellationToken) =>
+            {
+                var migrationManager = new DbMigrator(appConfiguration);
+                await migrationManager.ExecuteAsync(cancellationToken);
+
+                if (import)
+                {
+                    var importManager = new ImportManager(appConfiguration);
+                    await importManager.ExecuteAsync(cancellationToken);
+                }
             });
         }
 

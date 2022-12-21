@@ -6,7 +6,7 @@
     },
     "OpenHolidaysApi.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "initdb -p"
+      "commandLineArgs": "initdb --import"
     }
   }
 }

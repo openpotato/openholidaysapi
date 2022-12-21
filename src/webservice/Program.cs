@@ -69,7 +69,7 @@ builder.Services.AddSwaggerGen(setup =>
 });
 
 // Add EF Core support
-builder.Services.AddDbContext<OpenHolidaysApiDbContext>(options =>
+builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.BuildDbContextOptions(appConfiguration.Database);
 });
