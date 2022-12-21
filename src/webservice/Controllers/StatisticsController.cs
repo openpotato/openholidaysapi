@@ -77,7 +77,9 @@ namespace OpenHolidaysApi
                     (
                         string.IsNullOrEmpty(subdivisionIsoCode) || x.Subdivisions.Any(sd => sd.IsoCode == subdivisionIsoCode)
                     ) &&
-                    x.Type == DataLayer.HolidayType.School)
+                    (
+                        x.Type == HolidayType.School || (x.Type == HolidayType.None && x.Details != HolidayDetails.None)
+                    ))
                 .OrderByDescending(x => x.StartDate)
                 .Select(x => x.StartDate)
                 .FirstOrDefaultAsync();
