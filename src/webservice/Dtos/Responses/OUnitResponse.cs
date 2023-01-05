@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -36,14 +36,15 @@ namespace OpenHolidaysApi
         /// Initializes a new instance of the <see cref="OUnitResponse"/> class.
         /// </summary>
         /// <param name="oUnit">Assigns data from <see cref="OUnit"/></param>
-        public OUnitResponse(OUnit oUnit)
+        /// <param name="languageCode">Language code or null</param>
+        public OUnitResponse(OUnit oUnit, string languageCode)
         {
             Code = oUnit.Code;
             ShortName = oUnit.ShortName;
-            Names = oUnit.Names.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList();
+            Names = oUnit.Names.ToLocalizedList(languageCode);
             Subdivisions = oUnit.Subdivisions.Select(x => new SubdivisionReference() { IsoCode = x.IsoCode, ShortName = x.ShortName }).ToList();
             Parent = oUnit.Parent?.Code;
-            Comments = oUnit.Comments.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList();
+            Comments = oUnit.Comments.ToLocalizedList(languageCode);
         }
 
         /// <summary>
@@ -71,7 +72,7 @@ namespace OpenHolidaysApi
         public ICollection<LocalizedText> Names { get; set; }
 
         /// <summary>
-        /// Subdivision
+        /// Parent ounit
         /// </summary>
         /// <example>null</example>
         [JsonPropertyOrder(5)]

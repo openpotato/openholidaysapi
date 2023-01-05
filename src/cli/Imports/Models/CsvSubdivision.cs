@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ using Microsoft.EntityFrameworkCore;
 using OpenHolidaysApi.DataLayer;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,6 +35,11 @@ namespace OpenHolidaysApi.CLI
     /// </summary>
     public class CsvSubdivision : CsvBase
     {
+        /// <summary>
+        /// Localized subdivision categories
+        /// </summary>
+        public ICollection<CsvLocalizedText> Categories { get; set; } = new List<CsvLocalizedText>();
+
         /// <summary>
         /// Additional localized notes
         /// </summary>
@@ -48,7 +54,6 @@ namespace OpenHolidaysApi.CLI
         /// ISO 3166-2 subdivision code
         /// </summary>
         public string IsoCode { get; set; }
-
         /// <summary>
         /// Localized subdivision names 
         /// </summary>
@@ -105,6 +110,18 @@ namespace OpenHolidaysApi.CLI
                 throw new Exception("Unkown country");
             }
 
+            if (Categories != null && Categories.Count > 0)
+            {
+                foreach (var csvCategory in Categories)
+                {
+                    subdivision.Categories.Add(new LocalizedText { Language = csvCategory.Language, Text = csvCategory.Text });
+                }
+            }
+            else
+            {
+                throw new Exception("No official country names definied");
+            }
+
             if (OfficialLanguages != null && OfficialLanguages.Count > 0)
             {
                 foreach (var languageCode in OfficialLanguages)
@@ -115,6 +132,12 @@ namespace OpenHolidaysApi.CLI
             else
             {
                 throw new Exception("No official languages definied");
+            }
+
+            var parentId = await dbContext.Set<Subdivision>().Where(x => x.CountryId == subdivision.CountryId && x.ShortName == Parent).Select(x => x.Id).FirstOrDefaultAsync(cancellationToken);
+            if (parentId != default)
+            {
+                subdivision.ParentId = parentId;
             }
 
             if (Comments != null && Comments.Count > 0)

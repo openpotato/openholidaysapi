@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -37,6 +37,19 @@ namespace OpenHolidaysApi.DataLayer
     public class Subdivision : BaseEntity
     {
         /// <summary>
+        /// Localized categories
+        /// </summary>
+        [Required]
+        [Column(TypeName = "jsonb")]
+        [Comment("Localized categories")]
+        public ICollection<LocalizedText> Categories { get; set; } = new List<LocalizedText>();
+
+        /// <summary>
+        /// List of subdivision children
+        /// </summary>
+        public virtual ICollection<Subdivision> Children { get; set; }
+
+        /// <summary>
         /// Additional localized comments
         /// </summary>
         [Column(TypeName = "jsonb")]
@@ -55,12 +68,12 @@ namespace OpenHolidaysApi.DataLayer
         public virtual ICollection<Holiday> Holidays { get; set; } = new List<Holiday>();
 
         /// <summary>
-        /// Subdivision code (if available as ISO 3166-2 code)
+        /// Subdivision code as definied in ISO 3166-2
         /// </summary>
         [Required]
-        [Comment("IsoCode subdivision code")]
+        [Comment("Subdivision code as definied in ISO 3166-2")]
         public string IsoCode { get; set; }
-        
+
         /// <summary>
         /// Localized subdivision names 
         /// </summary>
@@ -97,6 +110,8 @@ namespace OpenHolidaysApi.DataLayer
         #region Foreign keys
         [Comment("Reference to country")]
         public Guid CountryId { get; set; }
+        [Comment("Reference to parent subdivision")]
+        public Guid? ParentId { get; set; }
         #endregion Foreign keys
     }
 }

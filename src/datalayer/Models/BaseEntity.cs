@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -37,13 +37,6 @@ namespace OpenHolidaysApi.DataLayer
         [Key, Column(Order = 0), DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Comment("Unique Id")]
         public Guid Id { get; set; } = Guid.NewGuid();
-
-        /// <summary>
-        /// Time stamp of the entity
-        /// </summary>
-        [Column(Order = 1)]
-        [Comment("Time stamp")]
-        public DateOnly TimeStamp { get; set; }
 
         /// <summary>
         /// Determines whether two object instances are equal.

@@ -1,8 +1,8 @@
-#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -39,6 +39,7 @@ builder.Services
     .AddJsonOptions(setup =>
     {
         setup.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        setup.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 
 // Add Swagger/OpenAPI support

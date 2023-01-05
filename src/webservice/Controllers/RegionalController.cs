@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -45,42 +45,45 @@ namespace OpenHolidaysApi
         /// <summary>
         /// Returns a list of all supported countries
         /// </summary>
+        /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <returns>List of countries</returns>
         [HttpGet("Countries")]
         [Produces("text/json", "application/json")]
-        public async Task<IEnumerable<CountryResponse>> GetCountriesAsync()
+        public async Task<IEnumerable<CountryResponse>> GetCountriesAsync(string languageIsoCode)
         {
             return await _dbContext.Set<Country>()
                 .AsNoTracking()
                 .OrderBy(x => x.IsoCode)
-                .Select(x => new CountryResponse(x))
+                .Select(x => new CountryResponse(x, languageIsoCode))
                 .ToListAsync();
         }
 
         /// <summary>
         /// Returns a list of all used languages
         /// </summary>
+        /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <returns>List of languages</returns>
         [HttpGet("Languages")]
         [Produces("text/json", "application/json")]
-        public async Task<IEnumerable<LanguageResponse>> GetLanguagesAsync()
+        public async Task<IEnumerable<LanguageResponse>> GetLanguagesAsync(string languageIsoCode)
         {
             return await _dbContext.Set<Language>()
                 .AsNoTracking()
                 .OrderBy(x => x.IsoCode)
-                .Select(x => new LanguageResponse(x))
+                .Select(x => new LanguageResponse(x, languageIsoCode))
                 .ToListAsync();
         }
 
         /// <summary>
         /// Returns a list of relevant organizational units for a supported country (if any)
         /// </summary>
-        /// <param name="countryIsoCode" example="FR">ISO 3166-1 code of the country</param>
-        /// <param name="subdivisionIsoCode">ISO 3166-2 code of the subdivision or empty</param>
+        /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
+        /// <param name="subdivisionIsoCode" example="MV">ISO 3166-2 code of the subdivision or empty</param>
+        /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <returns>List of organizational units</returns>
         [HttpGet("OUnits")]
         [Produces("text/json", "application/json")]
-        public async Task<IEnumerable<OUnitResponse>> GetOUnitsAsync([Required] string countryIsoCode, string subdivisionIsoCode)
+        public async Task<IEnumerable<OUnitResponse>> GetOUnitsAsync([Required] string countryIsoCode, string subdivisionIsoCode, string languageIsoCode)
         {
             return await _dbContext.Set<OUnit>()
                 .AsNoTracking()
@@ -92,7 +95,7 @@ namespace OpenHolidaysApi
                         string.IsNullOrEmpty(subdivisionIsoCode) || x.Subdivisions.Any(sd => sd.IsoCode == subdivisionIsoCode)
                     ))
                 .OrderBy(x => x.Code)
-                .Select(x => new OUnitResponse(x))
+                .Select(x => new OUnitResponse(x, languageIsoCode))
                 .ToListAsync();
         }
 
@@ -100,17 +103,18 @@ namespace OpenHolidaysApi
         /// Returns a list of relevant subdivisions for a supported country (if any)
         /// </summary>
         /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
+        /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <returns>List of subdivisions</returns>
         [HttpGet("Subdivisions")]
         [Produces("text/json", "application/json")]
-        public async Task<IEnumerable<SubdivisionResponse>> GetSubdivisionsAsync([Required] string countryIsoCode)
+        public async Task<IEnumerable<SubdivisionResponse>> GetSubdivisionsAsync([Required] string countryIsoCode, string languageIsoCode)
         {
             return await _dbContext.Set<Subdivision>()
                 .AsNoTracking()
                 .Include(x => x.Parent)
                 .Where(x => x.Country.IsoCode == countryIsoCode)
                 .OrderBy(x => x.IsoCode)
-                .Select(x => new SubdivisionResponse(x))
+                .Select(x => new SubdivisionResponse(x, languageIsoCode))
                 .ToListAsync();
         }
     }

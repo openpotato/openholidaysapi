@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -57,14 +57,6 @@ namespace OpenHolidaysApi.DataLayer
         [Column(TypeName = "jsonb")]
         [Comment("ISO-639-1 language codes")]
         public ICollection<string> OfficialLanguages { get; set; } = new List<string>();
-
-        /// <summary>
-        /// Localized official country names
-        /// </summary>
-        [Required]
-        [Column(TypeName = "jsonb")]
-        [Comment("Localized official country names")]
-        public ICollection<LocalizedText> OfficialNames { get; set; } = new List<LocalizedText>();
 
         /// <summary>
         /// List of relevant subdivisions 

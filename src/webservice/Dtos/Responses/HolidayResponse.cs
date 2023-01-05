@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -38,7 +38,7 @@ namespace OpenHolidaysApi
         /// Initializes a new instance of the <see cref="HolidayResponse"/> class.
         /// </summary>
         /// <param name="holiday">Assigns data from <see cref="Holiday"/></param>
-        /// <param name="languageCode">xxx</param>
+        /// <param name="languageCode">Language code or null</param>
         public HolidayResponse(Holiday holiday, string languageCode)
         {
             Id = holiday.Id;
@@ -49,8 +49,8 @@ namespace OpenHolidaysApi
             Nationwide = holiday.Nationwide;
             Subdivisions = holiday.Subdivisions.Select(x => new SubdivisionReference() { IsoCode = x.IsoCode, ShortName = x.ShortName }).ToList();
             OUnits = holiday.OUnits.Select(x => new OUnitReference() { Code = x.Code, ShortName = x.ShortName }).ToList();
-            Names = FilteredLocalizedText(holiday.Names, languageCode);
-            Comments = FilteredLocalizedText(holiday.Comments, languageCode);
+            Names = holiday.Names.ToLocalizedList(languageCode);
+            Comments = holiday.Comments.ToLocalizedList(languageCode);
         }
 
         /// <summary>
@@ -174,33 +174,6 @@ namespace OpenHolidaysApi
             };
 
             return icsEvent;
-        }
-
-        /// <summary>
-        /// Reduces a list of localized text instances to a goven language or (if not found) to the first language in the list.
-        /// </summary>
-        /// <param name="localizedTextList">List of localized text instances</param>
-        /// <param name="languageCode">ISO-639-1 language code </param>
-        /// <returns>A reduced list of localized text instances</returns>
-        private ICollection<LocalizedText> FilteredLocalizedText(ICollection<DataLayer.LocalizedText> localizedTextList, string languageCode)
-        {
-            if (string.IsNullOrEmpty(languageCode))
-            {
-                // Without language code return ALL localized text entires
-                return localizedTextList.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList();
-            }
-            else
-            {
-                // With language code return either the matching text or the first entry in the array
-                if (localizedTextList.Where(x => x.Language == languageCode).Count() == 0)
-                {
-                    return localizedTextList.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).Take(1).ToList();
-                }
-                else
-                {
-                    return localizedTextList.Where(x => x.Language == languageCode).Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList();
-                }
-            }
         }
     }
 }

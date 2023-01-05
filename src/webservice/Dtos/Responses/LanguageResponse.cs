@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -36,10 +36,11 @@ namespace OpenHolidaysApi
         /// Initializes a new instance of the <see cref="LanguageResponse"/> class.
         /// </summary>
         /// <param name="language">Assigns data from <see cref="Language"/></param>
-        public LanguageResponse(Language language)
+        /// <param name="languageCode">Language code or null</param>
+        public LanguageResponse(Language language, string languageCode)
         {
             IsoCode = language.IsoCode;
-            Names = language.Names.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList();
+            Names = language.Names.ToLocalizedList(languageCode);
         }
 
         /// <summary>
