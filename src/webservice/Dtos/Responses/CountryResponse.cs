@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -36,11 +36,11 @@ namespace OpenHolidaysApi
         /// Initializes a new instance of the <see cref="CountryResponse"/> class.
         /// </summary>
         /// <param name="country">Assigns data from <see cref="Country"/></param>
-        public CountryResponse(Country country)
+        /// <param name="languageCode">Language code or null</param>
+        public CountryResponse(Country country, string languageCode)
         {
             IsoCode = country.IsoCode;
-            Names = country.Names.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList();
-            OfficialNames = country.OfficialNames.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList(); 
+            Names = country.Names.ToLocalizedList(languageCode);
             OfficialLanguages = country.OfficialLanguages;
         }
 
@@ -67,13 +67,5 @@ namespace OpenHolidaysApi
         [Required]
         [JsonPropertyOrder(4)]
         public ICollection<string> OfficialLanguages { get; set; }
-
-        /// <summary>
-        /// Localized official country names
-        /// </summary>
-        /// <example>[{"language":"EN","text":"Federal Republic of Germany"},{"language":"DE","text":"Bundesrepublik Deutschland"}]</example>
-        [Required]
-        [JsonPropertyOrder(3)]
-        public ICollection<LocalizedText> OfficialNames { get; set; }
     }
 }

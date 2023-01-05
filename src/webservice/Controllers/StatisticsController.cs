@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -77,7 +77,9 @@ namespace OpenHolidaysApi
                     (
                         string.IsNullOrEmpty(subdivisionIsoCode) || x.Subdivisions.Any(sd => sd.IsoCode == subdivisionIsoCode)
                     ) &&
-                    x.Type == DataLayer.HolidayType.School)
+                    (
+                        x.Type == HolidayType.School || (x.Type == HolidayType.None && x.Details != HolidayDetails.None)
+                    ))
                 .OrderByDescending(x => x.StartDate)
                 .Select(x => x.StartDate)
                 .FirstOrDefaultAsync();

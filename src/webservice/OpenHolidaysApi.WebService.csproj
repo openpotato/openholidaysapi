@@ -6,7 +6,7 @@
 		<Description>Opan Data API for public and school holidays</Description>
 		<Authors>STÜBER SYSTEMS GmbH</Authors>
 		<Company>STÜBER SYSTEMS GmbH</Company>
-		<Copyright>© 2022 STÜBER SYSTEMS GmbH</Copyright>
+		<Copyright>© 2023 STÜBER SYSTEMS GmbH</Copyright>
 		<Version>0.0.1</Version>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>

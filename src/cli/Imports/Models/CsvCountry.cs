@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -48,11 +48,6 @@ namespace OpenHolidaysApi.CLI
         public ICollection<string> OfficialLanguages { get; set; } = new List<string>();
 
         /// <summary>
-        /// ISO 3166-1 official country names
-        /// </summary>
-        public ICollection<CsvLocalizedText> OfficialNames { get; set; } = new List<CsvLocalizedText>();
-
-        /// <summary>
         /// Adds this CSV record to the database
         /// </summary>
         /// <param name="dbContext">Database context</param>
@@ -87,18 +82,6 @@ namespace OpenHolidaysApi.CLI
             else
             {
                 throw new Exception("No official languages definied");
-            }
-
-            if (OfficialNames != null && OfficialNames.Count > 0)
-            {
-                foreach (var csvOfficialName in OfficialNames)
-                {
-                    country.OfficialNames.Add(new LocalizedText { Language = csvOfficialName.Language, Text = csvOfficialName.Text });
-                }
-            }
-            else
-            {
-                throw new Exception("No official country names definied");
             }
 
             dbContext.Set<Country>().Add(country);

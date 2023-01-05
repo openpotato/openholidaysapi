@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -36,14 +36,16 @@ namespace OpenHolidaysApi
         /// Initializes a new instance of the <see cref="SubdivisionResponse"/> class.
         /// </summary>
         /// <param name="subdivision">Assigns data from <see cref="Subdivision"/></param>
-        public SubdivisionResponse(Subdivision subdivision)
+        /// <param name="languageCode">Language code or null</param>
+        public SubdivisionResponse(Subdivision subdivision, string languageCode)
         {
             IsoCode = subdivision.IsoCode;
-            Names = subdivision.Names.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList();
+            Categories = subdivision.Categories.ToLocalizedList(languageCode);
+            Names = subdivision.Names.ToLocalizedList(languageCode);
             OfficialLanguages = subdivision.OfficialLanguages;
             ShortName = subdivision.ShortName;
             Parent = subdivision.Parent?.IsoCode;
-            Comments = subdivision.Comments.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList();
+            Comments = subdivision.Comments.ToLocalizedList(languageCode);
         }
 
         /// <summary>
@@ -55,11 +57,19 @@ namespace OpenHolidaysApi
         public string IsoCode { get; set; }
 
         /// <summary>
+        /// Localized categories of the subdivision
+        /// </summary>
+        /// <example>[{"language":"DE","text":"Bundesland"},{"language":"EN","text":"Federal state"}]</example>
+        [Required]
+        [JsonPropertyOrder(4)]
+        public ICollection<LocalizedText> Categories { get; set; }
+
+        /// <summary>
         /// Localized comments of the subdivision
         /// </summary>
         /// <example>null</example>
         [Required]
-        [JsonPropertyOrder(6)]
+        [JsonPropertyOrder(7)]
         public ICollection<LocalizedText> Comments { get; set; }
 
         /// <summary>
@@ -75,14 +85,14 @@ namespace OpenHolidaysApi
         /// </summary>
         /// <example>>["DE"]</example>
         [Required]
-        [JsonPropertyOrder(4)]
+        [JsonPropertyOrder(5)]
         public ICollection<string> OfficialLanguages { get; set; }
 
         /// <summary>
         /// Parent subdivision
         /// </summary>
         /// <example>null</example>
-        [JsonPropertyOrder(5)]
+        [JsonPropertyOrder(6)]
         public string Parent { get; set; }
 
         /// <summary>

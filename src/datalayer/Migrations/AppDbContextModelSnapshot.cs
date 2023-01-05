@@ -18,7 +18,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0")
+                .HasAnnotation("ProductVersion", "7.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -90,16 +90,6 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .HasColumnType("jsonb")
                         .HasComment("ISO-639-1 language codes");
 
-                    b.Property<ICollection<LocalizedText>>("OfficialNames")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasComment("Localized official country names");
-
-                    b.Property<DateOnly>("TimeStamp")
-                        .HasColumnType("date")
-                        .HasColumnOrder(1)
-                        .HasComment("Time stamp");
-
                     b.HasKey("Id");
 
                     b.HasIndex("IsoCode")
@@ -147,11 +137,6 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .HasColumnType("date")
                         .HasComment("Start date of the holiday");
 
-                    b.Property<DateOnly>("TimeStamp")
-                        .HasColumnType("date")
-                        .HasColumnOrder(1)
-                        .HasComment("Time stamp");
-
                     b.Property<int>("Type")
                         .HasColumnType("integer")
                         .HasComment("Type of holiday");
@@ -182,11 +167,6 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb")
                         .HasComment("Localized language names");
-
-                    b.Property<DateOnly>("TimeStamp")
-                        .HasColumnType("date")
-                        .HasColumnOrder(1)
-                        .HasComment("Time stamp");
 
                     b.HasKey("Id");
 
@@ -233,11 +213,6 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .HasColumnType("text")
                         .HasComment("Short name for display");
 
-                    b.Property<DateOnly>("TimeStamp")
-                        .HasColumnType("date")
-                        .HasColumnOrder(1)
-                        .HasComment("Time stamp");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Code")
@@ -261,6 +236,11 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .HasColumnOrder(0)
                         .HasComment("Unique Id");
 
+                    b.Property<ICollection<LocalizedText>>("Categories")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasComment("Localized categories");
+
                     b.Property<ICollection<LocalizedText>>("Comments")
                         .HasColumnType("jsonb")
                         .HasComment("Additional localized comments");
@@ -272,7 +252,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                     b.Property<string>("IsoCode")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasComment("IsoCode subdivision code");
+                        .HasComment("Subdivision code as definied in ISO 3166-2");
 
                     b.Property<ICollection<LocalizedText>>("Names")
                         .IsRequired()
@@ -285,17 +265,13 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .HasComment("Official languages as ISO-639-1 codes");
 
                     b.Property<Guid?>("ParentId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasComment("Reference to parent subdivision");
 
                     b.Property<string>("ShortName")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasComment("Short name for display");
-
-                    b.Property<DateOnly>("TimeStamp")
-                        .HasColumnType("date")
-                        .HasColumnOrder(1)
-                        .HasComment("Time stamp");
 
                     b.HasKey("Id");
 
@@ -395,7 +371,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .IsRequired();
 
                     b.HasOne("OpenHolidaysApi.DataLayer.Subdivision", "Parent")
-                        .WithMany()
+                        .WithMany("Children")
                         .HasForeignKey("ParentId");
 
                     b.Navigation("Country");
@@ -409,6 +385,11 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                 });
 
             modelBuilder.Entity("OpenHolidaysApi.DataLayer.OUnit", b =>
+                {
+                    b.Navigation("Children");
+                });
+
+            modelBuilder.Entity("OpenHolidaysApi.DataLayer.Subdivision", b =>
                 {
                     b.Navigation("Children");
                 });

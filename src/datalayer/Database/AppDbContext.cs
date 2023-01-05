@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -41,7 +41,12 @@ namespace OpenHolidaysApi.DataLayer
 
             modelBuilder.Entity<Country>();
             modelBuilder.Entity<Language>();
-            modelBuilder.Entity<Subdivision>();
+            modelBuilder.Entity<Subdivision>(x =>
+            {
+                x.HasOne(c => c.Parent)
+                 .WithMany(c => c.Children)
+                 .HasForeignKey(c => c.ParentId);
+            });
             modelBuilder.Entity<Holiday>();
             modelBuilder.Entity<OUnit>(x =>
             {

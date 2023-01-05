@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2022 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2022 STÜBER SYSTEMS GmbH
+ *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -117,7 +117,7 @@ namespace OpenHolidaysApi.CLI
                 }
             }
 
-            var parentId = await dbContext.Set<OUnit>().Where(x => x.ShortName == Parent).Select(x => x.Id).FirstOrDefaultAsync(cancellationToken);
+            var parentId = await dbContext.Set<OUnit>().Where(x => x.CountryId == oUnit.CountryId && x.ShortName == Parent).Select(x => x.Id).FirstOrDefaultAsync(cancellationToken);
             if (parentId != default)
             {
                 oUnit.ParentId = parentId;

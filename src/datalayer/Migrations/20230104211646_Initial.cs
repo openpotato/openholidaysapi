@@ -18,11 +18,9 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false, comment: "Unique Id"),
-                    TimeStamp = table.Column<DateOnly>(type: "date", nullable: false, comment: "Time stamp"),
                     IsoCode = table.Column<string>(type: "text", nullable: false, comment: "ISO 3166-1 country code"),
                     Names = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: false, comment: "Localized country names"),
-                    OfficialLanguages = table.Column<ICollection<string>>(type: "jsonb", nullable: false, comment: "ISO-639-1 language codes"),
-                    OfficialNames = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: false, comment: "Localized official country names")
+                    OfficialLanguages = table.Column<ICollection<string>>(type: "jsonb", nullable: false, comment: "ISO-639-1 language codes")
                 },
                 constraints: table =>
                 {
@@ -35,7 +33,6 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false, comment: "Unique Id"),
-                    TimeStamp = table.Column<DateOnly>(type: "date", nullable: false, comment: "Time stamp"),
                     IsoCode = table.Column<string>(type: "text", nullable: false, comment: "ISO-639-1 language code"),
                     Names = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: false, comment: "Localized language names")
                 },
@@ -50,7 +47,6 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false, comment: "Unique Id"),
-                    TimeStamp = table.Column<DateOnly>(type: "date", nullable: false, comment: "Time stamp"),
                     Comments = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: true, comment: "Additional localized comments"),
                     Details = table.Column<int>(type: "integer", nullable: false, comment: "Additional detailed information"),
                     EndDate = table.Column<DateOnly>(type: "date", nullable: false, comment: "End date of the holiday"),
@@ -77,7 +73,6 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false, comment: "Unique Id"),
-                    TimeStamp = table.Column<DateOnly>(type: "date", nullable: false, comment: "Time stamp"),
                     Code = table.Column<string>(type: "text", nullable: false, comment: "Organizational unit code"),
                     Comments = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: true, comment: "Additional localized comments"),
                     Names = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: false, comment: "Localized organizational unit names"),
@@ -107,14 +102,14 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false, comment: "Unique Id"),
-                    TimeStamp = table.Column<DateOnly>(type: "date", nullable: false, comment: "Time stamp"),
+                    Categories = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: false, comment: "Localized categories"),
                     Comments = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: true, comment: "Additional localized comments"),
-                    IsoCode = table.Column<string>(type: "text", nullable: false, comment: "IsoCode subdivision code"),
+                    IsoCode = table.Column<string>(type: "text", nullable: false, comment: "Subdivision code as definied in ISO 3166-2"),
                     Names = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: false, comment: "Localized subdivision names"),
                     OfficialLanguages = table.Column<ICollection<string>>(type: "jsonb", nullable: false, comment: "Official languages as ISO-639-1 codes"),
-                    ParentId = table.Column<Guid>(type: "uuid", nullable: true),
                     ShortName = table.Column<string>(type: "text", nullable: false, comment: "Short name for display"),
-                    CountryId = table.Column<Guid>(type: "uuid", nullable: false, comment: "Reference to country")
+                    CountryId = table.Column<Guid>(type: "uuid", nullable: false, comment: "Reference to country"),
+                    ParentId = table.Column<Guid>(type: "uuid", nullable: true, comment: "Reference to parent subdivision")
                 },
                 constraints: table =>
                 {
