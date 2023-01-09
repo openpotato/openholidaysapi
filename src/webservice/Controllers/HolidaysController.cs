@@ -79,8 +79,11 @@ namespace OpenHolidaysApi
                         (
                             x.Type == HolidayType.School || (x.Type == HolidayType.None && x.Details != HolidayDetails.None)
                         ) &&
-                        x.StartDate >= validFrom &&
-                        x.StartDate <= validTo)
+                        (
+                            (x.StartDate >= validFrom && x.StartDate <= validTo) ||
+                            (x.EndDate >= validFrom && x.EndDate <= validTo) ||
+                            (x.StartDate < validFrom && x.EndDate > validTo)
+                        ))
                     .OrderBy(x => x.StartDate)
                     .Select(x => new HolidayResponse(x, languageIsoCode))
                     .ToListAsync();
@@ -119,8 +122,11 @@ namespace OpenHolidaysApi
                         (
                             x.Type == HolidayType.Public
                         ) &&
-                        x.StartDate >= validFrom &&
-                        x.StartDate <= validTo)
+                        (
+                            (x.StartDate >= validFrom && x.StartDate <= validTo) || 
+                            (x.EndDate >= validFrom && x.EndDate <= validTo) || 
+                            (x.StartDate < validFrom && x.EndDate > validTo)
+                        ))
                     .OrderBy(x => x.StartDate)
                     .Select(x => new HolidayResponse(x, languageIsoCode))
                     .ToListAsync();
