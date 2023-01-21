@@ -45,19 +45,17 @@ namespace OpenHolidaysApi
             StartDate = holiday.StartDate;
             EndDate = holiday.EndDate;
             Type = holiday.Type;
-            Details = holiday.Details;
             Nationwide = holiday.Nationwide;
-            Subdivisions = holiday.Subdivisions.Select(x => new SubdivisionReference() { IsoCode = x.IsoCode, ShortName = x.ShortName }).ToList();
-            OUnits = holiday.OUnits.Select(x => new OUnitReference() { Code = x.Code, ShortName = x.ShortName }).ToList();
-            Names = holiday.Names.ToLocalizedList(languageCode);
-            Comments = holiday.Comments.ToLocalizedList(languageCode);
+            Subdivisions = holiday.Subdivisions.Select(x => new SubdivisionReference() { Code = x.Code, ShortName = x.ShortName }).ToList();
+            Name = holiday.Name.ToLocalizedList(languageCode);
+            Comment = holiday.Comment.ToLocalizedList(languageCode);
         }
 
         /// <summary>
         /// Additional localized comments
         /// </summary>
         [JsonPropertyOrder(8)]
-        public ICollection<LocalizedText> Comments { get; set; }
+        public ICollection<LocalizedText> Comment { get; set; }
 
         /// <summary>
         /// End date of the holiday
@@ -80,14 +78,7 @@ namespace OpenHolidaysApi
         /// </summary>
         [Required]
         [JsonPropertyOrder(5)]
-        public ICollection<LocalizedText> Names { get; set; }
-
-        /// <summary>
-        /// Additional detailed information
-        /// </summary>
-        [Required]
-        [JsonPropertyOrder(4)]
-        public HolidayDetails Details { get; set; }
+        public ICollection<LocalizedText> Name { get; set; }
 
         /// <summary>
         /// Is the holiday nationwide?
@@ -104,13 +95,6 @@ namespace OpenHolidaysApi
         [Required]
         [JsonPropertyOrder(1)]
         public DateOnly StartDate { get; set; }
-
-        /// <summary>
-        /// List of organizational unit references
-        /// </summary>
-        [Required]
-        [JsonPropertyOrder(8)]
-        public ICollection<OUnitReference> OUnits { get; set; }
 
         /// <summary>
         /// List of subdivision references
@@ -149,8 +133,8 @@ namespace OpenHolidaysApi
 
             icsEvent.Summary = new IcsSummary
             {
-                Value = Names.First().Text,
-                Language = Names.First().Language
+                Value = Name.First().Text,
+                Language = Name.First().Language
             };
 
             if (!Nationwide)
@@ -158,18 +142,13 @@ namespace OpenHolidaysApi
                 icsEvent.Summary.Value = $"{icsEvent.Summary.Value} ({string.Join(",", Subdivisions.Select(x => x.ShortName).ToList())})";
             }
 
-            if (OUnits.Count > 0)
-            {
-                icsEvent.Summary.Value = $"{icsEvent.Summary.Value} [{string.Join(",", OUnits.Select(x => x.ShortName).ToList())}]";
-            };
-
-            if (Comments.Count > 0)
+            if (Comment.Count > 0)
             {
                 icsEvent.Summary.Value += '*';
                 icsEvent.Description = new IcsDescription
                 {
-                    Value = '*' + Comments.First().Text,
-                    Language = Comments.First().Language
+                    Value = '*' + Comment.First().Text,
+                    Language = Comment.First().Language
                 };
             };
 

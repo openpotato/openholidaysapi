@@ -39,20 +39,13 @@ namespace OpenHolidaysApi.DataLayer
         /// </summary>
         [Column(TypeName = "jsonb")]
         [Comment("Additional localized comments")]
-        public ICollection<LocalizedText> Comments { get; set; } = new List<LocalizedText>();
+        public ICollection<LocalizedText> Comment { get; set; } = new List<LocalizedText>();
 
         /// <summary>
         /// Reference to country
         /// </summary>
         [Required]
         public Country Country { get; set; }
-
-        /// <summary>
-        /// Additional detailed information
-        /// </summary>
-        [Required]
-        [Comment("Additional detailed information")]
-        public HolidayDetails Details { get; set; }
 
         /// <summary>
         /// End date of the holiday
@@ -67,7 +60,7 @@ namespace OpenHolidaysApi.DataLayer
         [Required]
         [Column(TypeName = "jsonb")]
         [Comment("Localized names of the holiday")]
-        public ICollection<LocalizedText> Names { get; set; } = new List<LocalizedText>();
+        public ICollection<LocalizedText> Name { get; set; } = new List<LocalizedText>();
 
         /// <summary>
         /// Is this a nationwide holiday?
@@ -75,11 +68,6 @@ namespace OpenHolidaysApi.DataLayer
         [Required]
         [Comment("Is this a nationwide holiday?")]
         public bool Nationwide { get; set; }
-
-        /// <summary>
-        /// Additional organizational untis
-        /// </summary>
-        public ICollection<OUnit> OUnits { get; set; } = new List<OUnit>();
 
         /// <summary>
         /// Start date of the holiday

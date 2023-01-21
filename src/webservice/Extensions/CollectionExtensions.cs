@@ -19,6 +19,8 @@
  */
 #endregion
 
+using OpenHolidaysApi.DataLayer;
+
 namespace OpenHolidaysApi
 {
     /// <summary>
@@ -33,7 +35,7 @@ namespace OpenHolidaysApi
         /// <param name="localizedTextList">List of localized text instances</param>
         /// <param name="languageCode">ISO-639-1 language code </param>
         /// <param name="defaultLanguageCode">ISO-639-1 language code </param>
-        /// <returns>A reduced list of localized text instances</returns>
+        /// <returns>A filtered list of localized text instances</returns>
         public static ICollection<LocalizedText> ToLocalizedList(this ICollection<DataLayer.LocalizedText> localizedTextList, string languageCode, string defaultLanguageCode = "EN")
         {
             if (string.IsNullOrEmpty(languageCode))
@@ -57,6 +59,17 @@ namespace OpenHolidaysApi
                     return localizedTextList.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).Take(1).ToList();
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates a list of <see cref="SubdivisionResponse"/> instances from a list of <see cref="Subdivision"/> instances.
+        /// </summary>
+        /// <param name="subdivisionList">List of subdivisions</param>
+        /// <param name="languageCode">ISO-639-1 language code </param>
+        /// <returns>List of <see cref="SubdivisionResponse"/> instances</returns>
+        public static ICollection<SubdivisionResponse> ToResponseList(this ICollection<Subdivision> subdivisionList, string languageCode)
+        {
+            return subdivisionList.Select(x => new SubdivisionResponse(x, languageCode)).ToList();
         }
     }
 }

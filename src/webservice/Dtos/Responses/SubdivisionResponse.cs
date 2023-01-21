@@ -27,7 +27,7 @@ using System.Text.Json.Serialization;
 namespace OpenHolidaysApi
 {
     /// <summary>
-    /// Representation of a subdivision as defined in ISO 3166-2
+    /// Representation of a subdivision
     /// </summary>
     [SwaggerSchema(ReadOnly = true)]
     public class SubdivisionResponse
@@ -39,22 +39,15 @@ namespace OpenHolidaysApi
         /// <param name="languageCode">Language code or null</param>
         public SubdivisionResponse(Subdivision subdivision, string languageCode)
         {
+            Code = subdivision.Code;
             IsoCode = subdivision.IsoCode;
-            Categories = subdivision.Categories.ToLocalizedList(languageCode);
-            Names = subdivision.Names.ToLocalizedList(languageCode);
+            Category = subdivision.Category.ToLocalizedList(languageCode);
+            Name = subdivision.Name.ToLocalizedList(languageCode);
             OfficialLanguages = subdivision.OfficialLanguages;
             ShortName = subdivision.ShortName;
-            Parent = subdivision.Parent?.IsoCode;
-            Comments = subdivision.Comments.ToLocalizedList(languageCode);
+            Comment = subdivision.Comment.ToLocalizedList(languageCode);
+            Children = subdivision.Children.ToResponseList(languageCode);
         }
-
-        /// <summary>
-        /// ISO 3166-2 subdivision code
-        /// </summary>
-        /// <example>DE-BE</example>
-        [Required]
-        [JsonPropertyOrder(1)]
-        public string IsoCode { get; set; }
 
         /// <summary>
         /// Localized categories of the subdivision
@@ -62,7 +55,21 @@ namespace OpenHolidaysApi
         /// <example>[{"language":"DE","text":"Bundesland"},{"language":"EN","text":"Federal state"}]</example>
         [Required]
         [JsonPropertyOrder(4)]
-        public ICollection<LocalizedText> Categories { get; set; }
+        public ICollection<LocalizedText> Category { get; set; }
+
+        /// <summary>
+        /// Child subdivisions
+        /// </summary>
+        [JsonPropertyOrder(8)]
+        public ICollection<SubdivisionResponse> Children { get; set; }
+
+        /// <summary>
+        /// Subdivision code 
+        /// </summary>
+        /// <example>DE-BE</example>
+        [Required]
+        [JsonPropertyOrder(1)]
+        public string Code { get; set; }
 
         /// <summary>
         /// Localized comments of the subdivision
@@ -70,37 +77,37 @@ namespace OpenHolidaysApi
         /// <example>null</example>
         [Required]
         [JsonPropertyOrder(7)]
-        public ICollection<LocalizedText> Comments { get; set; }
+        public ICollection<LocalizedText> Comment { get; set; }
+
+        /// <summary>
+        /// ISO 3166-2 subdivision code (if defined)
+        /// </summary>
+        /// <example>DE-BE</example>
+        [JsonPropertyOrder(2)]
+        public string IsoCode { get; set; }
 
         /// <summary>
         /// Localized names of the subdivision
         /// </summary>
         /// <example>[{"language":"DE","text":"Berlin"},{"language":"EN","text":"Berlin"}]</example>
         [Required]
-        [JsonPropertyOrder(3)]
-        public ICollection<LocalizedText> Names { get; set; }
+        [JsonPropertyOrder(5)]
+        public ICollection<LocalizedText> Name { get; set; }
 
         /// <summary>
         /// Official languages as ISO-639-1 codes
         /// </summary>
         /// <example>>["DE"]</example>
         [Required]
-        [JsonPropertyOrder(5)]
-        public ICollection<string> OfficialLanguages { get; set; }
-
-        /// <summary>
-        /// Parent subdivision
-        /// </summary>
-        /// <example>null</example>
         [JsonPropertyOrder(6)]
-        public string Parent { get; set; }
+        public ICollection<string> OfficialLanguages { get; set; }
 
         /// <summary>
         /// Short name for display
         /// </summary>
         /// <example>BE</example>
         [Required]
-        [JsonPropertyOrder(2)]
+        [JsonPropertyOrder(3)]
         public string ShortName { get; set; }
     }
 }

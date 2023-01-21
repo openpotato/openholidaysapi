@@ -20,6 +20,7 @@
 #endregion
 
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using OpenHolidaysApi;
 using OpenHolidaysApi.DataLayer;
@@ -29,6 +30,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Bind configuration
 var appConfiguration = builder.Configuration.Get<AppConfiguration>();
+
+// Enable cross-origin resource sharing 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .WithMethods("GET")
+              .WithHeaders(HeaderNames.Accept);
+    });
+});
 
 // Add controller support
 builder.Services
@@ -59,8 +71,8 @@ builder.Services.AddSwaggerGen(setup =>
             },
             License = new OpenApiLicense
             {
-                Name = "License",
-                Url = new Uri("https://github.com/openpotato/openholidaysapi/blob/main/LICENSE")
+                Name = "Open Database License",
+                Url = new Uri("https://github.com/openpotato/openholidaysapi.data/blob/main/LICENSE")
             }
         });
     setup.EnableAnnotations();
@@ -100,5 +112,6 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("v1/swagger.json", "OpenHolidays API v1");
 });
 
+app.UseCors();
 app.MapControllers();
 app.Run();

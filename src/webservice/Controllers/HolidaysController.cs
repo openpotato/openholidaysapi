@@ -51,15 +51,14 @@ namespace OpenHolidaysApi
         /// Returns list of official school holidays for a given country 
         /// </summary>
         /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
-        /// <param name="validFrom" example="2022-01-01">Start of the date range</param>
-        /// <param name="validTo" example="2022-12-31">End of the date range</param>
-        /// <param name="subdivisionIsoCode" example="DE-MV">ISO 3166-2 code of the subdivision or empty</param>
-        /// <param name="oUnitCode" example="DE-ABS">Code of an organizational unit or empty</param>
         /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
+        /// <param name="validFrom" example="2023-01-01">Start of the date range</param>
+        /// <param name="validTo" example="2023-12-31">End of the date range</param>
+        /// <param name="subdivisionCode" example="DE-MV">Code of the subdivision or empty</param>
         /// <returns>List of holidays</returns>
         [HttpGet("SchoolHolidays")]
         [Produces("text/json", "application/json", "text/calendar")]
-        public async Task<IEnumerable<HolidayResponse>> GetSchoolHolidaysAsync([Required] string countryIsoCode, [Required] DateOnly validFrom, [Required] DateOnly validTo, string subdivisionIsoCode, string oUnitCode, string languageIsoCode)
+        public async Task<IEnumerable<HolidayResponse>> GetSchoolHolidaysAsync([Required] string countryIsoCode, string languageIsoCode, [Required] DateOnly validFrom, [Required] DateOnly validTo, string subdivisionCode)
         {
             if (DateOnlyUtils.DaysBetween(validFrom, validTo) <= ValidDateRange)
             {
@@ -67,17 +66,15 @@ namespace OpenHolidaysApi
                     .AsNoTracking()
                     .Include(x => x.Country)
                     .Include(x => x.Subdivisions)
-                    .Include(x => x.OUnits)
                     .Where(x => 
                         x.Country.IsoCode == countryIsoCode &&
                         (
-                            string.IsNullOrEmpty(subdivisionIsoCode) || x.Subdivisions.Any(sd => sd.IsoCode == subdivisionIsoCode)
+                            string.IsNullOrEmpty(subdivisionCode) || 
+                            x.Nationwide || 
+                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || sd.Parent.Code == subdivisionCode || sd.Children.Any(c => c.Code == subdivisionCode))
                         ) &&
                         (
-                            string.IsNullOrEmpty(oUnitCode) || x.OUnits.Any(ou => ou.Code == oUnitCode || ou.Children.Any(c => c.Code == oUnitCode))
-                        ) &&
-                        (
-                            x.Type == HolidayType.School || (x.Type == HolidayType.None && x.Details != HolidayDetails.None)
+                            x.Type == HolidayType.School || x.Type == HolidayType.BackToSchool || x.Type == HolidayType.EndOfLessons
                         ) &&
                         (
                             (x.StartDate >= validFrom && x.StartDate <= validTo) ||
@@ -98,14 +95,14 @@ namespace OpenHolidaysApi
         /// Returns list of public holidays for a given country
         /// </summary>
         /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
-        /// <param name="validFrom" example="2022-01-01">Start of the date range</param>
-        /// <param name="validTo" example="2022-12-31">End of the date range</param>
-        /// <param name="subdivisionIsoCode" example="DE-BE">ISO 3166-2 code of the subdivision or empty</param>
         /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
+        /// <param name="validFrom" example="2023-01-01">Start of the date range</param>
+        /// <param name="validTo" example="2023-12-31">End of the date range</param>
+        /// <param name="subdivisionCode" example="DE-BE">Code of the subdivision or empty</param>
         /// <returns>List of holidays</returns>
         [HttpGet("PublicHolidays")]
         [Produces("text/json", "application/json", "text/calendar")]
-        public async Task<IEnumerable<HolidayResponse>> GetPublicHolidaysAsync([Required] string countryIsoCode, [Required] DateOnly validFrom, [Required] DateOnly validTo, string subdivisionIsoCode, string languageIsoCode)
+        public async Task<IEnumerable<HolidayResponse>> GetPublicHolidaysAsync([Required] string countryIsoCode, string languageIsoCode, [Required] DateOnly validFrom, [Required] DateOnly validTo, string subdivisionCode)
         {
             if (DateOnlyUtils.DaysBetween(validFrom, validTo) <= ValidDateRange)
             {
@@ -113,14 +110,15 @@ namespace OpenHolidaysApi
                     .AsNoTracking()
                     .Include(x => x.Country)
                     .Include(x => x.Subdivisions)
-                    .Include(x => x.OUnits)
                     .Where(x =>
                         x.Country.IsoCode == countryIsoCode &&
                         (
-                            string.IsNullOrEmpty(subdivisionIsoCode) || x.Subdivisions.Any(sd => sd.IsoCode == subdivisionIsoCode)
+                            string.IsNullOrEmpty(subdivisionCode) ||
+                            x.Nationwide ||
+                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || sd.Parent.Code == subdivisionCode || sd.Children.Any(c => c.Code == subdivisionCode))
                         ) &&
                         (
-                            x.Type == HolidayType.Public
+                            x.Type == HolidayType.Public || x.Type == HolidayType.Bank
                         ) &&
                         (
                             (x.StartDate >= validFrom && x.StartDate <= validTo) || 

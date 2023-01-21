@@ -47,11 +47,11 @@ namespace OpenHolidaysApi
         /// Returns statistical data about school holidays for a given country
         /// </summary>
         /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
-        /// <param name="subdivisionIsoCode" example="DE-BE">ISO 3166-2 code of the subdivision or empty</param>
+        /// <param name="subdivisionCode" example="DE-BE">Code of the subdivision or empty</param>
         /// <returns>Statistical data</returns>
         [HttpGet("SchoolHolidays")]
         [Produces("text/json", "application/json")]
-        public async Task<StatisticsResponse> GetSchoolHolidaysAsync([Required] string countryIsoCode, string subdivisionIsoCode)
+        public async Task<StatisticsResponse> GetSchoolHolidaysAsync([Required] string countryIsoCode, string subdivisionCode)
         {
             DateOnly youngestDate;
             DateOnly oldestDate;
@@ -61,10 +61,12 @@ namespace OpenHolidaysApi
                 .Where(x =>
                     x.Country.IsoCode == countryIsoCode &&
                     (
-                        string.IsNullOrEmpty(subdivisionIsoCode) || x.Subdivisions.Any(sd => sd.IsoCode == subdivisionIsoCode)
+                            string.IsNullOrEmpty(subdivisionCode) ||
+                            x.Nationwide ||
+                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || sd.Parent.Code == subdivisionCode || sd.Children.Any(c => c.Code == subdivisionCode))
                     ) &&
                     (
-                        x.Type == HolidayType.School || (x.Type == HolidayType.None && x.Details != HolidayDetails.None)
+                        x.Type == HolidayType.School || x.Type == HolidayType.BackToSchool || x.Type == HolidayType.EndOfLessons
                     ))
                 .OrderBy(x => x.StartDate)
                 .Select(x => x.StartDate)
@@ -75,10 +77,12 @@ namespace OpenHolidaysApi
                 .Where(x =>
                     x.Country.IsoCode == countryIsoCode &&
                     (
-                        string.IsNullOrEmpty(subdivisionIsoCode) || x.Subdivisions.Any(sd => sd.IsoCode == subdivisionIsoCode)
+                            string.IsNullOrEmpty(subdivisionCode) ||
+                            x.Nationwide ||
+                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || sd.Parent.Code == subdivisionCode || sd.Children.Any(c => c.Code == subdivisionCode))
                     ) &&
                     (
-                        x.Type == HolidayType.School || (x.Type == HolidayType.None && x.Details != HolidayDetails.None)
+                        x.Type == HolidayType.School || x.Type == HolidayType.BackToSchool || x.Type == HolidayType.EndOfLessons
                     ))
                 .OrderByDescending(x => x.StartDate)
                 .Select(x => x.StartDate)
@@ -91,11 +95,11 @@ namespace OpenHolidaysApi
         /// Returns statistical data about public holidays for a given country.
         /// </summary>
         /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
-        /// <param name="subdivisionIsoCode" example="DE-BE">ISO 3166-2 code of the subdivision or empty</param>
+        /// <param name="subdivisionCode" example="DE-BE">Code of the subdivision or empty</param>
         /// <returns>Statistical data</returns>
         [HttpGet("PublicHolidays")]
         [Produces("text/json", "application/json")]
-        public async Task<StatisticsResponse> GetPublicHolidaysAsync([Required] string countryIsoCode, string subdivisionIsoCode)
+        public async Task<StatisticsResponse> GetPublicHolidaysAsync([Required] string countryIsoCode, string subdivisionCode)
         {
             DateOnly youngestDate;
             DateOnly oldestDate;
@@ -105,9 +109,11 @@ namespace OpenHolidaysApi
                 .Where(x =>
                     x.Country.IsoCode == countryIsoCode &&
                     (
-                        string.IsNullOrEmpty(subdivisionIsoCode) || x.Subdivisions.Any(sd => sd.IsoCode == subdivisionIsoCode)
+                            string.IsNullOrEmpty(subdivisionCode) ||
+                            x.Nationwide ||
+                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || sd.Parent.Code == subdivisionCode || sd.Children.Any(c => c.Code == subdivisionCode))
                     ) &&
-                    x.Type == HolidayType.Public)
+                    x.Type == HolidayType.Public || x.Type == HolidayType.Bank)
                 .OrderBy(x => x.StartDate)
                 .Select(x => x.StartDate)
                 .FirstOrDefaultAsync();
@@ -117,9 +123,11 @@ namespace OpenHolidaysApi
                 .Where(x =>
                     x.Country.IsoCode == countryIsoCode &&
                     (
-                        string.IsNullOrEmpty(subdivisionIsoCode) || x.Subdivisions.Any(sd => sd.IsoCode == subdivisionIsoCode)
+                            string.IsNullOrEmpty(subdivisionCode) ||
+                            x.Nationwide ||
+                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || sd.Parent.Code == subdivisionCode || sd.Children.Any(c => c.Code == subdivisionCode))
                     ) &&
-                    x.Type == HolidayType.Public)
+                    x.Type == HolidayType.Public || x.Type == HolidayType.Bank)
                 .OrderByDescending(x => x.StartDate)
                 .Select(x => x.StartDate)
                 .FirstOrDefaultAsync();

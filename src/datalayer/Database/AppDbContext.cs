@@ -48,12 +48,6 @@ namespace OpenHolidaysApi.DataLayer
                  .HasForeignKey(c => c.ParentId);
             });
             modelBuilder.Entity<Holiday>();
-            modelBuilder.Entity<OUnit>(x =>
-            {
-                x.HasOne(c => c.Parent)
-                 .WithMany(c => c.Children)
-                 .HasForeignKey(c => c.ParentId);
-            });
         }
     }
 }

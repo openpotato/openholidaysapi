@@ -40,7 +40,7 @@ namespace OpenHolidaysApi
         public LanguageResponse(Language language, string languageCode)
         {
             IsoCode = language.IsoCode;
-            Names = language.Names.ToLocalizedList(languageCode);
+            Name = language.Name.ToLocalizedList(languageCode);
         }
 
         /// <summary>
@@ -57,6 +57,6 @@ namespace OpenHolidaysApi
         /// <example>[{"language":"DE","text":"Deutsch"},{"language":"EN","text":"German"}]</example>
         [Required]
         [JsonPropertyOrder(2)]
-        public ICollection<LocalizedText> Names { get; set; }
+        public ICollection<LocalizedText> Name { get; set; }
     }
 }

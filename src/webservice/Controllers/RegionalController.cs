@@ -75,31 +75,6 @@ namespace OpenHolidaysApi
         }
 
         /// <summary>
-        /// Returns a list of relevant organizational units for a supported country (if any)
-        /// </summary>
-        /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
-        /// <param name="subdivisionIsoCode" example="MV">ISO 3166-2 code of the subdivision or empty</param>
-        /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
-        /// <returns>List of organizational units</returns>
-        [HttpGet("OUnits")]
-        [Produces("text/json", "application/json")]
-        public async Task<IEnumerable<OUnitResponse>> GetOUnitsAsync([Required] string countryIsoCode, string subdivisionIsoCode, string languageIsoCode)
-        {
-            return await _dbContext.Set<OUnit>()
-                .AsNoTracking()
-                .Include(x => x.Parent)
-                .Include(x => x.Subdivisions)
-                .Where(x =>
-                    x.Country.IsoCode == countryIsoCode &&
-                    (
-                        string.IsNullOrEmpty(subdivisionIsoCode) || x.Subdivisions.Any(sd => sd.IsoCode == subdivisionIsoCode)
-                    ))
-                .OrderBy(x => x.Code)
-                .Select(x => new OUnitResponse(x, languageIsoCode))
-                .ToListAsync();
-        }
-
-        /// <summary>
         /// Returns a list of relevant subdivisions for a supported country (if any)
         /// </summary>
         /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
@@ -111,9 +86,9 @@ namespace OpenHolidaysApi
         {
             return await _dbContext.Set<Subdivision>()
                 .AsNoTracking()
-                .Include(x => x.Parent)
-                .Where(x => x.Country.IsoCode == countryIsoCode)
-                .OrderBy(x => x.IsoCode)
+                .Include(x => x.Children)
+                .Where(x => x.Country.IsoCode == countryIsoCode && x.ParentId == null)
+                .OrderBy(x => x.Code)
                 .Select(x => new SubdivisionResponse(x, languageIsoCode))
                 .ToListAsync();
         }

@@ -40,7 +40,7 @@ namespace OpenHolidaysApi.CLI
         /// <summary>
         /// Localized country names 
         /// </summary>
-        public ICollection<CsvLocalizedText> Names { get; set; } = new List<CsvLocalizedText>();
+        public ICollection<CsvLocalizedText> Name { get; set; } = new List<CsvLocalizedText>();
 
         /// <summary>
         /// ISO-639-1 languages codes
@@ -60,11 +60,11 @@ namespace OpenHolidaysApi.CLI
                 IsoCode = IsoCode
             };
 
-            if (Names != null && Names.Count > 0)
+            if (Name != null && Name.Count > 0)
             {
-                foreach (var csvName in Names)
+                foreach (var csvName in Name)
                 {
-                    country.Names.Add(new LocalizedText { Language = csvName.Language, Text = csvName.Text });
+                    country.Name.Add(new LocalizedText { Language = csvName.Language, Text = csvName.Text });
                 }
             }
             else

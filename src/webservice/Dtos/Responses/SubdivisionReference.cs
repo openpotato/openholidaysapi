@@ -32,12 +32,12 @@ namespace OpenHolidaysApi
     public class SubdivisionReference
     {
         /// <summary>
-        /// ISO 3166-2 subdivision code
+        /// Subdivision code
         /// </summary>
         /// <example>DE-BE</example>
         [Required]
         [JsonPropertyOrder(1)]
-        public string IsoCode { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
         /// Short name for display
@@ -47,5 +47,4 @@ namespace OpenHolidaysApi
         [JsonPropertyOrder(2)]
         public string ShortName { get; set; }
     }
-
 }

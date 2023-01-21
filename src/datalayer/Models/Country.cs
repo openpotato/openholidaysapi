@@ -48,7 +48,7 @@ namespace OpenHolidaysApi.DataLayer
         [Required]
         [Column(TypeName = "jsonb")]
         [Comment("Localized country names")]
-        public ICollection<LocalizedText> Names { get; set; } = new List<LocalizedText>();
+        public ICollection<LocalizedText> Name { get; set; } = new List<LocalizedText>();
 
         /// <summary>
         /// ISO-639-1 language codes

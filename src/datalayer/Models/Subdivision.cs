@@ -31,7 +31,7 @@ namespace OpenHolidaysApi.DataLayer
     /// Representation of a subdivision (e.g. a federal state or a canton)
     /// </summary>
     [Table(DbTables.Subdivision)]
-    [Index(nameof(IsoCode), IsUnique = true)]
+    [Index(nameof(Code), IsUnique = true)]
     [Index(nameof(CountryId), nameof(ShortName), IsUnique = true)]
     [Comment("Representation of a subdivision (e.g. a federal state or a canton)")]
     public class Subdivision : BaseEntity
@@ -42,19 +42,26 @@ namespace OpenHolidaysApi.DataLayer
         [Required]
         [Column(TypeName = "jsonb")]
         [Comment("Localized categories")]
-        public ICollection<LocalizedText> Categories { get; set; } = new List<LocalizedText>();
+        public ICollection<LocalizedText> Category { get; set; } = new List<LocalizedText>();
 
         /// <summary>
         /// List of subdivision children
         /// </summary>
-        public virtual ICollection<Subdivision> Children { get; set; }
+        public virtual ICollection<Subdivision> Children { get; set; } = new List<Subdivision>();
+
+        /// <summary>
+        /// Subdivision code
+        /// </summary>
+        [Required]
+        [Comment("Subdivision code")]
+        public string Code { get; set; }
 
         /// <summary>
         /// Additional localized comments
         /// </summary>
         [Column(TypeName = "jsonb")]
         [Comment("Additional localized comments")]
-        public ICollection<LocalizedText> Comments { get; set; } = new List<LocalizedText>();
+        public ICollection<LocalizedText> Comment { get; set; } = new List<LocalizedText>();
 
         /// <summary>
         /// Reference to country
@@ -63,15 +70,14 @@ namespace OpenHolidaysApi.DataLayer
         public Country Country { get; set; }
 
         /// <summary>
-        /// List of holidays (Feiertage oder Ferientage)
+        /// List of holidays
         /// </summary>
         public virtual ICollection<Holiday> Holidays { get; set; } = new List<Holiday>();
 
         /// <summary>
-        /// Subdivision code as definied in ISO 3166-2
+        /// Subdivision ISO 3166-2 code (if available)
         /// </summary>
-        [Required]
-        [Comment("Subdivision code as definied in ISO 3166-2")]
+        [Comment("Subdivision ISO 3166-2 code (if available)")]
         public string IsoCode { get; set; }
 
         /// <summary>
@@ -80,7 +86,7 @@ namespace OpenHolidaysApi.DataLayer
         [Required]
         [Column(TypeName = "jsonb")]
         [Comment("Localized subdivision names")]
-        public ICollection<LocalizedText> Names { get; set; } = new List<LocalizedText>();
+        public ICollection<LocalizedText> Name { get; set; } = new List<LocalizedText>();
 
         /// <summary>
         /// Official languages as ISO-639-1 codes
@@ -89,11 +95,6 @@ namespace OpenHolidaysApi.DataLayer
         [Column(TypeName = "jsonb")]
         [Comment("Official languages as ISO-639-1 codes")]
         public ICollection<string> OfficialLanguages { get; set; } = new List<string>();
-
-        /// <summary>
-        /// List of organizational units
-        /// </summary>
-        public virtual ICollection<OUnit> OUnits { get; set; }
 
         /// <summary>
         /// Code of parent subdivision

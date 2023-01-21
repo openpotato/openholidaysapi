@@ -30,11 +30,6 @@ namespace OpenHolidayApi
     public enum HolidayType
     {
         /// <summary>
-        /// No holiday (for information purposes only)
-        /// </summary>
-        None = 0,
-
-        /// <summary>
         /// Public holiday
         /// </summary>
         Public = 1,
@@ -47,6 +42,16 @@ namespace OpenHolidayApi
         /// <summary>
         /// School holiday
         /// </summary>
-        School = 3
+        School = 3,
+
+        /// <summary>
+        /// Back to school (informative date, no holiday )
+        /// </summary>
+        BackToSchool = 4,
+
+        /// <summary>
+        /// End of lessons (informative date, no holiday )
+        /// </summary>
+        EndOfLessons = 5
     }
 }

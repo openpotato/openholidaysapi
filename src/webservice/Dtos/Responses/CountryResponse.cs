@@ -40,7 +40,7 @@ namespace OpenHolidaysApi
         public CountryResponse(Country country, string languageCode)
         {
             IsoCode = country.IsoCode;
-            Names = country.Names.ToLocalizedList(languageCode);
+            Name = country.Name.ToLocalizedList(languageCode);
             OfficialLanguages = country.OfficialLanguages;
         }
 
@@ -58,7 +58,7 @@ namespace OpenHolidaysApi
         /// <example>[{"language":"EN","text":"Germany"},{"language":"DE","text":"Deutschland"}]</example>
         [Required]
         [JsonPropertyOrder(2)]
-        public ICollection<LocalizedText> Names { get; set; }
+        public ICollection<LocalizedText> Name { get; set; }
 
         /// <summary>
         /// Official ISO-639-1 language codes

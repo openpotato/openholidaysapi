@@ -109,17 +109,6 @@ namespace OpenHolidaysApi.CLI
                         }
                     }
 
-                    // Import organizational units
-                    if (!string.IsNullOrEmpty(regionalSource.OUnitsFileName))
-                    {
-                        var oUnitFile = new FileInfo(Path.Combine(regionalFolder.FullName, regionalSource.OUnitsFileName));
-
-                        if (oUnitFile.Exists)
-                        {
-                            await ImportToDatabaseAsync<CsvOUnit>(dbContext, oUnitFile, cancellationToken);
-                        }
-                    }
-
                     // Import holidays
                     var holidayFolder = new DirectoryInfo(Path.Combine(regionalFolder.FullName, regionalSource.HolidaysFolderName));
 

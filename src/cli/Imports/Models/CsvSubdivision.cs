@@ -1,4 +1,4 @@
-﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
+﻿
 /*    
  *    OpenHolidays API 
  *    
@@ -17,7 +17,6 @@
  *    along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#endregion
 
 using Microsoft.EntityFrameworkCore;
 using OpenHolidaysApi.DataLayer;
@@ -38,12 +37,17 @@ namespace OpenHolidaysApi.CLI
         /// <summary>
         /// Localized subdivision categories
         /// </summary>
-        public ICollection<CsvLocalizedText> Categories { get; set; } = new List<CsvLocalizedText>();
+        public ICollection<CsvLocalizedText> Category { get; set; } = new List<CsvLocalizedText>();
+
+        /// <summary>
+        /// Subdivision code
+        /// </summary>
+        public string Code { get; set; }
 
         /// <summary>
         /// Additional localized notes
         /// </summary>
-        public ICollection<CsvLocalizedText> Comments { get; set; } = new List<CsvLocalizedText>();
+        public ICollection<CsvLocalizedText> Comment { get; set; } = new List<CsvLocalizedText>();
 
         /// <summary>
         /// ISO 3166-1 country code
@@ -51,13 +55,14 @@ namespace OpenHolidaysApi.CLI
         public string Country { get; set; }
 
         /// <summary>
-        /// ISO 3166-2 subdivision code
+        /// ISO 3166-2 subdivision code (if available)
         /// </summary>
         public string IsoCode { get; set; }
+
         /// <summary>
         /// Localized subdivision names 
         /// </summary>
-        public ICollection<CsvLocalizedText> Names { get; set; } = new List<CsvLocalizedText>();
+        public ICollection<CsvLocalizedText> Name { get; set; } = new List<CsvLocalizedText>();
 
         /// <summary>
         /// Official languages as ISO-639-1 codes
@@ -84,15 +89,16 @@ namespace OpenHolidaysApi.CLI
         {
             var subdivision = new Subdivision
             {
+                Code = Code,
                 IsoCode = IsoCode,
                 ShortName = ShortName
             };
 
-            if (Names != null && Names.Count > 0)
+            if (Name != null && Name.Count > 0)
             {
-                foreach (var csvName in Names)
+                foreach (var csvName in Name)
                 {
-                    subdivision.Names.Add(new LocalizedText { Language = csvName.Language, Text = csvName.Text });
+                    subdivision.Name.Add(new LocalizedText { Language = csvName.Language, Text = csvName.Text });
                 }
             }
             else
@@ -110,11 +116,11 @@ namespace OpenHolidaysApi.CLI
                 throw new Exception("Unkown country");
             }
 
-            if (Categories != null && Categories.Count > 0)
+            if (Category != null && Category.Count > 0)
             {
-                foreach (var csvCategory in Categories)
+                foreach (var csvCategory in Category)
                 {
-                    subdivision.Categories.Add(new LocalizedText { Language = csvCategory.Language, Text = csvCategory.Text });
+                    subdivision.Category.Add(new LocalizedText { Language = csvCategory.Language, Text = csvCategory.Text });
                 }
             }
             else
@@ -140,11 +146,11 @@ namespace OpenHolidaysApi.CLI
                 subdivision.ParentId = parentId;
             }
 
-            if (Comments != null && Comments.Count > 0)
+            if (Comment != null && Comment.Count > 0)
             {
-                foreach (var csvComment in Comments)
+                foreach (var csvComment in Comment)
                 {
-                    subdivision.Comments.Add(new LocalizedText { Language = csvComment.Language, Text = csvComment.Text });
+                    subdivision.Comment.Add(new LocalizedText { Language = csvComment.Language, Text = csvComment.Text });
                 }
             }
 

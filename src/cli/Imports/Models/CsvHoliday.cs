@@ -37,17 +37,12 @@ namespace OpenHolidaysApi.CLI
         /// <summary>
         /// Additional localized comments
         /// </summary>
-        public ICollection<CsvLocalizedText> Comments { get; set; } = new List<CsvLocalizedText>();
+        public ICollection<CsvLocalizedText> Comment { get; set; } = new List<CsvLocalizedText>();
 
         /// <summary>
         /// ISO 3166-1 country code
         /// </summary>
         public string Country { get; set; }
-
-        /// <summary>
-        /// Additional detail information
-        /// </summary>
-        public HolidayDetails? Details { get; set; }
 
         /// <summary>
         /// End date
@@ -62,11 +57,7 @@ namespace OpenHolidaysApi.CLI
         /// <summary>
         /// Localized holiday names
         /// </summary>
-        public ICollection<CsvLocalizedText> Names { get; set; } = new List<CsvLocalizedText>();
-        /// <summary>
-        /// List of organizational units
-        /// </summary>
-        public ICollection<string> OUnits { get; set; } = new List<string>();
+        public ICollection<CsvLocalizedText> Name { get; set; } = new List<CsvLocalizedText>();
 
         /// <summary>
         /// Start date
@@ -95,16 +86,15 @@ namespace OpenHolidaysApi.CLI
             {
                 Id = Id,
                 Type = Type,
-                Details = Details != null ? (HolidayDetails)Details : HolidayDetails.None,
                 StartDate = StartDate,
                 EndDate = EndDate != DateOnly.MinValue ? EndDate : StartDate
             };
 
-            if (Names != null && Names.Count > 0)
+            if (Name != null && Name.Count > 0)
             {
-                foreach (var csvName in Names)
+                foreach (var csvName in Name)
                 {
-                    holiday.Names.Add(new LocalizedText { Language = csvName.Language, Text = csvName.Text });
+                    holiday.Name.Add(new LocalizedText { Language = csvName.Language, Text = csvName.Text });
                 }
             }
             else
@@ -136,31 +126,14 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                foreach (var subdivison in dbContext.Set<Subdivision>().Where(x => x.CountryId == holiday.CountryId))
-                {
-                    holiday.Subdivisions.Add(subdivison);
-                }
                 holiday.Nationwide = true;
             }
 
-            if (OUnits != null && OUnits.Count > 0)
+            if (Comment != null && Comment.Count > 0)
             {
-                foreach (var csvOUnit in OUnits)
+                foreach (var csvComment in Comment)
                 {
-                    var oUnit = await dbContext.Set<OUnit>().Where(x => x.CountryId == holiday.CountryId && x.ShortName == csvOUnit).FirstOrDefaultAsync(cancellationToken);
-                    if (oUnit != null)
-                    {
-                        holiday.OUnits.Add(oUnit);
-                    }
-                }
-                holiday.Nationwide = false;
-            }
-
-            if (Comments != null && Comments.Count > 0)
-            {
-                foreach (var csvComment in Comments)
-                {
-                    holiday.Comments.Add(new LocalizedText { Language = csvComment.Language, Text = csvComment.Text });
+                    holiday.Comment.Add(new LocalizedText { Language = csvComment.Language, Text = csvComment.Text });
                 }
             }
 
