@@ -19,8 +19,6 @@
  */
 #endregion
 
-using Enbrea.Ics;
-using Microsoft.EntityFrameworkCore;
 using OpenHolidaysApi.DataLayer;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
@@ -110,49 +108,5 @@ namespace OpenHolidaysApi
         [Required]
         [JsonPropertyOrder(3)]
         public HolidayType Type { get; set; }
-
-        /// <summary>
-        /// Creates an iCal event from the instance
-        /// </summary>
-        /// <returns>An iCal event</returns>
-        public virtual IcsEvent CreateIcsEvent()
-        {
-            var icsEvent = new IcsEvent
-            {
-                Uid = new IcsUid(Id.ToString("N")),
-                Start = new IcsDateTimeStart(StartDate),
-                End = new IcsDateTimeEnd(EndDate.AddDays(1)),
-                Classification = new IcsClassification(IcsClassificationValue.Public),
-                Created = new IcsCreated(DateTime.Now),
-                LastModified = new IcsLastModified(DateTime.Now),
-                DateTimeStamp = new IcsDateTimeStamp(DateTime.Now),
-                Transparency = new IcsTransparency(IcsTransparencyType.Opaque),
-            };
-
-            icsEvent.AddCategories(new string[] { Type.ToString() });
-
-            icsEvent.Summary = new IcsSummary
-            {
-                Value = Name.First().Text,
-                Language = Name.First().Language
-            };
-
-            if (!Nationwide)
-            {
-                icsEvent.Summary.Value = $"{icsEvent.Summary.Value} ({string.Join(",", Subdivisions.Select(x => x.ShortName).ToList())})";
-            }
-
-            if (Comment.Count > 0)
-            {
-                icsEvent.Summary.Value += '*';
-                icsEvent.Description = new IcsDescription
-                {
-                    Value = '*' + Comment.First().Text,
-                    Language = Comment.First().Language
-                };
-            };
-
-            return icsEvent;
-        }
     }
 }

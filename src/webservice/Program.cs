@@ -46,7 +46,8 @@ builder.Services.AddCors(options =>
 builder.Services
     .AddControllers(setup =>
     {
-        setup.OutputFormatters.Insert(0, new IcalOutputFormatter());
+        setup.OutputFormatters.Add(new IcsOutputFormatter());
+        setup.OutputFormatters.Add(new CsvOutputFormatter());
     })
     .AddJsonOptions(setup =>
     {

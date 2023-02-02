@@ -50,7 +50,7 @@ namespace OpenHolidaysApi
         /// <param name="subdivisionCode" example="DE-BE">Code of the subdivision or empty</param>
         /// <returns>Statistical data</returns>
         [HttpGet("SchoolHolidays")]
-        [Produces("text/json", "application/json")]
+        [Produces("text/plain", "text/json", "application/json")]
         public async Task<StatisticsResponse> GetSchoolHolidaysAsync([Required] string countryIsoCode, string subdivisionCode)
         {
             DateOnly youngestDate;
@@ -63,7 +63,7 @@ namespace OpenHolidaysApi
                     (
                             string.IsNullOrEmpty(subdivisionCode) ||
                             x.Nationwide ||
-                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || sd.Parent.Code == subdivisionCode || sd.Children.Any(c => c.Code == subdivisionCode))
+                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
                     ) &&
                     (
                         x.Type == HolidayType.School || x.Type == HolidayType.BackToSchool || x.Type == HolidayType.EndOfLessons
@@ -79,7 +79,7 @@ namespace OpenHolidaysApi
                     (
                             string.IsNullOrEmpty(subdivisionCode) ||
                             x.Nationwide ||
-                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || sd.Parent.Code == subdivisionCode || sd.Children.Any(c => c.Code == subdivisionCode))
+                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
                     ) &&
                     (
                         x.Type == HolidayType.School || x.Type == HolidayType.BackToSchool || x.Type == HolidayType.EndOfLessons
@@ -98,7 +98,7 @@ namespace OpenHolidaysApi
         /// <param name="subdivisionCode" example="DE-BE">Code of the subdivision or empty</param>
         /// <returns>Statistical data</returns>
         [HttpGet("PublicHolidays")]
-        [Produces("text/json", "application/json")]
+        [Produces("text/plain", "text/json", "application/json")]
         public async Task<StatisticsResponse> GetPublicHolidaysAsync([Required] string countryIsoCode, string subdivisionCode)
         {
             DateOnly youngestDate;
@@ -111,7 +111,7 @@ namespace OpenHolidaysApi
                     (
                             string.IsNullOrEmpty(subdivisionCode) ||
                             x.Nationwide ||
-                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || sd.Parent.Code == subdivisionCode || sd.Children.Any(c => c.Code == subdivisionCode))
+                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
                     ) &&
                     x.Type == HolidayType.Public || x.Type == HolidayType.Bank)
                 .OrderBy(x => x.StartDate)
@@ -125,7 +125,7 @@ namespace OpenHolidaysApi
                     (
                             string.IsNullOrEmpty(subdivisionCode) ||
                             x.Nationwide ||
-                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || sd.Parent.Code == subdivisionCode || sd.Children.Any(c => c.Code == subdivisionCode))
+                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
                     ) &&
                     x.Type == HolidayType.Public || x.Type == HolidayType.Bank)
                 .OrderByDescending(x => x.StartDate)

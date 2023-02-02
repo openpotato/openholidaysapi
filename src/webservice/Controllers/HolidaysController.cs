@@ -57,7 +57,7 @@ namespace OpenHolidaysApi
         /// <param name="subdivisionCode" example="DE-MV">Code of the subdivision or empty</param>
         /// <returns>List of holidays</returns>
         [HttpGet("SchoolHolidays")]
-        [Produces("text/json", "application/json", "text/calendar")]
+        [Produces("text/plain", "text/json", "application/json", "text/calendar", "text/csv")]
         public async Task<IEnumerable<HolidayResponse>> GetSchoolHolidaysAsync([Required] string countryIsoCode, string languageIsoCode, [Required] DateOnly validFrom, [Required] DateOnly validTo, string subdivisionCode)
         {
             if (DateOnlyUtils.DaysBetween(validFrom, validTo) <= ValidDateRange)
@@ -70,8 +70,8 @@ namespace OpenHolidaysApi
                         x.Country.IsoCode == countryIsoCode &&
                         (
                             string.IsNullOrEmpty(subdivisionCode) || 
-                            x.Nationwide || 
-                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || sd.Parent.Code == subdivisionCode || sd.Children.Any(c => c.Code == subdivisionCode))
+                            x.Nationwide ||
+                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
                         ) &&
                         (
                             x.Type == HolidayType.School || x.Type == HolidayType.BackToSchool || x.Type == HolidayType.EndOfLessons
@@ -101,7 +101,7 @@ namespace OpenHolidaysApi
         /// <param name="subdivisionCode" example="DE-BE">Code of the subdivision or empty</param>
         /// <returns>List of holidays</returns>
         [HttpGet("PublicHolidays")]
-        [Produces("text/json", "application/json", "text/calendar")]
+        [Produces("text/plain", "text/json", "application/json", "text/calendar", "text/csv")]
         public async Task<IEnumerable<HolidayResponse>> GetPublicHolidaysAsync([Required] string countryIsoCode, string languageIsoCode, [Required] DateOnly validFrom, [Required] DateOnly validTo, string subdivisionCode)
         {
             if (DateOnlyUtils.DaysBetween(validFrom, validTo) <= ValidDateRange)
@@ -115,7 +115,7 @@ namespace OpenHolidaysApi
                         (
                             string.IsNullOrEmpty(subdivisionCode) ||
                             x.Nationwide ||
-                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || sd.Parent.Code == subdivisionCode || sd.Children.Any(c => c.Code == subdivisionCode))
+                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
                         ) &&
                         (
                             x.Type == HolidayType.Public || x.Type == HolidayType.Bank

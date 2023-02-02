@@ -29,23 +29,23 @@ namespace OpenHolidaysApi
     public static class CollectionExtensions
     {
         /// <summary>
-        /// Reduces a list of localized text instances to a goven language or (if not found) to the default language or (if not found) 
+        /// Tries to reduce a list of localized text instances to a given language or (if not found) to the default language or (if not found) 
         /// to the first language in the list.
         /// </summary>
         /// <param name="localizedTextList">List of localized text instances</param>
         /// <param name="languageCode">ISO-639-1 language code </param>
         /// <param name="defaultLanguageCode">ISO-639-1 language code </param>
-        /// <returns>A filtered list of localized text instances</returns>
+        /// <returns>A list of localized text instances</returns>
         public static ICollection<LocalizedText> ToLocalizedList(this ICollection<DataLayer.LocalizedText> localizedTextList, string languageCode, string defaultLanguageCode = "EN")
         {
             if (string.IsNullOrEmpty(languageCode))
             {
-                // Without language code return ALL localized text entires
+                // Without language code returns ALL localized text entires
                 return localizedTextList.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList();
             }
             else
             {
-                // With language code return either the matching text, the default language or the first entry in the array
+                // With language code returns either the matching language, the default language or the first language in the array
                 if (localizedTextList.Any(x => x.Language == languageCode))
                 {
                     return localizedTextList.Where(x => x.Language == languageCode).Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList();
@@ -70,6 +70,56 @@ namespace OpenHolidaysApi
         public static ICollection<SubdivisionResponse> ToResponseList(this ICollection<Subdivision> subdivisionList, string languageCode)
         {
             return subdivisionList.Select(x => new SubdivisionResponse(x, languageCode)).ToList();
+        }
+
+        /// <summary>
+        /// Reduces a list of localized text instances to a given language or (if not found) to the default language or (if not found) 
+        /// to the first language in the list and gives back the language value
+        /// </summary>
+        /// <param name="localizedTextList">List of localized text instances</param>
+        /// <param name="languageCode">ISO-639-1 language code </param>
+        /// <param name="defaultLanguageCode">ISO-639-1 language code </param>
+        /// <returns>A language value</returns>
+        public static string ToSingleLanguage(this ICollection<LocalizedText> localizedTextList, string languageCode, string defaultLanguageCode = "EN")
+        {
+            // Returns either the matching language, the default language or the first language in the array
+            if (!string.IsNullOrEmpty(languageCode) && localizedTextList.Any(x => x.Language == languageCode))
+            {
+                return localizedTextList.Where(x => x.Language == languageCode).First().Language;
+            }
+            else if (localizedTextList.Any(x => x.Language == defaultLanguageCode))
+            {
+                return localizedTextList.Where(x => x.Language == defaultLanguageCode).First().Language;
+            }
+            else
+            {
+                return localizedTextList.FirstOrDefault()?.Language;
+            }
+        }
+
+        /// <summary>
+        /// Reduces a list of localized text instances to a given language or (if not found) to the default language or (if not found) 
+        /// to the first language in the list and gives back the localized text value
+        /// </summary>
+        /// <param name="localizedTextList">List of localized text instances</param>
+        /// <param name="languageCode">ISO-639-1 language code </param>
+        /// <param name="defaultLanguageCode">ISO-639-1 language code </param>
+        /// <returns>A text value</returns>
+        public static string ToSingleText(this ICollection<LocalizedText> localizedTextList, string languageCode, string defaultLanguageCode = "EN")
+        {
+            // Returns either the matching language, the default language or the first language in the array
+            if (!string.IsNullOrEmpty(languageCode) && localizedTextList.Any(x => x.Language == languageCode))
+            {
+                return localizedTextList.Where(x => x.Language == languageCode).First().Text;
+            }
+            else if (localizedTextList.Any(x => x.Language == defaultLanguageCode))
+            {
+                return localizedTextList.Where(x => x.Language == defaultLanguageCode).First().Text;
+            }
+            else
+            {
+                return localizedTextList.FirstOrDefault()?.Text;
+            }
         }
     }
 }

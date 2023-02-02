@@ -48,7 +48,7 @@ namespace OpenHolidaysApi
         /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <returns>List of countries</returns>
         [HttpGet("Countries")]
-        [Produces("text/json", "application/json")]
+        [Produces("text/plain", "text/json", "application/json", "text/csv")]
         public async Task<IEnumerable<CountryResponse>> GetCountriesAsync(string languageIsoCode)
         {
             return await _dbContext.Set<Country>()
@@ -64,7 +64,7 @@ namespace OpenHolidaysApi
         /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <returns>List of languages</returns>
         [HttpGet("Languages")]
-        [Produces("text/json", "application/json")]
+        [Produces("text/plain", "text/json", "application/json", "text/csv")]
         public async Task<IEnumerable<LanguageResponse>> GetLanguagesAsync(string languageIsoCode)
         {
             return await _dbContext.Set<Language>()
@@ -81,7 +81,7 @@ namespace OpenHolidaysApi
         /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <returns>List of subdivisions</returns>
         [HttpGet("Subdivisions")]
-        [Produces("text/json", "application/json")]
+        [Produces("text/plain", "text/json", "application/json", "text/csv")]
         public async Task<IEnumerable<SubdivisionResponse>> GetSubdivisionsAsync([Required] string countryIsoCode, string languageIsoCode)
         {
             return await _dbContext.Set<Subdivision>()
