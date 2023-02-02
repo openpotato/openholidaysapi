@@ -117,7 +117,7 @@ namespace OpenHolidaysApi
         /// <returns>TRUE if the type can be written, otherwise FALSE.</returns>
         protected override bool CanWriteType(Type type)
         {
-            return typeof(HolidayResponse).IsAssignableFrom(type) || typeof(IEnumerable<HolidayResponse>).IsAssignableFrom(type);
+            return typeof(IEnumerable<HolidayResponse>).IsAssignableFrom(type);
         }
     }
 }
