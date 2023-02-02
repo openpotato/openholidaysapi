@@ -56,6 +56,8 @@ namespace OpenHolidaysApi
             using var strWriter = new StringWriter(buffer);
 
             var csvWriter = new CsvTableWriter(strWriter);
+            csvWriter.SetFormats<DateOnly>("yyyy-MM-dd");
+            csvWriter.SetTrueFalseString<bool>("true", "false");
 
             if (context.Object is IEnumerable<CountryResponse> countries)
             {
