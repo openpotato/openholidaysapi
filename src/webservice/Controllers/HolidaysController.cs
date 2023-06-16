@@ -48,50 +48,6 @@ namespace OpenHolidaysApi
         }
 
         /// <summary>
-        /// Returns list of official school holidays for a given country 
-        /// </summary>
-        /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
-        /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
-        /// <param name="validFrom" example="2023-01-01">Start of the date range</param>
-        /// <param name="validTo" example="2023-12-31">End of the date range</param>
-        /// <param name="subdivisionCode" example="DE-MV">Code of the subdivision or empty</param>
-        /// <returns>List of holidays</returns>
-        [HttpGet("SchoolHolidays")]
-        [Produces("text/plain", "text/json", "application/json", "text/calendar", "text/csv")]
-        public async Task<IEnumerable<HolidayResponse>> GetSchoolHolidaysAsync([Required] string countryIsoCode, string languageIsoCode, [Required] DateOnly validFrom, [Required] DateOnly validTo, string subdivisionCode)
-        {
-            if (DateOnlyUtils.DaysBetween(validFrom, validTo) <= ValidDateRange)
-            {
-                return await _dbContext.Set<Holiday>()
-                    .AsNoTracking()
-                    .Include(x => x.Country)
-                    .Include(x => x.Subdivisions)
-                    .Where(x => 
-                        x.Country.IsoCode == countryIsoCode &&
-                        (
-                            string.IsNullOrEmpty(subdivisionCode) || 
-                            x.Nationwide ||
-                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
-                        ) &&
-                        (
-                            x.Type == HolidayType.School || x.Type == HolidayType.BackToSchool || x.Type == HolidayType.EndOfLessons
-                        ) &&
-                        (
-                            (x.StartDate >= validFrom && x.StartDate <= validTo) ||
-                            (x.EndDate >= validFrom && x.EndDate <= validTo) ||
-                            (x.StartDate < validFrom && x.EndDate > validTo)
-                        ))
-                    .OrderBy(x => x.StartDate)
-                    .Select(x => new HolidayResponse(x, languageIsoCode))
-                    .ToListAsync();
-            }
-            else
-            {
-                throw new ArgumentException($"The maximum date range is {ValidDateRange} days.");
-            }
-        }
-
-        /// <summary>
         /// Returns list of public holidays for a given country
         /// </summary>
         /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
@@ -118,11 +74,12 @@ namespace OpenHolidaysApi
                             x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
                         ) &&
                         (
-                            x.Type == HolidayType.Public || x.Type == HolidayType.Bank
+                            (HolidayType)x.Type == HolidayType.Public ||
+                            (HolidayType)x.Type == HolidayType.Bank
                         ) &&
                         (
-                            (x.StartDate >= validFrom && x.StartDate <= validTo) || 
-                            (x.EndDate >= validFrom && x.EndDate <= validTo) || 
+                            (x.StartDate >= validFrom && x.StartDate <= validTo) ||
+                            (x.EndDate >= validFrom && x.EndDate <= validTo) ||
                             (x.StartDate < validFrom && x.EndDate > validTo)
                         ))
                     .OrderBy(x => x.StartDate)
@@ -133,6 +90,107 @@ namespace OpenHolidaysApi
             {
                 throw new ArgumentException($"The maximum date range is {ValidDateRange} days.");
             }
+        }
+
+        /// <summary>
+        /// Returns a list of public holidays from all countries for a given date.
+        /// </summary>
+        /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
+        /// <param name="date" example="2023-12-25">Date of interest</param>
+        /// <returns>List of holidays</returns>
+        [HttpGet("PublicHolidaysByDate")]
+        [Produces("text/plain", "text/json", "application/json", "text/csv")]
+        public async Task<IEnumerable<HolidayByDateResponse>> GetPublicHolidaysByDateAsync(string languageIsoCode, [Required] DateOnly date)
+        {
+            return await _dbContext.Set<Holiday>()
+                .AsNoTracking()
+                .Include(x => x.Country)
+                .Include(x => x.Subdivisions)
+                .Where(x =>
+                    (
+                        (HolidayType)x.Type == HolidayType.Public || 
+                        (HolidayType)x.Type == HolidayType.Bank
+                    ) &&
+                    (
+                        (x.StartDate <= date && x.EndDate >= date)
+                    ))
+                .OrderBy(x => x.StartDate)
+                .Select(x => new HolidayByDateResponse(x, languageIsoCode))
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Returns list of official school holidays for a given country 
+        /// </summary>
+        /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
+        /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
+        /// <param name="validFrom" example="2023-01-01">Start of the date range</param>
+        /// <param name="validTo" example="2023-12-31">End of the date range</param>
+        /// <param name="subdivisionCode" example="DE-MV">Code of the subdivision or empty</param>
+        /// <returns>List of holidays</returns>
+        [HttpGet("SchoolHolidays")]
+        [Produces("text/plain", "text/json", "application/json", "text/calendar", "text/csv")]
+        public async Task<IEnumerable<HolidayResponse>> GetSchoolHolidaysAsync([Required] string countryIsoCode, string languageIsoCode, [Required] DateOnly validFrom, [Required] DateOnly validTo, string subdivisionCode)
+        {
+            if (DateOnlyUtils.DaysBetween(validFrom, validTo) <= ValidDateRange)
+            {
+                return await _dbContext.Set<Holiday>()
+                    .AsNoTracking()
+                    .Include(x => x.Country)
+                    .Include(x => x.Subdivisions)
+                    .Where(x =>
+                        x.Country.IsoCode == countryIsoCode &&
+                        (
+                            string.IsNullOrEmpty(subdivisionCode) ||
+                            x.Nationwide ||
+                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
+                        ) &&
+                        (
+                            (HolidayType)x.Type == HolidayType.School ||
+                            (HolidayType)x.Type == HolidayType.BackToSchool ||
+                            (HolidayType)x.Type == HolidayType.EndOfLessons
+                        ) &&
+                        (
+                            (x.StartDate >= validFrom && x.StartDate <= validTo) ||
+                            (x.EndDate >= validFrom && x.EndDate <= validTo) ||
+                            (x.StartDate < validFrom && x.EndDate > validTo)
+                        ))
+                    .OrderBy(x => x.StartDate)
+                    .Select(x => new HolidayResponse(x, languageIsoCode))
+                    .ToListAsync();
+            }
+            else
+            {
+                throw new ArgumentException($"The maximum date range is {ValidDateRange} days.");
+            }
+        }
+
+        /// <summary>
+        /// Returns a list of school holidays from all countries for a given date.
+        /// </summary>
+        /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
+        /// <param name="date" example="2023-12-25">Date of interest</param>
+        /// <returns>List of holidays</returns>
+        [HttpGet("SchoolHolidaysByDate")]
+        [Produces("text/plain", "text/json", "application/json", "text/csv")]
+        public async Task<IEnumerable<HolidayByDateResponse>> GetSchoolHolidaysByDateAsync(string languageIsoCode, [Required] DateOnly date)
+        {
+            return await _dbContext.Set<Holiday>()
+                .AsNoTracking()
+                .Include(x => x.Country)
+                .Include(x => x.Subdivisions)
+                .Where(x =>
+                    (
+                        (HolidayType)x.Type == HolidayType.School || 
+                        (HolidayType)x.Type == HolidayType.BackToSchool || 
+                        (HolidayType)x.Type == HolidayType.EndOfLessons
+                    ) &&
+                    (
+                        (x.StartDate <= date && x.EndDate >= date)
+                    ))
+                .OrderBy(x => x.StartDate)
+                .Select(x => new HolidayByDateResponse(x, languageIsoCode))
+                .ToListAsync();
         }
     }
 }

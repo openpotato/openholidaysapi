@@ -133,6 +133,27 @@ namespace OpenHolidaysApi
                     await csvWriter.WriteAsync();
                 }
             }
+            else if (context.Object is IEnumerable<HolidayByDateResponse> holidaysByDate)
+            {
+                await csvWriter.WriteHeadersAsync(
+                    "Id",
+                    "Type",
+                    "Name",
+                    "Nationwide",
+                    "Subdivisions",
+                    "Comment");
+
+                foreach (var holidayByDate in holidaysByDate)
+                {
+                    csvWriter.SetValue("Id", holidayByDate.Id);
+                    csvWriter.SetValue("Type", holidayByDate.Type.ToString());
+                    csvWriter.SetValue("Name", holidayByDate.Name.ToSingleText("EN"));
+                    csvWriter.SetValue("Nationwide", holidayByDate.Nationwide);
+                    csvWriter.SetValue("Subdivisions", $"{string.Join(",", holidayByDate.Subdivisions.Select(x => x.Code).ToList())}");
+                    csvWriter.SetValue("Comment", holidayByDate.Comment.ToSingleText("EN"));
+                    await csvWriter.WriteAsync();
+                }
+            }
 
             await httpContext.Response.WriteAsync(buffer.ToString(), selectedEncoding);
         }

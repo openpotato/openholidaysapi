@@ -41,7 +41,7 @@ namespace OpenHolidaysApi
         {
             IsoCode = country.IsoCode;
             Name = country.Name.ToLocalizedList(languageCode);
-            OfficialLanguages = country.OfficialLanguages;
+            OfficialLanguages = country.OfficialLanguages.ToList();
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace OpenHolidaysApi
         /// <example>[{"language":"EN","text":"Germany"},{"language":"DE","text":"Deutschland"}]</example>
         [Required]
         [JsonPropertyOrder(2)]
-        public ICollection<LocalizedText> Name { get; set; }
+        public List<LocalizedText> Name { get; set; }
 
         /// <summary>
         /// Official ISO-639-1 language codes
@@ -66,6 +66,6 @@ namespace OpenHolidaysApi
         /// <example>["DE"]</example>
         [Required]
         [JsonPropertyOrder(4)]
-        public ICollection<string> OfficialLanguages { get; set; }
+        public List<string> OfficialLanguages { get; set; }
     }
 }

@@ -21,7 +21,7 @@
 
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace OpenHolidayApi
+namespace OpenHolidaysApi
 {
     /// <summary>
     /// Type of holiday
