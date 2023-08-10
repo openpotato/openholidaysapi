@@ -35,7 +35,6 @@ namespace OpenHolidaysApi.CLI
 
             // Display infos about this app
             Console.WriteLine(AssemblyInfo.GetTitle());
-            Console.WriteLine(AssemblyInfo.GetCopyright());
             Console.WriteLine();
 
             // Read configuration

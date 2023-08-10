@@ -43,7 +43,7 @@ namespace OpenHolidaysApi
             IsoCode = subdivision.IsoCode;
             Category = subdivision.Category.ToLocalizedList(languageCode);
             Name = subdivision.Name.ToLocalizedList(languageCode);
-            OfficialLanguages = subdivision.OfficialLanguages;
+            OfficialLanguages = subdivision.OfficialLanguages.ToList();
             ShortName = subdivision.ShortName;
             Comment = subdivision.Comment.ToLocalizedList(languageCode);
             Children = subdivision.Children.ToResponseList(languageCode);
@@ -55,13 +55,13 @@ namespace OpenHolidaysApi
         /// <example>[{"language":"DE","text":"Bundesland"},{"language":"EN","text":"Federal state"}]</example>
         [Required]
         [JsonPropertyOrder(4)]
-        public ICollection<LocalizedText> Category { get; set; }
+        public List<LocalizedText> Category { get; set; }
 
         /// <summary>
         /// Child subdivisions
         /// </summary>
         [JsonPropertyOrder(8)]
-        public ICollection<SubdivisionResponse> Children { get; set; }
+        public List<SubdivisionResponse> Children { get; set; }
 
         /// <summary>
         /// Subdivision code 
@@ -77,7 +77,7 @@ namespace OpenHolidaysApi
         /// <example>null</example>
         [Required]
         [JsonPropertyOrder(7)]
-        public ICollection<LocalizedText> Comment { get; set; }
+        public List<LocalizedText> Comment { get; set; }
 
         /// <summary>
         /// ISO 3166-2 subdivision code (if defined)
@@ -92,7 +92,7 @@ namespace OpenHolidaysApi
         /// <example>[{"language":"DE","text":"Berlin"},{"language":"EN","text":"Berlin"}]</example>
         [Required]
         [JsonPropertyOrder(5)]
-        public ICollection<LocalizedText> Name { get; set; }
+        public List<LocalizedText> Name { get; set; }
 
         /// <summary>
         /// Official languages as ISO-639-1 codes
@@ -100,7 +100,7 @@ namespace OpenHolidaysApi
         /// <example>>["DE"]</example>
         [Required]
         [JsonPropertyOrder(6)]
-        public ICollection<string> OfficialLanguages { get; set; }
+        public List<string> OfficialLanguages { get; set; }
 
         /// <summary>
         /// Short name for display

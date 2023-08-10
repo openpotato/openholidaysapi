@@ -24,7 +24,9 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using OpenHolidaysApi;
 using OpenHolidaysApi.DataLayer;
+using System.Collections;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,12 +48,27 @@ builder.Services.AddCors(options =>
 builder.Services
     .AddControllers(setup =>
     {
-        setup.OutputFormatters.Insert(0, new IcalOutputFormatter());
+        setup.OutputFormatters.Add(new IcsOutputFormatter());
+        setup.OutputFormatters.Add(new CsvOutputFormatter());
     })
     .AddJsonOptions(setup =>
     {
         setup.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         setup.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        setup.JsonSerializerOptions.TypeInfoResolver = new DefaultJsonTypeInfoResolver
+        {
+            Modifiers = { (JsonTypeInfo type_info) =>
+                {
+                    foreach (var property in type_info.Properties)
+                    {
+                        if (typeof(ICollection).IsAssignableFrom(property.PropertyType))
+                        {
+                            property.ShouldSerialize = (_, val) => val is ICollection collection && collection.Count > 0;
+                        }
+                    }
+                }
+            }
+        };
     });
 
 // Add Swagger/OpenAPI support

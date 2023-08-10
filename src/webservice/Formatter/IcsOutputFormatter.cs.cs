@@ -19,22 +19,22 @@
  */
 #endregion
 
-using System.Text;
 using Enbrea.Ics;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Net.Http.Headers;
+using System.Text;
 
 namespace OpenHolidaysApi
 {
     /// <summary>
     /// Writes <see cref="HolidayResponse"/> instances formatted as iCalendar to the output stream.
     /// </summary>
-    public class IcalOutputFormatter : TextOutputFormatter
+    public class IcsOutputFormatter : TextOutputFormatter
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="IcalOutputFormatter"/> class.
+        /// Initializes a new instance of the <see cref="IcsOutputFormatter"/> class.
         /// </summary>
-        public IcalOutputFormatter()
+        public IcsOutputFormatter()
         {
             SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("text/calendar"));
             SupportedEncodings.Add(Encoding.UTF8);
@@ -66,12 +66,43 @@ namespace OpenHolidaysApi
             {
                 foreach (var holiday in holidays)
                 {
-                    icsCalendar.EventList.Add(holiday.CreateIcsEvent());
+                    var icsEvent = new IcsEvent
+                    {
+                        Uid = new IcsUid(holiday.Id.ToString("N")),
+                        Start = new IcsDateTimeStart(holiday.StartDate),
+                        End = new IcsDateTimeEnd(holiday.EndDate.AddDays(1)),
+                        Classification = new IcsClassification(IcsClassificationValue.Public),
+                        Created = new IcsCreated(DateTime.Now),
+                        LastModified = new IcsLastModified(DateTime.Now),
+                        DateTimeStamp = new IcsDateTimeStamp(DateTime.Now),
+                        Transparency = new IcsTransparency(IcsTransparencyType.Opaque),
+                    };
+
+                    icsEvent.AddCategories(new string[] { holiday.Type.ToString() });
+
+                    icsEvent.Summary = new IcsSummary
+                    {
+                        Value = holiday.Name.ToSingleText(null),
+                        Language = holiday.Name.ToSingleLanguage(null),
+                    };
+
+                    if (!holiday.Nationwide)
+                    {
+                        icsEvent.Summary.Value = $"{icsEvent.Summary.Value} ({string.Join(",", holiday.Subdivisions.Select(x => x.ShortName).ToList())})";
+                    }
+
+                    if (holiday.Comment.Count > 0)
+                    {
+                        icsEvent.Summary.Value += '*';
+                        icsEvent.Description = new IcsDescription
+                        {
+                            Value = '*' + holiday.Comment.ToSingleText(null),
+                            Language = holiday.Comment.ToSingleLanguage(null)
+                        };
+                    };
+
+                    icsCalendar.EventList.Add(icsEvent);
                 }
-            }
-            else
-            {
-                icsCalendar.EventList.Add((context.Object! as HolidayResponse).CreateIcsEvent());
             }
 
             await icsWriter.WriteAsync(icsCalendar);
@@ -86,7 +117,7 @@ namespace OpenHolidaysApi
         /// <returns>TRUE if the type can be written, otherwise FALSE.</returns>
         protected override bool CanWriteType(Type type)
         {
-            return typeof(HolidayResponse).IsAssignableFrom(type) || typeof(IEnumerable<HolidayResponse>).IsAssignableFrom(type);
+            return typeof(IEnumerable<HolidayResponse>).IsAssignableFrom(type);
         }
     }
 }

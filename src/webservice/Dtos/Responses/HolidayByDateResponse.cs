@@ -27,21 +27,20 @@ using System.Text.Json.Serialization;
 namespace OpenHolidaysApi
 {
     /// <summary>
-    /// Representation of a holiday
+    /// Representation of a holiday by date 
     /// </summary>
     [SwaggerSchema(ReadOnly = true)]
-    public class HolidayResponse
+    public class HolidayByDateResponse
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="HolidayResponse"/> class.
+        /// Initializes a new instance of the <see cref="HolidayByDateResponse"/> class.
         /// </summary>
         /// <param name="holiday">Assigns data from <see cref="Holiday"/></param>
         /// <param name="languageCode">Language code or null</param>
-        public HolidayResponse(Holiday holiday, string languageCode)
+        public HolidayByDateResponse(Holiday holiday, string languageCode)
         {
             Id = holiday.Id;
-            StartDate = holiday.StartDate;
-            EndDate = holiday.EndDate;
+            Country = new CountryReference() { IsoCode = holiday.Country.IsoCode };
             Type = (HolidayType)holiday.Type;
             Nationwide = holiday.Nationwide;
             Subdivisions = holiday.Subdivisions.Select(x => new SubdivisionReference() { Code = x.Code, ShortName = x.ShortName }).ToList();
@@ -52,16 +51,15 @@ namespace OpenHolidaysApi
         /// <summary>
         /// Additional localized comments
         /// </summary>
-        [JsonPropertyOrder(8)]
+        [JsonPropertyOrder(6)]
         public List<LocalizedText> Comment { get; set; }
 
         /// <summary>
-        /// End date of the holiday
+        /// Country references
         /// </summary>
-        /// <example>2022-12-31</example>
         [Required]
-        [JsonPropertyOrder(2)]
-        public DateOnly EndDate { get; set; }
+        [JsonPropertyOrder(1)]
+        public CountryReference Country { get; set; }
 
         /// <summary>
         /// Unqiue holiday id
@@ -83,22 +81,14 @@ namespace OpenHolidaysApi
         /// </summary>
         /// <example>true</example>
         [Required]
-        [JsonPropertyOrder(6)]
+        [JsonPropertyOrder(2)]
         public bool Nationwide { get; set; }
-
-        /// <summary>
-        /// Start date of the holiday
-        /// </summary>
-        /// <example>2022-01-01</example>
-        [Required]
-        [JsonPropertyOrder(1)]
-        public DateOnly StartDate { get; set; }
 
         /// <summary>
         /// List of subdivision references
         /// </summary>
         [Required]
-        [JsonPropertyOrder(7)]
+        [JsonPropertyOrder(3)]
         public List<SubdivisionReference> Subdivisions { get; set; }
 
         /// <summary>
@@ -106,7 +96,7 @@ namespace OpenHolidaysApi
         /// </summary>
         /// <example>Public</example>
         [Required]
-        [JsonPropertyOrder(3)]
+        [JsonPropertyOrder(4)]
         public HolidayType Type { get; set; }
     }
 }

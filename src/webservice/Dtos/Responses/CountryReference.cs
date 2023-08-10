@@ -19,7 +19,6 @@
  */
 #endregion
 
-using OpenHolidaysApi.DataLayer;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
@@ -27,36 +26,17 @@ using System.Text.Json.Serialization;
 namespace OpenHolidaysApi
 {
     /// <summary>
-    /// Representation of a language as defined in ISO-639-1
+    /// Representation of a country reference 
     /// </summary>
     [SwaggerSchema(ReadOnly = true)]
-    public class LanguageResponse
+    public class CountryReference
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LanguageResponse"/> class.
-        /// </summary>
-        /// <param name="language">Assigns data from <see cref="Language"/></param>
-        /// <param name="languageCode">Language code or null</param>
-        public LanguageResponse(Language language, string languageCode)
-        {
-            IsoCode = language.IsoCode;
-            Name = language.Name.ToLocalizedList(languageCode);
-        }
-
-        /// <summary>
-        /// ISO-639-1 language code
+        /// Country ISO code
         /// </summary>
         /// <example>DE</example>
         [Required]
         [JsonPropertyOrder(1)]
         public string IsoCode { get; set; }
-
-        /// <summary>
-        /// Localized language names
-        /// </summary>
-        /// <example>[{"language":"DE","text":"Deutsch"},{"language":"EN","text":"German"}]</example>
-        [Required]
-        [JsonPropertyOrder(2)]
-        public List<LocalizedText> Name { get; set; }
     }
 }
