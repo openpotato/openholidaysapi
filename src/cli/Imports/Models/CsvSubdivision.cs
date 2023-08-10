@@ -22,7 +22,6 @@ using Microsoft.EntityFrameworkCore;
 using OpenHolidaysApi.DataLayer;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -140,10 +139,21 @@ namespace OpenHolidaysApi.CLI
                 throw new Exception("No official languages definied");
             }
 
-            var parentId = await dbContext.Set<Subdivision>().Where(x => x.CountryId == subdivision.CountryId && x.ShortName == Parent).Select(x => x.Id).FirstOrDefaultAsync(cancellationToken);
-            if (parentId != default)
+            if (!string.IsNullOrEmpty(Parent))
             {
-                subdivision.ParentId = parentId;
+                var parentId = await dbContext.Set<Subdivision>()
+                    .Where(x => x.CountryId == subdivision.CountryId && x.ShortName == Parent)
+                    .Select(x => x.Id)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if (parentId != default)
+                {
+                    subdivision.ParentId = parentId;
+                }
+                else
+                {
+                    throw new Exception("Parent not known");
+                }
             }
 
             if (Comment != null && Comment.Count > 0)
