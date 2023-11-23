@@ -19,25 +19,25 @@
  */
 #endregion
 
-using Enbrea.Progress;
+using Enbrea.Konsoli;
 
 namespace OpenHolidaysApi.CLI
 {
     /// <summary>
-    /// Static factory class for <see cref="ProgressReport"/> instances
+    /// Static factory class for <see cref="ConsoleWriter"/> instances
     /// </summary>
-    public static class ProgressReportFactory
+    public static class ConsoleWriterFactory
     {
         /// <summary>
-        /// Cretaes a new <see cref="ProgressReport"/> instances.
+        /// Cretaes a new <see cref="ConsoleWriter"/> instances.
         /// </summary>
         /// <param name="progressValueUnit">The progress value unit</param>
         /// <returns>The new instance</returns>
-        public static ProgressReport CreateProgressReport(ProgressUnit progressValueUnit)
+        public static ConsoleWriter CreateConsoleWriter(ProgressUnit progressValueUnit)
         {
-            return new ProgressReport(progressValueUnit)
+            return new ConsoleWriter(progressValueUnit)
             {
-                Theme = new ProgressReportTheme()
+                Theme = new ConsoleWriterTheme()
                 {
                     ProgressTextFormat = "> {0}",
                     SuccessLabel = ">"

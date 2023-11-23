@@ -19,7 +19,7 @@
  */
 #endregion
 
-using Enbrea.Progress;
+using Enbrea.Konsoli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using OpenHolidaysApi.DataLayer;
@@ -35,7 +35,7 @@ namespace OpenHolidaysApi.CLI
     public class DbMigrator
     {
         private readonly IDbContextFactory<AppDbContext> _dbContextFactory;
-        private readonly ProgressReport _progressReport;
+        private readonly ConsoleWriter _consoleWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DbMigrator"/> class.
@@ -44,7 +44,7 @@ namespace OpenHolidaysApi.CLI
         public DbMigrator(AppConfiguration appConfiguration)
         {
             _dbContextFactory = new PooledDbContextFactory<AppDbContext>(AppDbContextOptionsFactory.CreateDbContextOptions(appConfiguration.Database));
-            _progressReport = ProgressReportFactory.CreateProgressReport(ProgressUnit.Count);
+            _consoleWriter = ConsoleWriterFactory.CreateConsoleWriter(ProgressUnit.Count);
         }
 
         /// <summary>
@@ -58,23 +58,25 @@ namespace OpenHolidaysApi.CLI
             { 
                 using var dbContext = _dbContextFactory.CreateDbContext();
 
-                _progressReport.Caption("Migration");
+                _consoleWriter.Caption("Migration");
 
-                _progressReport.Start("Delete existing database...");
+                _consoleWriter.StartProgress("Delete existing database...");
                 await dbContext.Database.EnsureDeletedAsync(cancellationToken);
-                _progressReport.Finish(); 
+                _consoleWriter.FinishProgress(); 
 
-                _progressReport.Start("Creating new database...");
+                _consoleWriter.StartProgress("Creating new database...");
                 await dbContext.Database.MigrateAsync(cancellationToken);
-                _progressReport.Finish();
+                _consoleWriter.FinishProgress();
 
-                _progressReport.Success("Database newly created!");
-                _progressReport.NewLine();
+                _consoleWriter
+                    .Success("Database newly created!")
+                    .NewLine();
             }
             catch (Exception ex)
             {
-                _progressReport.NewLine();
-                _progressReport.Error($"Migration failed. {ex.Message}");
+                _consoleWriter
+                    .NewLine()
+                    .Error($"Migration failed. {ex.Message}");
                 throw;
             }
         }
