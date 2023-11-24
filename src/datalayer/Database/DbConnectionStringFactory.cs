@@ -24,7 +24,7 @@ using System.Data.Common;
 
 namespace OpenHolidaysApi.DataLayer
 {
-    public static class DbConnectionFactory
+    public static class DbConnectionStringFactory
     {
         public static DbConnection CreateNpgsqlConnection(IDbConfiguration configuration)
         {
@@ -43,6 +43,20 @@ namespace OpenHolidaysApi.DataLayer
             using var dataSource = dataSourceBuilder.Build();
 
             return dataSource.OpenConnection();
+        }
+
+        public static string CreateNpgsqlConnectionString(IDbConfiguration configuration)
+        {
+            var connectionStringBuilder = new NpgsqlConnectionStringBuilder()
+            {
+                Host = configuration.Server,
+                Port = configuration.Port != null ? (int)configuration.Port : NpgsqlConnection.DefaultPort,
+                Database = configuration.Database,
+                Username = configuration.UserName,
+                Password = configuration.Password
+            };
+
+            return connectionStringBuilder.ConnectionString;
         }
     }
 }

@@ -20,8 +20,13 @@
 #endregion
 
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
+using Npgsql;
 using OpenHolidaysApi;
 using OpenHolidaysApi.DataLayer;
 using System.Collections;
@@ -98,10 +103,15 @@ builder.Services.AddSwaggerGen(setup =>
     setup.UseDateOnlyTimeOnlyStringConverters();
 });
 
+// Create a PostgreSQL data source 
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(DbConnectionStringFactory.CreateNpgsqlConnectionString(appConfiguration.Database));
+dataSourceBuilder.EnableDynamicJson();
+await using var dataSource = dataSourceBuilder.Build();
+
 // Add EF Core support
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.BuildDbContextOptions(appConfiguration.Database);
+    options.UseNpgsql(dataSource, providerOptions => providerOptions.EnableRetryOnFailure());
 });
 
 var app = builder.Build();

@@ -20,6 +20,7 @@
 #endregion
 
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace OpenHolidaysApi.DataLayer
 {
@@ -27,8 +28,13 @@ namespace OpenHolidaysApi.DataLayer
     {
         public static DbContextOptions<AppDbContext> CreateDbContextOptions(IDbConfiguration configuration)
         {
+            // Create a PostgreSQL data source 
+            var dataSourceBuilder = new NpgsqlDataSourceBuilder(DbConnectionStringFactory.CreateNpgsqlConnectionString(configuration));
+            dataSourceBuilder.EnableDynamicJson();
+            using var dataSource = dataSourceBuilder.Build();
+
             return new DbContextOptionsBuilder<AppDbContext>()
-                .UseNpgsql(DbConnectionFactory.CreateNpgsqlConnection(configuration), options =>
+                .UseNpgsql(dataSource, options =>
                 {
                     options.EnableRetryOnFailure();
                 })
