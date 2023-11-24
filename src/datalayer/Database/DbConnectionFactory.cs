@@ -35,8 +35,14 @@ namespace OpenHolidaysApi.DataLayer
                 Username = configuration.UserName,
                 Password = configuration.Password
             };
-                 
-            return new NpgsqlConnection(connectionStringBuilder.ConnectionString);
+
+            var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionStringBuilder.ConnectionString);
+
+            dataSourceBuilder.EnableDynamicJson();
+            
+            using var dataSource = dataSourceBuilder.Build();
+
+            return dataSource.OpenConnection();
         }
     }
 }
