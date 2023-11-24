@@ -104,9 +104,7 @@ builder.Services.AddSwaggerGen(setup =>
 });
 
 // Create a PostgreSQL data source 
-var dataSourceBuilder = new NpgsqlDataSourceBuilder(DbConnectionStringFactory.CreateNpgsqlConnectionString(appConfiguration.Database));
-dataSourceBuilder.EnableDynamicJson();
-await using var dataSource = dataSourceBuilder.Build();
+await using var dataSource = DbDataSourceFactory.CreateDataSource(appConfiguration.Database);
 
 // Add EF Core support
 builder.Services.AddDbContext<AppDbContext>(options =>

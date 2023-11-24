@@ -20,32 +20,12 @@
 #endregion
 
 using Npgsql;
-using System.Data.Common;
 
 namespace OpenHolidaysApi.DataLayer
 {
     public static class DbConnectionStringFactory
     {
-        public static DbConnection CreateNpgsqlConnection(IDbConfiguration configuration)
-        {
-            var connectionStringBuilder = new NpgsqlConnectionStringBuilder() {
-                Host = configuration.Server,
-                Port = configuration.Port != null ? (int)configuration.Port : NpgsqlConnection.DefaultPort,
-                Database = configuration.Database,
-                Username = configuration.UserName,
-                Password = configuration.Password
-            };
-
-            var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionStringBuilder.ConnectionString);
-
-            dataSourceBuilder.EnableDynamicJson();
-            
-            using var dataSource = dataSourceBuilder.Build();
-
-            return dataSource.OpenConnection();
-        }
-
-        public static string CreateNpgsqlConnectionString(IDbConfiguration configuration)
+        public static string CreateConnectionString(IDbConfiguration configuration)
         {
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder()
             {
