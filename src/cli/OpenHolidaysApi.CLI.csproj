@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
-		<Product>OpenHolidaysAPI CLI</Product>
-		<Description>OpenHolidaysAPI command-line interface (CLI)</Description>
+		<TargetFramework>net8.0</TargetFramework>
+		<Product>OpenHolidays API CLI</Product>
+		<Description>OpenHolidays API command-line interface (CLI)</Description>
 		<Authors>STÜBER SYSTEMS GmbH</Authors>
 		<Company>STÜBER SYSTEMS GmbH</Company>
 		<Copyright>© 2023 STÜBER SYSTEMS GmbH</Copyright>
@@ -23,10 +23,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Enbrea.Csv" Version="0.9.7" />
-		<PackageReference Include="Enbrea.Progress" Version="0.0.4" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+		<PackageReference Include="Enbrea.Csv" Version="0.9.9" />
+		<PackageReference Include="Enbrea.Konsoli" Version="0.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
 		<PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
 	</ItemGroup>
 

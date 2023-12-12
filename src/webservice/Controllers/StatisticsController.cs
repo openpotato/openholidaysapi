@@ -66,7 +66,11 @@ namespace OpenHolidaysApi
                             x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
                     ) &&
                     (
-                        (HolidayType)x.Type == HolidayType.Public || (HolidayType)x.Type == HolidayType.Bank)
+                        (HolidayType)x.Type == HolidayType.Public ||
+                        (HolidayType)x.Type == HolidayType.National ||
+                        (HolidayType)x.Type == HolidayType.Regional ||
+                        (HolidayType)x.Type == HolidayType.Local ||
+                        (HolidayType)x.Type == HolidayType.Bank)
                     )
                 .OrderBy(x => x.StartDate)
                 .Select(x => x.StartDate)
@@ -82,7 +86,11 @@ namespace OpenHolidaysApi
                             x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
                     ) &&
                     (
-                        (HolidayType)x.Type == HolidayType.Public || (HolidayType)x.Type == HolidayType.Bank)
+                        (HolidayType)x.Type == HolidayType.Public ||
+                        (HolidayType)x.Type == HolidayType.National ||
+                        (HolidayType)x.Type == HolidayType.Regional ||
+                        (HolidayType)x.Type == HolidayType.Local ||
+                        (HolidayType)x.Type == HolidayType.Bank)
                     )
                 .OrderByDescending(x => x.StartDate)
                 .Select(x => x.StartDate)
@@ -114,7 +122,9 @@ namespace OpenHolidaysApi
                             x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
                     ) &&
                     (
-                        (HolidayType)x.Type == HolidayType.School || (HolidayType)x.Type == HolidayType.BackToSchool || (HolidayType)x.Type == HolidayType.EndOfLessons
+                        (HolidayType)x.Type == HolidayType.School || 
+                        (HolidayType)x.Type == HolidayType.BackToSchool || 
+                        (HolidayType)x.Type == HolidayType.EndOfLessons
                     ))
                 .OrderBy(x => x.StartDate)
                 .Select(x => x.StartDate)
@@ -130,7 +140,9 @@ namespace OpenHolidaysApi
                             x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
                     ) &&
                     (
-                        (HolidayType)x.Type == HolidayType.School || (HolidayType)x.Type == HolidayType.BackToSchool || (HolidayType)x.Type == HolidayType.EndOfLessons
+                        (HolidayType)x.Type == HolidayType.School || 
+                        (HolidayType)x.Type == HolidayType.BackToSchool || 
+                        (HolidayType)x.Type == HolidayType.EndOfLessons
                     ))
                 .OrderByDescending(x => x.StartDate)
                 .Select(x => x.StartDate)

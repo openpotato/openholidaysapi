@@ -19,22 +19,24 @@
  */
 #endregion
 
-using Microsoft.EntityFrameworkCore;
-using System.Data.Common;
+using Npgsql;
 
 namespace OpenHolidaysApi.DataLayer
 {
-    public static class AppDbContextOptionsFactory
+    public static class DbConnectionStringFactory
     {
-        public static DbContextOptions<AppDbContext> CreateDbContextOptions(DbDataSource dataSource)
+        public static string CreateConnectionString(IDbConfiguration configuration)
         {
-            // Create an options instance for a DBContext
-            return new DbContextOptionsBuilder<AppDbContext>()
-                .UseNpgsql(dataSource, options =>
-                {
-                    options.EnableRetryOnFailure();
-                })
-                .Options;
+            var connectionStringBuilder = new NpgsqlConnectionStringBuilder()
+            {
+                Host = configuration.Server,
+                Port = configuration.Port != null ? (int)configuration.Port : NpgsqlConnection.DefaultPort,
+                Database = configuration.Database,
+                Username = configuration.UserName,
+                Password = configuration.Password
+            };
+
+            return connectionStringBuilder.ConnectionString;
         }
     }
 }

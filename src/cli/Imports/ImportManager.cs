@@ -20,12 +20,13 @@
 #endregion
 
 using Enbrea.Csv;
-using Enbrea.Progress;
+using Enbrea.Konsoli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using OpenHolidaysApi.DataLayer;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,8 +39,9 @@ namespace OpenHolidaysApi.CLI
     public class ImportManager
     {
         private readonly AppConfiguration _appConfiguration;
+        private readonly ConsoleWriter _consoleWriter;
+        private readonly DbDataSource _dataSource;
         private readonly IDbContextFactory<AppDbContext> _dbContextFactory;
-        private readonly ProgressReport _progressReport;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImportManager"/> class.
@@ -48,8 +50,27 @@ namespace OpenHolidaysApi.CLI
         public ImportManager(AppConfiguration appConfiguration)
         {
             _appConfiguration = appConfiguration;
-            _dbContextFactory = new PooledDbContextFactory<AppDbContext>(AppDbContextOptionsFactory.CreateDbContextOptions(_appConfiguration.Database));
-            _progressReport = ProgressReportFactory.CreateProgressReport(ProgressUnit.Count);
+            _dataSource = DbDataSourceFactory.CreateDataSource(appConfiguration.Database);
+            _dbContextFactory = new PooledDbContextFactory<AppDbContext>(AppDbContextOptionsFactory.CreateDbContextOptions(_dataSource));
+            _consoleWriter = ConsoleWriterFactory.CreateConsoleWriter(ProgressUnit.Count);
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose()
+        {
+            _dataSource.Dispose();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async ValueTask DisposeAsync()
+        {
+            await _dataSource.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -64,7 +85,7 @@ namespace OpenHolidaysApi.CLI
                 using var dbContext = _dbContextFactory.CreateDbContext();
 
                 // Start...
-                _progressReport.Caption($"Import global data");
+                _consoleWriter.Caption($"Import global data");
 
                 // Get base import folder
                 var importFolder = new DirectoryInfo(_appConfiguration.Sources.RootFolderName);
@@ -86,14 +107,14 @@ namespace OpenHolidaysApi.CLI
                 }
 
                 // Everything is fine!
-                _progressReport.Success("Data successfully imported!");
+                _consoleWriter.Success("Data successfully imported!");
 
                 // Import regional data
                 foreach (var regionalSource in _appConfiguration.Sources.Regional)
                 {
                     // Start...
-                    _progressReport.NewLine();
-                    _progressReport.Caption($"Import {regionalSource.CountryCode} data");
+                    _consoleWriter.NewLine();
+                    _consoleWriter.Caption($"Import {regionalSource.CountryCode} data");
 
                     // Get base regional folder
                     var regionalFolder = new DirectoryInfo(Path.Combine(importFolder.FullName, regionalSource.CountryFolderName));
@@ -121,13 +142,13 @@ namespace OpenHolidaysApi.CLI
                     }
 
                     // Everything is fine!
-                    _progressReport.Success("Data successfully imported!");
+                    _consoleWriter.Success("Data successfully imported!");
                 }
             }
             catch (Exception ex)
             {
-                _progressReport.NewLine();
-                _progressReport.Error($"Import failed. {ex.Message}");
+                _consoleWriter.NewLine();
+                _consoleWriter.Error($"Import failed. {ex.Message}");
                 throw;
             }
         }
@@ -139,7 +160,7 @@ namespace OpenHolidaysApi.CLI
 
             try
             {
-                _progressReport.Start($"Import file {csvFile.Name}...");
+                _consoleWriter.StartProgress($"Import file {csvFile.Name}...");
 
                 using var strReader = csvFile.OpenText();
 
@@ -150,18 +171,18 @@ namespace OpenHolidaysApi.CLI
 
                 await csvReader.ReadHeadersAsync();
 
-                await foreach (var csvRecord in csvReader.ReadAllAsync<T>())
+                await foreach (var csvRecord in csvReader.ReadAllAsync<T>(cancellationToken: cancellationToken))
                 {
                     await csvRecord.AddToDatabase(dbContext, cancellationToken);
 
-                    _progressReport.Continue(recordCount++);
+                    _consoleWriter.ContinueProgress(recordCount++);
                 }
 
-                _progressReport.Finish(recordCount);
+                _consoleWriter.FinishProgress(recordCount);
             }
             catch 
             {
-                _progressReport.Cancel();
+                _consoleWriter.CancelProgress();
                 throw;
             }
         }

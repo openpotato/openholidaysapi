@@ -19,24 +19,21 @@
  */
 #endregion
 
-using Npgsql;
-using System.Data.Common;
-
 namespace OpenHolidaysApi.DataLayer
 {
-    public static class DbConnectionFactory
+    /// <summary>
+    /// Quality of holiday
+    /// </summary>
+    public enum HolidayQuality
     {
-        public static DbConnection CreateNpgsqlConnection(IDbConfiguration configuration)
-        {
-            var connectionStringBuilder = new NpgsqlConnectionStringBuilder() {
-                Host = configuration.Server,
-                Port = configuration.Port != null ? (int)configuration.Port : NpgsqlConnection.DefaultPort,
-                Database = configuration.Database,
-                Username = configuration.UserName,
-                Password = configuration.Password
-            };
-                 
-            return new NpgsqlConnection(connectionStringBuilder.ConnectionString);
-        }
+        /// <summary>
+        /// Mandatory
+        /// </summary>
+        Mandatory = 1,
+
+        /// <summary>
+        /// Optional
+        /// </summary>
+        Optional = 2
     }
 }

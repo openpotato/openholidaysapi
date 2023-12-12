@@ -75,6 +75,9 @@ namespace OpenHolidaysApi
                         ) &&
                         (
                             (HolidayType)x.Type == HolidayType.Public ||
+                            (HolidayType)x.Type == HolidayType.National ||
+                            (HolidayType)x.Type == HolidayType.Regional ||
+                            (HolidayType)x.Type == HolidayType.Local ||
                             (HolidayType)x.Type == HolidayType.Bank
                         ) &&
                         (
@@ -108,7 +111,10 @@ namespace OpenHolidaysApi
                 .Include(x => x.Subdivisions)
                 .Where(x =>
                     (
-                        (HolidayType)x.Type == HolidayType.Public || 
+                        (HolidayType)x.Type == HolidayType.Public ||
+                        (HolidayType)x.Type == HolidayType.National ||
+                        (HolidayType)x.Type == HolidayType.Regional ||
+                        (HolidayType)x.Type == HolidayType.Local ||
                         (HolidayType)x.Type == HolidayType.Bank
                     ) &&
                     (

@@ -32,7 +32,7 @@ namespace OpenHolidaysApi.CLI
         {
             await Execute(async (cancellationToken) =>
             {
-                var importManager = new ImportManager(appConfiguration);
+                await using var importManager = new ImportManager(appConfiguration);
                 await importManager.ExecuteAsync(cancellationToken);
             });
         }
@@ -41,12 +41,12 @@ namespace OpenHolidaysApi.CLI
         {
             await Execute(async (cancellationToken) =>
             {
-                var migrationManager = new DbMigrator(appConfiguration);
+                await using var migrationManager = new DbMigrator(appConfiguration);
                 await migrationManager.ExecuteAsync(cancellationToken);
 
                 if (import)
                 {
-                    var importManager = new ImportManager(appConfiguration);
+                    await using var importManager = new ImportManager(appConfiguration);
                     await importManager.ExecuteAsync(cancellationToken);
                 }
             });
