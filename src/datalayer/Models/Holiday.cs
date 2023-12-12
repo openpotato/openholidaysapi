@@ -72,9 +72,8 @@ namespace OpenHolidaysApi.DataLayer
         /// <summary>
         /// Quality of holiday
         /// </summary>
-        [Required]
         [Comment("Quality of holiday")]
-        public HolidayQuality Quality { get; set; }
+        public HolidayQuality? Quality { get; set; }
 
         /// <summary>
         /// Start date of the holiday

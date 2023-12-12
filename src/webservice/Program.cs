@@ -20,6 +20,7 @@
 #endregion
 
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using OpenHolidaysApi;
@@ -102,7 +103,11 @@ builder.Services.AddSwaggerGen(setup =>
 await using var dataSource = DbDataSourceFactory.CreateDataSource(appConfiguration.Database);
 
 // Add EF Core support
-builder.Services.AddDbContext<AppDbContext>(options => AppDbContextOptionsFactory.CreateDbContextOptions(dataSource));
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+  options.UseNpgsql(dataSource, providerOptions => providerOptions.EnableRetryOnFailure());
+});
+
 
 var app = builder.Build();
 

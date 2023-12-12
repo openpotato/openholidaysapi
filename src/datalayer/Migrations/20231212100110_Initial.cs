@@ -51,7 +51,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                     EndDate = table.Column<DateOnly>(type: "date", nullable: false, comment: "End date of the holiday"),
                     Name = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: false, comment: "Localized names of the holiday"),
                     Nationwide = table.Column<bool>(type: "boolean", nullable: false, comment: "Is this a nationwide holiday?"),
-                    Quality = table.Column<int>(type: "integer", nullable: false, comment: "Quality of holiday"),
+                    Quality = table.Column<int>(type: "integer", nullable: true, comment: "Quality of holiday"),
                     StartDate = table.Column<DateOnly>(type: "date", nullable: false, comment: "Start date of the holiday"),
                     Type = table.Column<int>(type: "integer", nullable: false, comment: "Type of holiday"),
                     CountryId = table.Column<Guid>(type: "uuid", nullable: false, comment: "Reference to country")

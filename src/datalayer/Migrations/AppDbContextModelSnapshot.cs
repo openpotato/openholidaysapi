@@ -99,7 +99,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .HasColumnType("boolean")
                         .HasComment("Is this a nationwide holiday?");
 
-                    b.Property<int>("Quality")
+                    b.Property<int?>("Quality")
                         .HasColumnType("integer")
                         .HasComment("Quality of holiday");
 

@@ -43,7 +43,7 @@ namespace OpenHolidaysApi
             StartDate = holiday.StartDate;
             EndDate = holiday.EndDate;
             Type = (HolidayType)holiday.Type;
-            Quality = (HolidayQuality)holiday.Quality;
+            Quality = (HolidayQuality?)holiday.Quality;
             Nationwide = holiday.Nationwide;
             Subdivisions = holiday.Subdivisions.Select(x => new SubdivisionReference() { Code = x.Code, ShortName = x.ShortName }).ToList();
             Name = holiday.Name.ToLocalizedList(languageCode);
@@ -91,9 +91,8 @@ namespace OpenHolidaysApi
         /// Quality of holiday
         /// </summary>
         /// <example>Mandatory</example>
-        [Required]
         [JsonPropertyOrder(4)]
-        public HolidayQuality Quality { get; set; }
+        public HolidayQuality? Quality { get; set; }
 
         /// <summary>
         /// Start date of the holiday

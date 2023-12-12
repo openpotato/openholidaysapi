@@ -62,7 +62,7 @@ namespace OpenHolidaysApi.CLI
         /// <summary>
         /// Quality of holiday
         /// </summary>
-        public HolidayQuality Quality { get; set; } = HolidayQuality.Mandatory;
+        public HolidayQuality? Quality { get; set; }
 
         /// <summary>
         /// Start date
