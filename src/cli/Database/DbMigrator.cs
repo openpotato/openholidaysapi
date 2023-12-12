@@ -24,6 +24,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using OpenHolidaysApi.DataLayer;
 using System;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,10 +33,11 @@ namespace OpenHolidaysApi.CLI
     /// <summary>
     /// Manager for migrating/creating the database
     /// </summary>
-    public class DbMigrator
+    public class DbMigrator : IDisposable, IAsyncDisposable
     {
-        private readonly IDbContextFactory<AppDbContext> _dbContextFactory;
         private readonly ConsoleWriter _consoleWriter;
+        private readonly DbDataSource _dataSource;
+        private readonly IDbContextFactory<AppDbContext> _dbContextFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DbMigrator"/> class.
@@ -43,8 +45,26 @@ namespace OpenHolidaysApi.CLI
         /// <param name="appConfiguration">Configuration data</param>
         public DbMigrator(AppConfiguration appConfiguration)
         {
-            _dbContextFactory = new PooledDbContextFactory<AppDbContext>(AppDbContextOptionsFactory.CreateDbContextOptions(appConfiguration.Database));
+            _dataSource = DbDataSourceFactory.CreateDataSource(appConfiguration.Database);
+            _dbContextFactory = new PooledDbContextFactory<AppDbContext>(AppDbContextOptionsFactory.CreateDbContextOptions(_dataSource));
             _consoleWriter = ConsoleWriterFactory.CreateConsoleWriter(ProgressUnit.Count);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose()
+        {
+            _dataSource.Dispose();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async ValueTask DisposeAsync()
+        {
+            await _dataSource.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <summary>

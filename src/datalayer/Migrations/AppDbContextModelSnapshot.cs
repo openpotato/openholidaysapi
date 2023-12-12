@@ -18,7 +18,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -98,6 +98,10 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                     b.Property<bool>("Nationwide")
                         .HasColumnType("boolean")
                         .HasComment("Is this a nationwide holiday?");
+
+                    b.Property<int>("Quality")
+                        .HasColumnType("integer")
+                        .HasComment("Quality of holiday");
 
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date")

@@ -60,6 +60,11 @@ namespace OpenHolidaysApi.CLI
         public ICollection<CsvLocalizedText> Name { get; set; } = new List<CsvLocalizedText>();
 
         /// <summary>
+        /// Quality of holiday
+        /// </summary>
+        public HolidayQuality Quality { get; set; } = HolidayQuality.Mandatory;
+
+        /// <summary>
         /// Start date
         /// </summary>
         public DateOnly StartDate { get; set; }
@@ -86,6 +91,7 @@ namespace OpenHolidaysApi.CLI
             {
                 Id = Id,
                 Type = Type,
+                Quality = Quality,
                 StartDate = StartDate,
                 EndDate = EndDate != DateOnly.MinValue ? EndDate : StartDate
             };

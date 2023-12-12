@@ -26,6 +26,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using OpenHolidaysApi.DataLayer;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,8 +39,9 @@ namespace OpenHolidaysApi.CLI
     public class ImportManager
     {
         private readonly AppConfiguration _appConfiguration;
-        private readonly IDbContextFactory<AppDbContext> _dbContextFactory;
         private readonly ConsoleWriter _consoleWriter;
+        private readonly DbDataSource _dataSource;
+        private readonly IDbContextFactory<AppDbContext> _dbContextFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImportManager"/> class.
@@ -48,8 +50,27 @@ namespace OpenHolidaysApi.CLI
         public ImportManager(AppConfiguration appConfiguration)
         {
             _appConfiguration = appConfiguration;
-            _dbContextFactory = new PooledDbContextFactory<AppDbContext>(AppDbContextOptionsFactory.CreateDbContextOptions(_appConfiguration.Database));
+            _dataSource = DbDataSourceFactory.CreateDataSource(appConfiguration.Database);
+            _dbContextFactory = new PooledDbContextFactory<AppDbContext>(AppDbContextOptionsFactory.CreateDbContextOptions(_dataSource));
             _consoleWriter = ConsoleWriterFactory.CreateConsoleWriter(ProgressUnit.Count);
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose()
+        {
+            _dataSource.Dispose();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async ValueTask DisposeAsync()
+        {
+            await _dataSource.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -150,7 +171,7 @@ namespace OpenHolidaysApi.CLI
 
                 await csvReader.ReadHeadersAsync();
 
-                await foreach (var csvRecord in csvReader.ReadAllAsync<T>())
+                await foreach (var csvRecord in csvReader.ReadAllAsync<T>(cancellationToken: cancellationToken))
                 {
                     await csvRecord.AddToDatabase(dbContext, cancellationToken);
 

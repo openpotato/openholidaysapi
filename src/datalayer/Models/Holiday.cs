@@ -70,6 +70,13 @@ namespace OpenHolidaysApi.DataLayer
         public bool Nationwide { get; set; }
 
         /// <summary>
+        /// Quality of holiday
+        /// </summary>
+        [Required]
+        [Comment("Quality of holiday")]
+        public HolidayQuality Quality { get; set; }
+
+        /// <summary>
         /// Start date of the holiday
         /// </summary>
         [Required]
