@@ -175,7 +175,7 @@ namespace OpenHolidaysApi.CLI
                 {
                     await csvRecord.AddToDatabase(dbContext, cancellationToken);
 
-                    _consoleWriter.ContinueProgress(recordCount++);
+                    _consoleWriter.ContinueProgress(++recordCount);
                 }
 
                 _consoleWriter.FinishProgress(recordCount);
