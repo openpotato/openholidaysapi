@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="DateOnlyTimeOnly.AspNet.Swashbuckle" Version="2.1.1" />
-    <PackageReference Include="Enbrea.Csv" Version="0.9.9" />
+    <PackageReference Include="Enbrea.Csv" Version="0.10.2" />
     <PackageReference Include="Enbrea.Ics" Version="0.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
