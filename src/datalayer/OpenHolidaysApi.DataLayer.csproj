@@ -6,7 +6,7 @@
 		<Description>Database Layer for the OpenHolidays API Project</Description>
 		<Authors>STÜBER SYSTEMS GmbH</Authors>
 		<Company>STÜBER SYSTEMS GmbH</Company>
-		<Copyright>© 2023 STÜBER SYSTEMS GmbH</Copyright>
+		<Copyright>© 2024 STÜBER SYSTEMS GmbH</Copyright>
 		<RootNamespace>OpenHolidaysApi.DataLayer</RootNamespace>
 	</PropertyGroup>
 
