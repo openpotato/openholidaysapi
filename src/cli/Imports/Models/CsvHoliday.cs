@@ -123,23 +123,12 @@ namespace OpenHolidaysApi.CLI
                 foreach (var csvSubdivison in Subdivisions)
                 {
                     var subdivison = await dbContext.Set<Subdivision>()
-                        .Include(x => x.Children)
                         .Where(x => x.CountryId == holiday.CountryId && x.ShortName == csvSubdivison)
                         .FirstOrDefaultAsync(cancellationToken);
 
                     if (subdivison != null)
                     {
-                        if (subdivison.Children.Count > 0)
-                        {
-                            foreach (var childSubdivison in subdivison.Children)
-                            {
-                                holiday.Subdivisions.Add(childSubdivison);
-                            }
-                        }
-                        else
-                        {
-                            holiday.Subdivisions.Add(subdivison);
-                        }
+                        holiday.Subdivisions.Add(subdivison);
                     }
                     else
                     {

@@ -63,7 +63,10 @@ namespace OpenHolidaysApi
                     (
                             string.IsNullOrEmpty(subdivisionCode) ||
                             x.Nationwide ||
-                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
+                            x.Subdivisions.Any(sd =>
+                                CodeUtils.BuildStackOfCodes(subdivisionCode).Contains(sd.Code) ||
+                                EF.Functions.Like(sd.Code, $"{subdivisionCode}-%")
+                            )
                     ) &&
                     (
                         (HolidayType)x.Type == HolidayType.Public ||
@@ -119,7 +122,10 @@ namespace OpenHolidaysApi
                     (
                             string.IsNullOrEmpty(subdivisionCode) ||
                             x.Nationwide ||
-                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
+                            x.Subdivisions.Any(sd =>
+                                CodeUtils.BuildStackOfCodes(subdivisionCode).Contains(sd.Code) ||
+                                EF.Functions.Like(sd.Code, $"{subdivisionCode}-%")
+                            )
                     ) &&
                     (
                         (HolidayType)x.Type == HolidayType.School || 
