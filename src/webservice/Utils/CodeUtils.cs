@@ -40,10 +40,10 @@ namespace OpenHolidaysApi
             var codeFragments = subdivisionCode.Split('-');
             if (codeFragments.Length > 1)
             {
-                sb.Clear();
                 var codeArray = new string[codeFragments.Length - 1];
                 for (var i = 0; i < codeFragments.Length - 1; i++)
                 {
+                    sb.Clear();
                     for (var j = 0; j < i + 2; j++)
                     {
                         if (j > 0) sb.Append('-');
