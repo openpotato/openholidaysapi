@@ -24,19 +24,24 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace OpenHolidaysApi
 {
     /// <summary>
-    /// Type of holiday
+    /// Regional scope of a holdiay
     /// </summary>
     [SwaggerSchema(ReadOnly = true)]
-    public enum HolidayQuality
+    public enum RegionalScope
     {
         /// <summary>
-        /// Mandatory
+        /// National holiday
         /// </summary>
-        Mandatory = 1,
+        National = 1,
 
         /// <summary>
-        /// Optional
+        /// Regional holiday
         /// </summary>
-        Optional = 2
+        Regional = 2,
+
+        /// <summary>
+        /// Local holiday (usually only optional)
+        /// </summary>
+        Local = 3,
     }
 }

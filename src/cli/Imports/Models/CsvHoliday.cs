@@ -60,9 +60,9 @@ namespace OpenHolidaysApi.CLI
         public ICollection<CsvLocalizedText> Name { get; set; } = new List<CsvLocalizedText>();
 
         /// <summary>
-        /// Quality of holiday
+        /// Regional scope of a holiday
         /// </summary>
-        public HolidayQuality? Quality { get; set; }
+        public RegionalScope RegionalScope { get; set; }
 
         /// <summary>
         /// Start date
@@ -70,9 +70,19 @@ namespace OpenHolidaysApi.CLI
         public DateOnly StartDate { get; set; }
 
         /// <summary>
+        /// Status of a holiday
+        /// </summary>
+        public HolidayStatus? Status { get; set; }
+
+        /// <summary>
         /// List of subdivisions
         /// </summary>
         public ICollection<string> Subdivisions { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Temporal scope of a holiday
+        /// </summary>
+        public TemporalScope? TemporalScope { get; set; }
 
         /// <summary>
         /// Type of holiday
@@ -91,7 +101,9 @@ namespace OpenHolidaysApi.CLI
             {
                 Id = Id,
                 Type = Type,
-                Quality = Quality,
+                RegionalScope = RegionalScope,
+                TemporalScope = TemporalScope != null ? TemporalScope : DataLayer.TemporalScope.FullDay,
+                Status = Status,
                 StartDate = StartDate,
                 EndDate = EndDate != DateOnly.MinValue ? EndDate : StartDate
             };

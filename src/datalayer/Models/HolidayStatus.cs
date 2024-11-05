@@ -22,18 +22,23 @@
 namespace OpenHolidaysApi.DataLayer
 {
     /// <summary>
-    /// Quality of holiday
+    /// Status of a holiday
     /// </summary>
-    public enum HolidayQuality
+    public enum HolidayStatus
     {
         /// <summary>
-        /// Mandatory
+        /// Default
         /// </summary>
-        Mandatory = 1,
+        Default = 1,
 
         /// <summary>
         /// Optional
         /// </summary>
-        Optional = 2
+        Optional = 2,
+
+        /// <summary>
+        /// Recommended
+        /// </summary>
+        Recommended = 3
     }
 }

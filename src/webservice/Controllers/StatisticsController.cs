@@ -70,9 +70,6 @@ namespace OpenHolidaysApi
                     ) &&
                     (
                         (HolidayType)x.Type == HolidayType.Public ||
-                        (HolidayType)x.Type == HolidayType.National ||
-                        (HolidayType)x.Type == HolidayType.Regional ||
-                        (HolidayType)x.Type == HolidayType.Local ||
                         (HolidayType)x.Type == HolidayType.Bank)
                     )
                 .OrderBy(x => x.StartDate)
@@ -90,9 +87,6 @@ namespace OpenHolidaysApi
                     ) &&
                     (
                         (HolidayType)x.Type == HolidayType.Public ||
-                        (HolidayType)x.Type == HolidayType.National ||
-                        (HolidayType)x.Type == HolidayType.Regional ||
-                        (HolidayType)x.Type == HolidayType.Local ||
                         (HolidayType)x.Type == HolidayType.Bank)
                     )
                 .OrderByDescending(x => x.StartDate)

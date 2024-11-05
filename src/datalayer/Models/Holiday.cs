@@ -70,10 +70,11 @@ namespace OpenHolidaysApi.DataLayer
         public bool Nationwide { get; set; }
 
         /// <summary>
-        /// Quality of holiday
+        /// Regional scope of a holiday
         /// </summary>
-        [Comment("Quality of holiday")]
-        public HolidayQuality? Quality { get; set; }
+        [Required]
+        [Comment("Regional scope of a holiday")]
+        public RegionalScope RegionalScope { get; set; }
 
         /// <summary>
         /// Start date of the holiday
@@ -83,9 +84,22 @@ namespace OpenHolidaysApi.DataLayer
         public DateOnly StartDate { get; set; }
 
         /// <summary>
+        /// Status of a holiday
+        /// </summary>
+        [Comment("Status of a holiday")]
+        public HolidayStatus? Status { get; set; }
+
+        /// <summary>
         /// List of subdivisions 
         /// </summary>
         public virtual ICollection<Subdivision> Subdivisions { get; set; } = new List<Subdivision>();
+
+        /// <summary>
+        /// Temporal scope of a holiday
+        /// </summary>
+        [Required]
+        [Comment("Temporal scope of a holiday")]
+        public TemporalScope? TemporalScope { get; set; }
 
         /// <summary>
         /// Type of holiday

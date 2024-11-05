@@ -22,33 +22,23 @@
 namespace OpenHolidaysApi.DataLayer
 {
     /// <summary>
-    /// Type of a holiday
+    /// Regional scope of a holdiay
     /// </summary>
-    public enum HolidayType
+    public enum RegionalScope
     {
         /// <summary>
-        /// Public holiday
+        /// National holiday
         /// </summary>
-        Public = 1,
+        National = 1,
 
         /// <summary>
-        /// Bank holiday
+        /// Regional holiday
         /// </summary>
-        Bank = 2,
+        Regional = 2,
 
         /// <summary>
-        /// School holiday
+        /// Local holiday (usually only optional)
         /// </summary>
-        School = 3,
-
-        /// <summary>
-        /// Back to school (informative date, no holiday)
-        /// </summary>
-        BackToSchool = 4,
-
-        /// <summary>
-        /// End of lessons (informative date, no holiday)
-        /// </summary>
-        EndOfLessons = 5
+        Local = 3,
     }
 }
