@@ -7,7 +7,7 @@
     <Authors>STÜBER SYSTEMS GmbH</Authors>
     <Company>STÜBER SYSTEMS GmbH</Company>
     <Copyright>© 2024 STÜBER SYSTEMS GmbH</Copyright>
-    <Version>0.0.1</Version>
+    <Version>0.1.0</Version>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
