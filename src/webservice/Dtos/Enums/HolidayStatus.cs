@@ -19,36 +19,29 @@
  */
 #endregion
 
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Swashbuckle.AspNetCore.Annotations;
 
-namespace OpenHolidaysApi.DataLayer
+namespace OpenHolidaysApi
 {
     /// <summary>
-    /// Representation of a language
+    /// Status of a holiday
     /// </summary>
-    [Table(DbTables.Language)]
-    [Index(nameof(IsoCode), IsUnique = true)]
-    [Comment("Representation of a language")]
-    public class Language : BaseEntity
+    [SwaggerSchema(ReadOnly = true)]
+    public enum HolidayStatus
     {
         /// <summary>
-        /// ISO-639-1 language code
+        /// Default
         /// </summary>
-        [Required]
-        [Comment("ISO-639-1 language code")]
-        public string IsoCode { get; set; }
+        Default = 1,
 
         /// <summary>
-        /// Language name
+        /// Optional
         /// </summary>
-        [Required]
-        [Column(TypeName = "jsonb")]
-        [Comment("Localized language names")]
-        public ICollection<LocalizedText> Name { get; set; } = new List<LocalizedText>();
+        Optional = 2,
+
+        /// <summary>
+        /// Recommended
+        /// </summary>
+        Recommended = 3
     }
 }
-

@@ -6,18 +6,18 @@
     <Description>Open Data API for public and school holidays</Description>
     <Authors>STÜBER SYSTEMS GmbH</Authors>
     <Company>STÜBER SYSTEMS GmbH</Company>
-    <Copyright>© 2023 STÜBER SYSTEMS GmbH</Copyright>
-    <Version>0.0.1</Version>
+    <Copyright>© 2024 STÜBER SYSTEMS GmbH</Copyright>
+    <Version>0.1.0</Version>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="DateOnlyTimeOnly.AspNet.Swashbuckle" Version="2.1.1" />
-    <PackageReference Include="Enbrea.Csv" Version="0.9.9" />
+    <PackageReference Include="Enbrea.Csv" Version="0.10.3" />
     <PackageReference Include="Enbrea.Ics" Version="0.0.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.9.0" />
   </ItemGroup>
 
   <ItemGroup>

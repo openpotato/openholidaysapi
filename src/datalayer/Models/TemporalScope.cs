@@ -19,36 +19,21 @@
  */
 #endregion
 
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace OpenHolidaysApi.DataLayer
 {
     /// <summary>
-    /// Representation of a language
+    /// Temporal scope of a holdiay
     /// </summary>
-    [Table(DbTables.Language)]
-    [Index(nameof(IsoCode), IsUnique = true)]
-    [Comment("Representation of a language")]
-    public class Language : BaseEntity
+    public enum TemporalScope
     {
         /// <summary>
-        /// ISO-639-1 language code
+        /// Full day
         /// </summary>
-        [Required]
-        [Comment("ISO-639-1 language code")]
-        public string IsoCode { get; set; }
+        FullDay = 1,
 
         /// <summary>
-        /// Language name
+        /// Only half day
         /// </summary>
-        [Required]
-        [Column(TypeName = "jsonb")]
-        [Comment("Localized language names")]
-        public ICollection<LocalizedText> Name { get; set; } = new List<LocalizedText>();
+        HalfDay = 2,
     }
 }
-

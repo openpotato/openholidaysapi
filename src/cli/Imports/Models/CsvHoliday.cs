@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
+ *    Copyright (C) STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -60,9 +60,9 @@ namespace OpenHolidaysApi.CLI
         public ICollection<CsvLocalizedText> Name { get; set; } = new List<CsvLocalizedText>();
 
         /// <summary>
-        /// Quality of holiday
+        /// Regional scope of a holiday
         /// </summary>
-        public HolidayQuality? Quality { get; set; }
+        public RegionalScope RegionalScope { get; set; }
 
         /// <summary>
         /// Start date
@@ -70,9 +70,19 @@ namespace OpenHolidaysApi.CLI
         public DateOnly StartDate { get; set; }
 
         /// <summary>
+        /// Status of a holiday
+        /// </summary>
+        public HolidayStatus? Status { get; set; }
+
+        /// <summary>
         /// List of subdivisions
         /// </summary>
         public ICollection<string> Subdivisions { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Temporal scope of a holiday
+        /// </summary>
+        public TemporalScope? TemporalScope { get; set; }
 
         /// <summary>
         /// Type of holiday
@@ -91,7 +101,9 @@ namespace OpenHolidaysApi.CLI
             {
                 Id = Id,
                 Type = Type,
-                Quality = Quality,
+                RegionalScope = RegionalScope,
+                TemporalScope = TemporalScope != null ? TemporalScope : DataLayer.TemporalScope.FullDay,
+                Status = Status,
                 StartDate = StartDate,
                 EndDate = EndDate != DateOnly.MinValue ? EndDate : StartDate
             };
@@ -123,23 +135,12 @@ namespace OpenHolidaysApi.CLI
                 foreach (var csvSubdivison in Subdivisions)
                 {
                     var subdivison = await dbContext.Set<Subdivision>()
-                        .Include(x => x.Children)
                         .Where(x => x.CountryId == holiday.CountryId && x.ShortName == csvSubdivison)
                         .FirstOrDefaultAsync(cancellationToken);
 
                     if (subdivison != null)
                     {
-                        if (subdivison.Children.Count > 0)
-                        {
-                            foreach (var childSubdivison in subdivison.Children)
-                            {
-                                holiday.Subdivisions.Add(childSubdivison);
-                            }
-                        }
-                        else
-                        {
-                            holiday.Subdivisions.Add(subdivison);
-                        }
+                        holiday.Subdivisions.Add(subdivison);
                     }
                     else
                     {

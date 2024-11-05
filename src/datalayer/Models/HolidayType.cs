@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
+ *    Copyright (C) STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,7 @@
 namespace OpenHolidaysApi.DataLayer
 {
     /// <summary>
-    /// Type of holiday
+    /// Type of a holiday
     /// </summary>
     public enum HolidayType
     {
@@ -37,33 +37,18 @@ namespace OpenHolidaysApi.DataLayer
         Bank = 2,
 
         /// <summary>
-        /// National holiday
-        /// </summary>
-        National = 3,
-
-        /// <summary>
-        /// Regional holiday
-        /// </summary>
-        Regional = 4,
-
-        /// <summary>
-        /// Local holiday (usually only optional)
-        /// </summary>
-        Local = 5,
-
-        /// <summary>
         /// School holiday
         /// </summary>
-        School = 6,
+        School = 3,
 
         /// <summary>
-        /// Back to school (informative date, no holiday )
+        /// Back to school (informative date, no holiday)
         /// </summary>
-        BackToSchool = 7,
+        BackToSchool = 4,
 
         /// <summary>
-        /// End of lessons (informative date, no holiday )
+        /// End of lessons (informative date, no holiday)
         /// </summary>
-        EndOfLessons = 8
+        EndOfLessons = 5
     }
 }

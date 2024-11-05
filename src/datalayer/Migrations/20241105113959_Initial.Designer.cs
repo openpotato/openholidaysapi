@@ -13,7 +13,7 @@ using OpenHolidaysApi.DataLayer;
 namespace OpenHolidaysApi.DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231212100110_Initial")]
+    [Migration("20241105113959_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -21,7 +21,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -102,13 +102,21 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .HasColumnType("boolean")
                         .HasComment("Is this a nationwide holiday?");
 
-                    b.Property<int?>("Quality")
+                    b.Property<int>("RegionalScope")
                         .HasColumnType("integer")
-                        .HasComment("Quality of holiday");
+                        .HasComment("Regional scope of a holiday");
 
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date")
                         .HasComment("Start date of the holiday");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("integer")
+                        .HasComment("Status of a holiday");
+
+                    b.Property<int>("TemporalScope")
+                        .HasColumnType("integer")
+                        .HasComment("Temporal scope of a holiday");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer")

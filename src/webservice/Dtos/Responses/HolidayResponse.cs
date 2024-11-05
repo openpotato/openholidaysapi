@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
+ *    Copyright (C) STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -43,17 +43,19 @@ namespace OpenHolidaysApi
             StartDate = holiday.StartDate;
             EndDate = holiday.EndDate;
             Type = (HolidayType)holiday.Type;
-            Quality = (HolidayQuality?)holiday.Quality;
+            Name = holiday.Name.ToLocalizedList(languageCode);
+            RegionalScope = (RegionalScope)holiday.RegionalScope;
+            TemporalScope = (TemporalScope)holiday.TemporalScope;
+            Status = (HolidayStatus?)holiday.Status;
             Nationwide = holiday.Nationwide;
             Subdivisions = holiday.Subdivisions.Select(x => new SubdivisionReference() { Code = x.Code, ShortName = x.ShortName }).ToList();
-            Name = holiday.Name.ToLocalizedList(languageCode);
             Comment = holiday.Comment.ToLocalizedList(languageCode);
         }
 
         /// <summary>
         /// Additional localized comments
         /// </summary>
-        [JsonPropertyOrder(8)]
+        [JsonPropertyOrder(10)]
         public List<LocalizedText> Comment { get; set; }
 
         /// <summary>
@@ -76,7 +78,7 @@ namespace OpenHolidaysApi
         /// Localized names of the holiday
         /// </summary>
         [Required]
-        [JsonPropertyOrder(5)]
+        [JsonPropertyOrder(4)]
         public List<LocalizedText> Name { get; set; }
 
         /// <summary>
@@ -84,15 +86,15 @@ namespace OpenHolidaysApi
         /// </summary>
         /// <example>true</example>
         [Required]
-        [JsonPropertyOrder(6)]
+        [JsonPropertyOrder(8)]
         public bool Nationwide { get; set; }
 
         /// <summary>
-        /// Quality of holiday
+        /// Regional scope of a holiday
         /// </summary>
-        /// <example>Mandatory</example>
-        [JsonPropertyOrder(4)]
-        public HolidayQuality? Quality { get; set; }
+        /// <example>National</example>
+        [JsonPropertyOrder(5)]
+        public RegionalScope RegionalScope { get; set; }
 
         /// <summary>
         /// Start date of the holiday
@@ -103,11 +105,25 @@ namespace OpenHolidaysApi
         public DateOnly StartDate { get; set; }
 
         /// <summary>
+        /// Status of a holiday
+        /// </summary>
+        /// <example>Optional</example>
+        [JsonPropertyOrder(7)]
+        public HolidayStatus? Status { get; set; }
+
+        /// <summary>
         /// List of subdivision references
         /// </summary>
         [Required]
-        [JsonPropertyOrder(7)]
+        [JsonPropertyOrder(9)]
         public List<SubdivisionReference> Subdivisions { get; set; }
+
+        /// <summary>
+        /// Temporal scope of a holiday
+        /// </summary>
+        /// <example>HalfDay</example>
+        [JsonPropertyOrder(6)]
+        public TemporalScope TemporalScope { get; set; }
 
         /// <summary>
         /// Type of holiday

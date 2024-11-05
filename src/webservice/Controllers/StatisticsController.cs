@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
+ *    Copyright (C) STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -63,13 +63,13 @@ namespace OpenHolidaysApi
                     (
                             string.IsNullOrEmpty(subdivisionCode) ||
                             x.Nationwide ||
-                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
+                            x.Subdivisions.Any(sd =>
+                                CodeUtils.BuildStackOfCodes(subdivisionCode).Contains(sd.Code) ||
+                                EF.Functions.Like(sd.Code, $"{subdivisionCode}-%")
+                            )
                     ) &&
                     (
                         (HolidayType)x.Type == HolidayType.Public ||
-                        (HolidayType)x.Type == HolidayType.National ||
-                        (HolidayType)x.Type == HolidayType.Regional ||
-                        (HolidayType)x.Type == HolidayType.Local ||
                         (HolidayType)x.Type == HolidayType.Bank)
                     )
                 .OrderBy(x => x.StartDate)
@@ -87,9 +87,6 @@ namespace OpenHolidaysApi
                     ) &&
                     (
                         (HolidayType)x.Type == HolidayType.Public ||
-                        (HolidayType)x.Type == HolidayType.National ||
-                        (HolidayType)x.Type == HolidayType.Regional ||
-                        (HolidayType)x.Type == HolidayType.Local ||
                         (HolidayType)x.Type == HolidayType.Bank)
                     )
                 .OrderByDescending(x => x.StartDate)
@@ -119,7 +116,10 @@ namespace OpenHolidaysApi
                     (
                             string.IsNullOrEmpty(subdivisionCode) ||
                             x.Nationwide ||
-                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
+                            x.Subdivisions.Any(sd =>
+                                CodeUtils.BuildStackOfCodes(subdivisionCode).Contains(sd.Code) ||
+                                EF.Functions.Like(sd.Code, $"{subdivisionCode}-%")
+                            )
                     ) &&
                     (
                         (HolidayType)x.Type == HolidayType.School || 

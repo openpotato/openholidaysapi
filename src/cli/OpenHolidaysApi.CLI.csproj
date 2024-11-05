@@ -6,8 +6,8 @@
 		<Description>OpenHolidays API command-line interface (CLI)</Description>
 		<Authors>STÜBER SYSTEMS GmbH</Authors>
 		<Company>STÜBER SYSTEMS GmbH</Company>
-		<Copyright>© 2023 STÜBER SYSTEMS GmbH</Copyright>
-		<Version>0.0.1</Version>
+		<Copyright>© 2024 STÜBER SYSTEMS GmbH</Copyright>
+		<Version>0.1.0</Version>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
@@ -23,10 +23,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Enbrea.Csv" Version="0.9.9" />
-		<PackageReference Include="Enbrea.Konsoli" Version="0.0.2" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+		<PackageReference Include="Enbrea.Csv" Version="0.10.3" />
+		<PackageReference Include="Enbrea.Konsoli" Version="0.0.4" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
 		<PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
 	</ItemGroup>
 

@@ -1,8 +1,8 @@
-﻿#region OpenHolidays API - Copyright (C) 2023 STÜBER SYSTEMS GmbH
+﻿#region OpenHolidays API - Copyright (C) STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
- *    Copyright (C) 2023 STÜBER SYSTEMS GmbH
+ *    Copyright (C) STÜBER SYSTEMS GmbH
  *
  *    This program is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU Affero General Public License, version 3,
@@ -19,21 +19,29 @@
  */
 #endregion
 
-namespace OpenHolidaysApi.DataLayer
+using Swashbuckle.AspNetCore.Annotations;
+
+namespace OpenHolidaysApi
 {
     /// <summary>
-    /// Quality of holiday
+    /// Regional scope of a holdiay
     /// </summary>
-    public enum HolidayQuality
+    [SwaggerSchema(ReadOnly = true)]
+    public enum RegionalScope
     {
         /// <summary>
-        /// Mandatory
+        /// National holiday
         /// </summary>
-        Mandatory = 1,
+        National = 1,
 
         /// <summary>
-        /// Optional
+        /// Regional holiday
         /// </summary>
-        Optional = 2
+        Regional = 2,
+
+        /// <summary>
+        /// Local holiday (usually only optional)
+        /// </summary>
+        Local = 3,
     }
 }
