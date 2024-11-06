@@ -40,18 +40,23 @@ namespace OpenHolidaysApi
         Bank = 2,
 
         /// <summary>
+        /// Optional holiday
+        /// </summary>
+        Optional = 3,
+
+        /// <summary>
         /// School holiday
         /// </summary>
-        School = 3,
+        School = 4,
 
         /// <summary>
         /// Back to school (informative date, no holiday)
         /// </summary>
-        BackToSchool = 4,
+        BackToSchool = 5,
 
         /// <summary>
         /// End of lessons (informative date, no holiday)
         /// </summary>
-        EndOfLessons = 5
+        EndOfLessons = 6
     }
 }

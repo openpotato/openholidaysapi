@@ -107,10 +107,6 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .HasColumnType("date")
                         .HasComment("Start date of the holiday");
 
-                    b.Property<int?>("Status")
-                        .HasColumnType("integer")
-                        .HasComment("Status of a holiday");
-
                     b.Property<int>("TemporalScope")
                         .HasColumnType("integer")
                         .HasComment("Temporal scope of a holiday");

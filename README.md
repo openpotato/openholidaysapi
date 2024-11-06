@@ -6,7 +6,7 @@ The service behind the OpenHolidays API. Build with [.NET 8](https://dotnet.micr
 
 ## Technology stack
 
-+ [PostgreSQL 14](https://www.postgresql.org/) as database
++ [PostgreSQL 17](https://www.postgresql.org/) as database
 + [ASP.NET 8](https://dotnet.microsoft.com/apps/aspnet) as web framework
 + [Entity Framework Core 8](https://docs.microsoft.com/ef/) as ORM layer
 + [Swagger UI](https://swagger.io/tools/swagger-ui/) for OpenAPI based documentation
@@ -17,7 +17,7 @@ The following instructions show you how to set up a development environment on y
 
 ### Prerequisites
 
-+ Set up a local PosgreSQL 14 (or higher) instance.
++ Set up a local PosgreSQL 17 (or higher) instance.
 + Clone or download the repository [OpenHolidaysApi.Data](https://github.com/openpotato/openholidaysapi.data).
 + Clone or download this repository.
 + Open the solution file `OpenHolidaysApi.sln` in Visual Studio 2022.

@@ -70,11 +70,6 @@ namespace OpenHolidaysApi.CLI
         public DateOnly StartDate { get; set; }
 
         /// <summary>
-        /// Status of a holiday
-        /// </summary>
-        public HolidayStatus? Status { get; set; }
-
-        /// <summary>
         /// List of subdivisions
         /// </summary>
         public ICollection<string> Subdivisions { get; set; } = new List<string>();
@@ -103,7 +98,6 @@ namespace OpenHolidaysApi.CLI
                 Type = Type,
                 RegionalScope = RegionalScope,
                 TemporalScope = TemporalScope != null ? TemporalScope : DataLayer.TemporalScope.FullDay,
-                Status = Status,
                 StartDate = StartDate,
                 EndDate = EndDate != DateOnly.MinValue ? EndDate : StartDate
             };

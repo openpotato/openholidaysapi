@@ -84,12 +84,6 @@ namespace OpenHolidaysApi.DataLayer
         public DateOnly StartDate { get; set; }
 
         /// <summary>
-        /// Status of a holiday
-        /// </summary>
-        [Comment("Status of a holiday")]
-        public HolidayStatus? Status { get; set; }
-
-        /// <summary>
         /// List of subdivisions 
         /// </summary>
         public virtual ICollection<Subdivision> Subdivisions { get; set; } = new List<Subdivision>();

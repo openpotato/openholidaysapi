@@ -79,7 +79,8 @@ namespace OpenHolidaysApi
                         ) &&
                         (
                             (HolidayType)x.Type == HolidayType.Public ||
-                            (HolidayType)x.Type == HolidayType.Bank
+                            (HolidayType)x.Type == HolidayType.Bank ||
+                            (HolidayType)x.Type == HolidayType.Optional
                         ) &&
                         (
                             (x.StartDate >= validFrom && x.StartDate <= validTo) ||
@@ -113,7 +114,8 @@ namespace OpenHolidaysApi
                 .Where(x =>
                     (
                         (HolidayType)x.Type == HolidayType.Public ||
-                        (HolidayType)x.Type == HolidayType.Bank
+                        (HolidayType)x.Type == HolidayType.Bank ||
+                        (HolidayType)x.Type == HolidayType.Optional
                     ) &&
                     (
                         (x.StartDate <= date && x.EndDate >= date)

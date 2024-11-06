@@ -13,7 +13,7 @@ using OpenHolidaysApi.DataLayer;
 namespace OpenHolidaysApi.DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241105113959_Initial")]
+    [Migration("20241106080830_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -109,10 +109,6 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date")
                         .HasComment("Start date of the holiday");
-
-                    b.Property<int?>("Status")
-                        .HasColumnType("integer")
-                        .HasComment("Status of a holiday");
 
                     b.Property<int>("TemporalScope")
                         .HasColumnType("integer")

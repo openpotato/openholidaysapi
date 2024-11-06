@@ -46,7 +46,6 @@ namespace OpenHolidaysApi
             Name = holiday.Name.ToLocalizedList(languageCode);
             RegionalScope = (RegionalScope)holiday.RegionalScope;
             TemporalScope = (TemporalScope)holiday.TemporalScope;
-            Status = (HolidayStatus?)holiday.Status;
             Nationwide = holiday.Nationwide;
             Subdivisions = holiday.Subdivisions.Select(x => new SubdivisionReference() { Code = x.Code, ShortName = x.ShortName }).ToList();
             Comment = holiday.Comment.ToLocalizedList(languageCode);
@@ -55,7 +54,7 @@ namespace OpenHolidaysApi
         /// <summary>
         /// Additional localized comments
         /// </summary>
-        [JsonPropertyOrder(10)]
+        [JsonPropertyOrder(9)]
         public List<LocalizedText> Comment { get; set; }
 
         /// <summary>
@@ -86,7 +85,7 @@ namespace OpenHolidaysApi
         /// </summary>
         /// <example>true</example>
         [Required]
-        [JsonPropertyOrder(8)]
+        [JsonPropertyOrder(7)]
         public bool Nationwide { get; set; }
 
         /// <summary>
@@ -105,17 +104,10 @@ namespace OpenHolidaysApi
         public DateOnly StartDate { get; set; }
 
         /// <summary>
-        /// Status of a holiday
-        /// </summary>
-        /// <example>Optional</example>
-        [JsonPropertyOrder(7)]
-        public HolidayStatus? Status { get; set; }
-
-        /// <summary>
         /// List of subdivision references
         /// </summary>
         [Required]
-        [JsonPropertyOrder(9)]
+        [JsonPropertyOrder(8)]
         public List<SubdivisionReference> Subdivisions { get; set; }
 
         /// <summary>
