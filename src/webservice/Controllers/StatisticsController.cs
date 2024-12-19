@@ -30,19 +30,11 @@ namespace OpenHolidaysApi
     /// <summary>
     /// API controller for statistical data 
     /// </summary>
+    /// <param name="dbContext">Injected database context</param>
     [Route("Statistics")]
     [SwaggerTag("Reads statistical data about stored holidays")]
-    public class StatisticsController : BaseController
+    public class StatisticsController(AppDbContext dbContext) : BaseController(dbContext)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StatisticsController"/> class.
-        /// </summary>
-        /// <param name="dbContext">Injected database context</param>
-        public StatisticsController(AppDbContext dbContext)
-            : base(dbContext)
-        {
-        }
-
         /// <summary>
         /// Returns statistical data about public holidays for a given country.
         /// </summary>
@@ -50,8 +42,12 @@ namespace OpenHolidaysApi
         /// <param name="subdivisionCode" example="DE-BE">Code of the subdivision or empty</param>
         /// <returns>Statistical data</returns>
         [HttpGet("PublicHolidays")]
-        [Produces("text/plain", "text/json", "application/json")]
-        public async Task<StatisticsResponse> GetPublicHolidaysAsync([Required] string countryIsoCode, string subdivisionCode)
+        [ProducesResponseType(typeof(IEnumerable<StatisticsResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 400, MediaTypeNames.Application.ProblemDetails)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
+        public async Task<StatisticsResponse> GetPublicHolidaysAsync(
+            [FromQuery, Required] string countryIsoCode,
+            [FromQuery] string subdivisionCode = null)
         {
             DateOnly youngestDate;
             DateOnly oldestDate;
@@ -105,8 +101,12 @@ namespace OpenHolidaysApi
         /// <param name="subdivisionCode" example="DE-BE">Code of the subdivision or empty</param>
         /// <returns>Statistical data</returns>
         [HttpGet("SchoolHolidays")]
-        [Produces("text/plain", "text/json", "application/json")]
-        public async Task<StatisticsResponse> GetSchoolHolidaysAsync([Required] string countryIsoCode, string subdivisionCode)
+        [ProducesResponseType(typeof(IEnumerable<StatisticsResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 400, MediaTypeNames.Application.ProblemDetails)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
+        public async Task<StatisticsResponse> GetSchoolHolidaysAsync(
+            [FromQuery, Required] string countryIsoCode,
+            [FromQuery] string subdivisionCode = null)
         {
             DateOnly youngestDate;
             DateOnly oldestDate;

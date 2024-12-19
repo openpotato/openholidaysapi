@@ -97,7 +97,7 @@ namespace OpenHolidaysApi.CLI
                 Id = Id,
                 Type = Type,
                 RegionalScope = RegionalScope,
-                TemporalScope = TemporalScope != null ? TemporalScope : DataLayer.TemporalScope.FullDay,
+                TemporalScope = TemporalScope != null ? (TemporalScope)TemporalScope : DataLayer.TemporalScope.FullDay,
                 StartDate = StartDate,
                 EndDate = EndDate != DateOnly.MinValue ? EndDate : StartDate
             };

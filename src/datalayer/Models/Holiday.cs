@@ -93,7 +93,7 @@ namespace OpenHolidaysApi.DataLayer
         /// </summary>
         [Required]
         [Comment("Temporal scope of a holiday")]
-        public TemporalScope? TemporalScope { get; set; }
+        public TemporalScope TemporalScope { get; set; }
 
         /// <summary>
         /// Type of holiday

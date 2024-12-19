@@ -26,6 +26,7 @@ using Microsoft.OpenApi.Models;
 using OpenHolidaysApi;
 using OpenHolidaysApi.DataLayer;
 using System.Collections;
+using System.Net;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 
@@ -40,7 +41,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy.AllowAnyOrigin()
-              .WithMethods("GET")
+              .WithMethods(WebRequestMethods.Http.Get)
               .WithHeaders(HeaderNames.Accept);
     });
 });
@@ -49,7 +50,7 @@ builder.Services.AddCors(options =>
 builder.Services
     .AddControllers(setup =>
     {
-        setup.OutputFormatters.Add(new IcsOutputFormatter());
+        //setup.OutputFormatters.Add(new IcsOutputFormatter());
         setup.OutputFormatters.Add(new CsvOutputFormatter());
     })
     .AddJsonOptions(setup =>
@@ -71,6 +72,9 @@ builder.Services
             }
         };
     });
+
+// Exception handling
+builder.Services.AddProblemDetails();
 
 // Add Swagger/OpenAPI support
 builder.Services.AddEndpointsApiExplorer();
@@ -108,7 +112,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
   options.UseNpgsql(dataSource, providerOptions => providerOptions.EnableRetryOnFailure());
 });
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -122,7 +125,8 @@ else
     {
         ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
     });
-    app.UseExceptionHandler("/error");
+    app.UseStatusCodePages();
+    app.UseExceptionHandler();
     app.UseHttpsRedirection();
     app.UseHsts();
 }
@@ -136,4 +140,4 @@ app.UseSwaggerUI(options =>
 
 app.UseCors();
 app.MapControllers();
-app.Run();
+app.Run();  

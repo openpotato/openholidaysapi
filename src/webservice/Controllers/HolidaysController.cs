@@ -24,15 +24,16 @@ using Microsoft.EntityFrameworkCore;
 using OpenHolidaysApi.DataLayer;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace OpenHolidaysApi
 {
     /// <summary>
     /// API controller for holiday data
     /// </summary>
+    /// <param name="dbContext">Injected database context</param>
+    [Route("Holidays")]
     [SwaggerTag("Reads public and school holidays")]
-    public class HolidaysController : BaseController
+    public class HolidaysController(AppDbContext dbContext) : BaseController(dbContext)
     {
         /// <summary>
         /// Valid date range for holiday requests
@@ -40,26 +41,24 @@ namespace OpenHolidaysApi
         public const int ValidDateRange = 365 * 3; // 3 years
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HolidaysController"/> class.
-        /// </summary>
-        /// <param name="dbContext">Injected database context</param>
-        public HolidaysController(AppDbContext dbContext)
-            : base(dbContext)
-        {
-        }
-
-        /// <summary>
         /// Returns list of public holidays for a given country
         /// </summary>
         /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
-        /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <param name="validFrom" example="2023-01-01">Start of the date range</param>
         /// <param name="validTo" example="2023-12-31">End of the date range</param>
+        /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <param name="subdivisionCode" example="DE-BE">Code of the subdivision or empty</param>
         /// <returns>List of holidays</returns>
         [HttpGet("PublicHolidays")]
-        [Produces("text/plain", "text/json", "application/json", "text/calendar", "text/csv")]
-        public async Task<IEnumerable<HolidayResponse>> GetPublicHolidaysAsync([Required] string countryIsoCode, string languageIsoCode, [Required] DateOnly validFrom, [Required] DateOnly validTo, string subdivisionCode)
+        [ProducesResponseType(typeof(IEnumerable<HolidayResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain, MediaTypeNames.Text.Calendar, MediaTypeNames.Text.Csv)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 400, MediaTypeNames.Application.ProblemDetails)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
+        public async Task<IEnumerable<HolidayResponse>> GetPublicHolidaysAsync(
+            [FromQuery, Required] string countryIsoCode, 
+            [FromQuery, Required] DateOnly validFrom, 
+            [FromQuery, Required] DateOnly validTo,
+            [FromQuery] string languageIsoCode = "EN",
+            [FromQuery] string subdivisionCode = null)
         {
             if (DateOnlyUtils.DaysBetween(validFrom, validTo) <= ValidDateRange)
             {
@@ -93,7 +92,7 @@ namespace OpenHolidaysApi
             }
             else
             {
-                throw new ArgumentException($"The maximum date range is {ValidDateRange} days.");
+                throw new BadHttpRequestException($"The maximum date range is {ValidDateRange} days.");
             }
         }
 
@@ -104,8 +103,12 @@ namespace OpenHolidaysApi
         /// <param name="date" example="2023-12-25">Date of interest</param>
         /// <returns>List of holidays</returns>
         [HttpGet("PublicHolidaysByDate")]
-        [Produces("text/plain", "text/json", "application/json", "text/csv")]
-        public async Task<IEnumerable<HolidayByDateResponse>> GetPublicHolidaysByDateAsync(string languageIsoCode, [Required] DateOnly date)
+        [ProducesResponseType(typeof(IEnumerable<HolidayByDateResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain, MediaTypeNames.Text.Csv)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 400, MediaTypeNames.Application.ProblemDetails)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
+        public async Task<IEnumerable<HolidayByDateResponse>> GetPublicHolidaysByDateAsync(
+            [FromQuery, Required] DateOnly date,
+            [FromQuery] string languageIsoCode = "EN")
         {
             return await _dbContext.Set<Holiday>()
                 .AsNoTracking()
@@ -129,14 +132,21 @@ namespace OpenHolidaysApi
         /// Returns list of official school holidays for a given country 
         /// </summary>
         /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
-        /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <param name="validFrom" example="2023-01-01">Start of the date range</param>
         /// <param name="validTo" example="2023-12-31">End of the date range</param>
+        /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <param name="subdivisionCode" example="DE-MV">Code of the subdivision or empty</param>
         /// <returns>List of holidays</returns>
         [HttpGet("SchoolHolidays")]
-        [Produces("text/plain", "text/json", "application/json", "text/calendar", "text/csv")]
-        public async Task<IEnumerable<HolidayResponse>> GetSchoolHolidaysAsync([Required] string countryIsoCode, string languageIsoCode, [Required] DateOnly validFrom, [Required] DateOnly validTo, string subdivisionCode)
+        [ProducesResponseType(typeof(IEnumerable<HolidayResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain, MediaTypeNames.Text.Calendar, MediaTypeNames.Text.Csv)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 400, MediaTypeNames.Application.ProblemDetails)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
+        public async Task<IEnumerable<HolidayResponse>> GetSchoolHolidaysAsync(
+            [FromQuery, Required] string countryIsoCode,
+            [FromQuery, Required] DateOnly validFrom,
+            [FromQuery, Required] DateOnly validTo,
+            [FromQuery] string languageIsoCode = "EN",
+            [FromQuery] string subdivisionCode = null)
         {
             if (DateOnlyUtils.DaysBetween(validFrom, validTo) <= ValidDateRange)
             {
@@ -170,7 +180,7 @@ namespace OpenHolidaysApi
             }
             else
             {
-                throw new ArgumentException($"The maximum date range is {ValidDateRange} days.");
+                throw new BadHttpRequestException($"The maximum date range is {ValidDateRange} days.");
             }
         }
 
@@ -181,8 +191,12 @@ namespace OpenHolidaysApi
         /// <param name="date" example="2023-12-25">Date of interest</param>
         /// <returns>List of holidays</returns>
         [HttpGet("SchoolHolidaysByDate")]
-        [Produces("text/plain", "text/json", "application/json", "text/csv")]
-        public async Task<IEnumerable<HolidayByDateResponse>> GetSchoolHolidaysByDateAsync(string languageIsoCode, [Required] DateOnly date)
+        [ProducesResponseType(typeof(IEnumerable<HolidayByDateResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain, MediaTypeNames.Text.Csv)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 400, MediaTypeNames.Application.ProblemDetails)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
+        public async Task<IEnumerable<HolidayByDateResponse>> GetSchoolHolidaysByDateAsync(
+            [FromQuery, Required] DateOnly date,
+            [FromQuery] string languageIsoCode = "EN")
         {
             return await _dbContext.Set<Holiday>()
                 .AsNoTracking()

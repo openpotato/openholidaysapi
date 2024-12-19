@@ -30,26 +30,22 @@ namespace OpenHolidaysApi
     /// <summary>
     /// API controller for regional data
     /// </summary>
+    /// <param name="dbContext">Injected database context</param>
+    [Route("Regional")]
     [SwaggerTag("Reads countries, languages, subdivisions and organizational units")]
-    public class RegionalController : BaseController
+    public class RegionalController(AppDbContext dbContext) : BaseController(dbContext)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RegionalController"/> class.
-        /// </summary>
-        /// <param name="dbContext">Injected database context</param>
-        public RegionalController(AppDbContext dbContext)
-            : base(dbContext)
-        {
-        }
-
         /// <summary>
         /// Returns a list of all supported countries
         /// </summary>
         /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <returns>List of countries</returns>
         [HttpGet("Countries")]
-        [Produces("text/plain", "text/json", "application/json", "text/csv")]
-        public async Task<IEnumerable<CountryResponse>> GetCountriesAsync(string languageIsoCode)
+        [ProducesResponseType(typeof(IEnumerable<CountryResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain, MediaTypeNames.Text.Csv)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 400, MediaTypeNames.Application.ProblemDetails)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
+        public async Task<IEnumerable<CountryResponse>> GetCountriesAsync(
+            [FromQuery] string languageIsoCode = "EN")
         {
             return await _dbContext.Set<Country>()
                 .AsNoTracking()
@@ -64,8 +60,11 @@ namespace OpenHolidaysApi
         /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <returns>List of languages</returns>
         [HttpGet("Languages")]
-        [Produces("text/plain", "text/json", "application/json", "text/csv")]
-        public async Task<IEnumerable<LanguageResponse>> GetLanguagesAsync(string languageIsoCode)
+        [ProducesResponseType(typeof(IEnumerable<LanguageResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain, MediaTypeNames.Text.Csv)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 400, MediaTypeNames.Application.ProblemDetails)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
+        public async Task<IEnumerable<LanguageResponse>> GetLanguagesAsync(
+            [FromQuery] string languageIsoCode = "EN")
         {
             return await _dbContext.Set<Language>()
                 .AsNoTracking()
@@ -81,8 +80,12 @@ namespace OpenHolidaysApi
         /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <returns>List of subdivisions</returns>
         [HttpGet("Subdivisions")]
-        [Produces("text/plain", "text/json", "application/json", "text/csv")]
-        public async Task<IEnumerable<SubdivisionResponse>> GetSubdivisionsAsync([Required] string countryIsoCode, string languageIsoCode)
+        [ProducesResponseType(typeof(IEnumerable<SubdivisionResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain, MediaTypeNames.Text.Csv)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 400, MediaTypeNames.Application.ProblemDetails)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
+        public async Task<IEnumerable<SubdivisionResponse>> GetSubdivisionsAsync(
+            [FromQuery, Required] string countryIsoCode,
+            [FromQuery] string languageIsoCode = "EN")
         {
             return await _dbContext.Set<Subdivision>()
                 .AsNoTracking()

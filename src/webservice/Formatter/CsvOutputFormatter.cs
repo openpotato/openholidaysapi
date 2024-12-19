@@ -27,8 +27,8 @@ using System.Text;
 namespace OpenHolidaysApi
 {
     /// <summary>
-    /// Writes <see cref="CountryResponse"/> instances , <see cref="LanguageResponse"/> instances, <see cref="SubdivisionResponse"/>  instances or 
-    /// <see cref="HolidayResponse"/> instances formatted as CSV to the output stream.
+    /// Writes <see cref="CountryResponse"/> instances , <see cref="LanguageResponse"/> instances, <see cref="SubdivisionResponse"/>  instances,
+    /// <see cref="HolidayResponse"/> instances, <see cref="HolidayByDateResponse"/> instances or formatted as CSV to the output stream.
     /// </summary>
     public class CsvOutputFormatter : TextOutputFormatter
     {
@@ -37,7 +37,7 @@ namespace OpenHolidaysApi
         /// </summary>
         public CsvOutputFormatter()
         {
-            SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse("text/csv"));
+            SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse(MediaTypeNames.Text.Csv));
             SupportedEncodings.Add(Encoding.UTF8);
             SupportedEncodings.Add(Encoding.Unicode);
         }
@@ -169,7 +169,8 @@ namespace OpenHolidaysApi
                 typeof(IEnumerable<CountryResponse>).IsAssignableFrom(type) ||
                 typeof(IEnumerable<LanguageResponse>).IsAssignableFrom(type) ||
                 typeof(IEnumerable<SubdivisionResponse>).IsAssignableFrom(type) ||
-                typeof(IEnumerable<HolidayResponse>).IsAssignableFrom(type);
+                typeof(IEnumerable<HolidayResponse>).IsAssignableFrom(type) ||
+                typeof(IEnumerable<HolidayByDateResponse>).IsAssignableFrom(type);
         }
     }
 }

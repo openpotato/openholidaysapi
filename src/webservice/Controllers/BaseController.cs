@@ -27,32 +27,13 @@ namespace OpenHolidaysApi
     /// <summary>
     /// Abstract base API controller
     /// </summary>
+    /// <param name="dbContext">Injected database context</param>
     [ApiController]
-    public abstract class BaseController : ControllerBase
+    public abstract class BaseController(AppDbContext dbContext) : ControllerBase
     {
         /// <summary>
         /// Injected database context
         /// </summary>
-        protected readonly AppDbContext _dbContext;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BaseController"/> class.
-        /// </summary>
-        /// <param name="dbContext">Injected database context</param>
-        public BaseController(AppDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
-
-        /// <summary>
-        /// Support for HTTP API responses based on https://tools.ietf.org/html/rfc7807.
-        /// </summary>
-        /// <returns>Action result</returns>
-        [ApiExplorerSettings(IgnoreApi = true)]
-        [Route("/error")]
-        public IActionResult Error()
-        {
-            return this.ExceptionProblem();
-        }
+        protected readonly AppDbContext _dbContext = dbContext;
     }
 }
