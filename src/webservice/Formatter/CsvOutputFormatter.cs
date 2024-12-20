@@ -116,6 +116,8 @@ namespace OpenHolidaysApi
                     "EndDate",
                     "Type",
                     "Name",
+                    "RegionalScope",
+                    "TemporalScope",
                     "Nationwide",
                     "Subdivisions",
                     "Comment");
@@ -127,6 +129,8 @@ namespace OpenHolidaysApi
                     csvWriter.SetValue("EndDate", holiday.EndDate);
                     csvWriter.SetValue("Type", holiday.Type.ToString());
                     csvWriter.SetValue("Name", holiday.Name.ToSingleText("EN"));
+                    csvWriter.SetValue("RegionalScope", holiday.RegionalScope.ToString());
+                    csvWriter.SetValue("TemporalScope", holiday.TemporalScope.ToString());
                     csvWriter.SetValue("Nationwide", holiday.Nationwide);
                     csvWriter.SetValue("Subdivisions", $"{string.Join(",", holiday.Subdivisions.Select(x => x.Code).ToList())}");
                     csvWriter.SetValue("Comment", holiday.Comment.ToSingleText("EN"));
@@ -137,8 +141,11 @@ namespace OpenHolidaysApi
             {
                 await csvWriter.WriteHeadersAsync(
                     "Id",
+                    "Country",
                     "Type",
                     "Name",
+                    "RegionalScope",
+                    "TemporalScope",
                     "Nationwide",
                     "Subdivisions",
                     "Comment");
@@ -146,8 +153,11 @@ namespace OpenHolidaysApi
                 foreach (var holidayByDate in holidaysByDate)
                 {
                     csvWriter.SetValue("Id", holidayByDate.Id);
+                    csvWriter.SetValue("Country", holidayByDate.Country.IsoCode);
                     csvWriter.SetValue("Type", holidayByDate.Type.ToString());
                     csvWriter.SetValue("Name", holidayByDate.Name.ToSingleText("EN"));
+                    csvWriter.SetValue("RegionalScope", holidayByDate.RegionalScope.ToString());
+                    csvWriter.SetValue("TemporalScope", holidayByDate.TemporalScope.ToString());
                     csvWriter.SetValue("Nationwide", holidayByDate.Nationwide);
                     csvWriter.SetValue("Subdivisions", $"{string.Join(",", holidayByDate.Subdivisions.Select(x => x.Code).ToList())}");
                     csvWriter.SetValue("Comment", holidayByDate.Comment.ToSingleText("EN"));
