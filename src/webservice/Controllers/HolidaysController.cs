@@ -31,7 +31,7 @@ namespace OpenHolidaysApi
     /// API controller for holiday data
     /// </summary>
     /// <param name="dbContext">Injected database context</param>
-    [Route("Holidays")]
+    [Route("/")]
     [SwaggerTag("Reads public and school holidays")]
     public class HolidaysController(AppDbContext dbContext) : BaseController(dbContext)
     {

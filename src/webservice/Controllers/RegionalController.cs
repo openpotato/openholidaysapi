@@ -31,7 +31,7 @@ namespace OpenHolidaysApi
     /// API controller for regional data
     /// </summary>
     /// <param name="dbContext">Injected database context</param>
-    [Route("Regional")]
+    [Route("/")]
     [SwaggerTag("Reads countries, languages, subdivisions and organizational units")]
     public class RegionalController(AppDbContext dbContext) : BaseController(dbContext)
     {
