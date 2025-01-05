@@ -57,7 +57,7 @@ namespace OpenHolidaysApi
             [FromQuery, Required] string countryIsoCode, 
             [FromQuery, Required] DateOnly validFrom, 
             [FromQuery, Required] DateOnly validTo,
-            [FromQuery] string languageIsoCode = "EN",
+            [FromQuery] string languageIsoCode = null,
             [FromQuery] string subdivisionCode = null)
         {
             if (DateOnlyUtils.DaysBetween(validFrom, validTo) <= ValidDateRange)
@@ -108,7 +108,7 @@ namespace OpenHolidaysApi
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
         public async Task<IEnumerable<HolidayByDateResponse>> GetPublicHolidaysByDateAsync(
             [FromQuery, Required] DateOnly date,
-            [FromQuery] string languageIsoCode = "EN")
+            [FromQuery] string languageIsoCode = null)
         {
             return await _dbContext.Set<Holiday>()
                 .AsNoTracking()
@@ -145,7 +145,7 @@ namespace OpenHolidaysApi
             [FromQuery, Required] string countryIsoCode,
             [FromQuery, Required] DateOnly validFrom,
             [FromQuery, Required] DateOnly validTo,
-            [FromQuery] string languageIsoCode = "EN",
+            [FromQuery] string languageIsoCode = null,
             [FromQuery] string subdivisionCode = null)
         {
             if (DateOnlyUtils.DaysBetween(validFrom, validTo) <= ValidDateRange)
@@ -196,7 +196,7 @@ namespace OpenHolidaysApi
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
         public async Task<IEnumerable<HolidayByDateResponse>> GetSchoolHolidaysByDateAsync(
             [FromQuery, Required] DateOnly date,
-            [FromQuery] string languageIsoCode = "EN")
+            [FromQuery] string languageIsoCode = null)
         {
             return await _dbContext.Set<Holiday>()
                 .AsNoTracking()

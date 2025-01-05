@@ -45,7 +45,7 @@ namespace OpenHolidaysApi
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 400, MediaTypeNames.Application.ProblemDetails)]
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
         public async Task<IEnumerable<CountryResponse>> GetCountriesAsync(
-            [FromQuery] string languageIsoCode = "EN")
+            [FromQuery] string languageIsoCode = null)
         {
             return await _dbContext.Set<Country>()
                 .AsNoTracking()
@@ -64,7 +64,7 @@ namespace OpenHolidaysApi
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 400, MediaTypeNames.Application.ProblemDetails)]
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
         public async Task<IEnumerable<LanguageResponse>> GetLanguagesAsync(
-            [FromQuery] string languageIsoCode = "EN")
+            [FromQuery] string languageIsoCode = null)
         {
             return await _dbContext.Set<Language>()
                 .AsNoTracking()
@@ -85,7 +85,7 @@ namespace OpenHolidaysApi
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
         public async Task<IEnumerable<SubdivisionResponse>> GetSubdivisionsAsync(
             [FromQuery, Required] string countryIsoCode,
-            [FromQuery] string languageIsoCode = "EN")
+            [FromQuery] string languageIsoCode = null)
         {
             return await _dbContext.Set<Subdivision>()
                 .AsNoTracking()
