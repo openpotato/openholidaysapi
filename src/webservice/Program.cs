@@ -19,7 +19,9 @@
  */
 #endregion
 
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
@@ -126,7 +128,34 @@ else
         ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
     });
     app.UseStatusCodePages();
-    app.UseExceptionHandler();
+    app.UseExceptionHandler(new ExceptionHandlerOptions
+    {
+        ExceptionHandler = async (HttpContext context) =>
+        {
+            // Pass-through status codes from BadHttpRequestException. See: https://github.com/dotnet/aspnetcore/issues/43831
+            var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
+            var error = exceptionHandlerFeature?.Error;
+
+            if (error is BadHttpRequestException badRequestEx)
+            {
+                context.Response.StatusCode = badRequestEx.StatusCode;
+            }
+
+            if (context.RequestServices.GetRequiredService<IProblemDetailsService>() is { } problemDetailsService)
+            {
+                await problemDetailsService.WriteAsync(new()
+                {
+                    HttpContext = context,
+                    AdditionalMetadata = exceptionHandlerFeature?.Endpoint?.Metadata,
+                    ProblemDetails = { Status = context.Response.StatusCode, Detail = error?.Message }
+                });
+            }
+            else if (ReasonPhrases.GetReasonPhrase(context.Response.StatusCode) is { } reasonPhrase)
+            {
+                await context.Response.WriteAsync(reasonPhrase);
+            }
+        }
+    });
     app.UseHttpsRedirection();
     app.UseHsts();
 }
