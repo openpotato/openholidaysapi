@@ -50,7 +50,7 @@ namespace OpenHolidaysApi.CLI
         public DateOnly EndDate { get; set; }
 
         /// <summary>
-        /// Unqiue holiday id
+        /// Unique holiday id
         /// </summary>
         public Guid Id { get; set; }
 

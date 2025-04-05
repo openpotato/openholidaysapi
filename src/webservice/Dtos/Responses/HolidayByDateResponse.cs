@@ -64,7 +64,7 @@ namespace OpenHolidaysApi
         public CountryReference Country { get; set; }
 
         /// <summary>
-        /// Unqiue holiday id
+        /// Unique holiday id
         /// </summary>
         /// <example>ff3b77a3-8c31-47af-b1c7-f26dd51f3c19</example>
         [Required]
