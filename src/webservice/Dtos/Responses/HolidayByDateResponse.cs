@@ -96,7 +96,6 @@ namespace OpenHolidaysApi
         /// <summary>
         /// List of subdivision references
         /// </summary>
-        [Required]
         [JsonPropertyOrder(7)]
         public List<SubdivisionReference> Subdivisions { get; set; }
 
