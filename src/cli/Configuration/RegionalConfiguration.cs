@@ -37,14 +37,14 @@ namespace OpenHolidaysApi.CLI
         public string CountryFolderName { get; set; }
 
         /// <summary>
+        /// File name of groups
+        /// </summary>
+        public string GroupsFileName { get; set; }
+
+        /// <summary>
         /// Folder name of holiday files
         /// </summary>
         public string HolidaysFolderName { get; set; }
-
-        /// <summary>
-        /// File name of organizational units
-        /// </summary>
-        public string OUnitsFileName { get; set; }
 
         /// <summary>
         /// File name of subdivisions

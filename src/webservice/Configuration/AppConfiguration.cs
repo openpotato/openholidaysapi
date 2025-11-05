@@ -29,6 +29,6 @@ namespace OpenHolidaysApi
         /// <summary>
         /// Database configuration
         /// </summary>
-        public DatabaseConfiguration Database { get; set; } = new DatabaseConfiguration();
+        public DatabaseConfiguration Database { get; set; } = new();
     }
 }

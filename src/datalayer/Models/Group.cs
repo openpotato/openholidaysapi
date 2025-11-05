@@ -28,13 +28,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace OpenHolidaysApi.DataLayer
 {
     /// <summary>
-    /// Representation of a subdivision (e.g. a federal state or a canton)
+    /// Representation of a zone (e.g. a holiday zone)
     /// </summary>
-    [Table(DbTables.Subdivision)]
+    [Table(DbTables.Group)]
     [Index(nameof(Code), IsUnique = true)]
     [Index(nameof(CountryId), nameof(ShortName), IsUnique = true)]
-    [Comment("Representation of a subdivision (e.g. a federal state or a canton)")]
-    public class Subdivision : BaseEntity
+    [Comment("Representation of a group (e.g. a holiday zone)")]
+    public class Group : BaseEntity
     {
         /// <summary>
         /// Localized categories
@@ -45,15 +45,15 @@ namespace OpenHolidaysApi.DataLayer
         public ICollection<LocalizedText> Category { get; set; } = [];
 
         /// <summary>
-        /// List of subdivision children
+        /// List of zone children
         /// </summary>
-        public virtual ICollection<Subdivision> Children { get; set; } = [];
+        public virtual ICollection<Group> Children { get; set; } = [];
 
         /// <summary>
-        /// Subdivision code
+        /// Group code
         /// </summary>
         [Required]
-        [Comment("Subdivision code")]
+        [Comment("Group code")]
         public string Code { get; set; }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace OpenHolidaysApi.DataLayer
         /// </summary>
         [Column(TypeName = "jsonb")]
         [Comment("Additional localized comments")]
-        public ICollection<LocalizedText> Comment { get; set; } = new List<LocalizedText>();
+        public ICollection<LocalizedText> Comment { get; set; } = [];
 
         /// <summary>
         /// Reference to country
@@ -70,41 +70,22 @@ namespace OpenHolidaysApi.DataLayer
         public Country Country { get; set; }
 
         /// <summary>
-        /// List of group references
-        /// </summary>
-        public virtual ICollection<Group> Groups { get; set; } = [];
-
-        /// <summary>
         /// List of holidays
         /// </summary>
-        public virtual ICollection<Holiday> Holidays { get; set; } = new List<Holiday>();
+        public virtual ICollection<Holiday> Holidays { get; set; } = [];
 
         /// <summary>
-        /// Subdivision ISO 3166-2 code (if available)
-        /// </summary>
-        [Comment("Subdivision ISO 3166-2 code (if available)")]
-        public string IsoCode { get; set; }
-
-        /// <summary>
-        /// Localized subdivision names 
+        /// Localized group names 
         /// </summary>
         [Required]
         [Column(TypeName = "jsonb")]
-        [Comment("Localized subdivision names")]
-        public ICollection<LocalizedText> Name { get; set; } = new List<LocalizedText>();
+        [Comment("Localized group names")]
+        public ICollection<LocalizedText> Name { get; set; } = [];
 
         /// <summary>
-        /// Official languages as ISO-639-1 codes
+        /// Code of parent group
         /// </summary>
-        [Required]
-        [Column(TypeName = "jsonb")]
-        [Comment("Official languages as ISO-639-1 codes")]
-        public ICollection<string> OfficialLanguages { get; set; } = new List<string>();
-
-        /// <summary>
-        /// Code of parent subdivision
-        /// </summary>
-        public Subdivision Parent { get; set; }
+        public Group Parent { get; set; }
 
         /// <summary>
         /// Short name for display
@@ -113,10 +94,15 @@ namespace OpenHolidaysApi.DataLayer
         [Comment("Short name for display")]
         public string ShortName { get; set; }
 
+        /// <summary>
+        /// List of subdivision references
+        /// </summary>
+        public virtual ICollection<Subdivision> Subdivisions { get; set; } = [];
+        
         #region Foreign keys
         [Comment("Reference to country")]
         public Guid CountryId { get; set; }
-        [Comment("Reference to parent subdivision")]
+        [Comment("Reference to parent group")]
         public Guid? ParentId { get; set; }
         #endregion Foreign keys
     }

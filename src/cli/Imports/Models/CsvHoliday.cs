@@ -37,7 +37,7 @@ namespace OpenHolidaysApi.CLI
         /// <summary>
         /// Additional localized comments
         /// </summary>
-        public ICollection<CsvLocalizedText> Comment { get; set; } = new List<CsvLocalizedText>();
+        public ICollection<CsvLocalizedText> Comment { get; set; } = [];
 
         /// <summary>
         /// ISO 3166-1 country code
@@ -50,14 +50,19 @@ namespace OpenHolidaysApi.CLI
         public DateOnly EndDate { get; set; }
 
         /// <summary>
-        /// Unique holiday id
+        /// List of groups
+        /// </summary>
+        public ICollection<string> Groups { get; set; } = [];
+
+        /// <summary>
+        /// Unqiue holiday id
         /// </summary>
         public Guid Id { get; set; }
 
         /// <summary>
         /// Localized holiday names
         /// </summary>
-        public ICollection<CsvLocalizedText> Name { get; set; } = new List<CsvLocalizedText>();
+        public ICollection<CsvLocalizedText> Name { get; set; } = [];
 
         /// <summary>
         /// Regional scope of a holiday
@@ -72,7 +77,12 @@ namespace OpenHolidaysApi.CLI
         /// <summary>
         /// List of subdivisions
         /// </summary>
-        public ICollection<string> Subdivisions { get; set; } = new List<string>();
+        public ICollection<string> Subdivisions { get; set; } = [];
+
+        /// <summary>
+        /// Additional holiday tags
+        /// </summary>
+        public HolidayTags? Tags { get; set; }
 
         /// <summary>
         /// Temporal scope of a holiday
@@ -99,7 +109,8 @@ namespace OpenHolidaysApi.CLI
                 RegionalScope = RegionalScope,
                 TemporalScope = TemporalScope != null ? (TemporalScope)TemporalScope : DataLayer.TemporalScope.FullDay,
                 StartDate = StartDate,
-                EndDate = EndDate != DateOnly.MinValue ? EndDate : StartDate
+                EndDate = EndDate != DateOnly.MinValue ? EndDate : StartDate,
+                Tags = Tags != null ? (HolidayTags)Tags : 0
             };
 
             if (Name != null && Name.Count > 0)
@@ -111,7 +122,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("No names definied");
+                throw new CsvImportException("No names definied");
             }
 
             var countryId = await dbContext.Set<Country>().Where(x => x.IsoCode == Country).Select(x => x.Id).FirstOrDefaultAsync(cancellationToken);
@@ -121,7 +132,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("Unkown country");
+                throw new CsvImportException("Unkown country");
             }
 
             if (Subdivisions != null && Subdivisions.Count > 0)
@@ -138,15 +149,49 @@ namespace OpenHolidaysApi.CLI
                     }
                     else
                     {
-                        throw new Exception("Unkown subdivision");
+                        throw new CsvImportException("Unkown subdivision");
                     }
                 }
-                holiday.Nationwide = false;
+                holiday.HasSubdivisions = true;
             }
             else
             {
-                holiday.Nationwide = true;
+                holiday.HasSubdivisions = false;
             }
+
+            if (Groups != null && Groups.Count > 0)
+            {
+                foreach (var csvZone in Groups)
+                {
+                    var zone = await dbContext.Set<Group>()
+                        .Include(x => x.Subdivisions)
+                        .Where(x => x.CountryId == holiday.CountryId && x.ShortName == csvZone)
+                        .FirstOrDefaultAsync(cancellationToken);
+
+                    if (zone != null)
+                    {
+                        holiday.Groups.Add(zone);
+                        if (holiday.Subdivisions.Count == 0)
+                        {
+                            foreach (var subdivision in zone.Subdivisions)
+                            {
+                                holiday.Subdivisions.Add(subdivision);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new CsvImportException("Unkown group");
+                    }
+                }
+                holiday.HasGroups = true;
+            }
+            else
+            {
+                holiday.HasGroups = false;
+            }
+
+            holiday.Nationwide = !holiday.HasSubdivisions && !holiday.HasGroups;
 
             if (Comment != null && Comment.Count > 0)
             {

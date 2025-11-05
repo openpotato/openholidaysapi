@@ -43,8 +43,9 @@ namespace OpenHolidaysApi
             IsoCode = subdivision.IsoCode;
             Category = subdivision.Category.ToLocalizedList(languageCode);
             Name = subdivision.Name.ToLocalizedList(languageCode);
-            OfficialLanguages = subdivision.OfficialLanguages.ToList();
+            OfficialLanguages = [.. subdivision.OfficialLanguages];
             ShortName = subdivision.ShortName;
+            Groups = [.. subdivision.Groups.Select(x => new GroupReference() { Code = x.Code, ShortName = x.ShortName })];
             Comment = subdivision.Comment.ToLocalizedList(languageCode);
             Children = subdivision.Children.ToResponseList(languageCode);
         }
@@ -52,7 +53,7 @@ namespace OpenHolidaysApi
         /// <summary>
         /// Localized categories of the subdivision
         /// </summary>
-        /// <example>[{"language":"DE","text":"Bundesland"},{"language":"EN","text":"Federal state"}]</example>
+        /// <example>[{"language":"fr","text":"région"},{"language":"de","text":"Region"}]</example>
         [Required]
         [JsonPropertyOrder(4)]
         public List<LocalizedText> Category { get; set; }
@@ -60,13 +61,13 @@ namespace OpenHolidaysApi
         /// <summary>
         /// Child subdivisions
         /// </summary>
-        [JsonPropertyOrder(8)]
+        [JsonPropertyOrder(9)]
         public List<SubdivisionResponse> Children { get; set; }
 
         /// <summary>
         /// Subdivision code 
         /// </summary>
-        /// <example>DE-BE</example>
+        /// <example>FR-BF</example>
         [Required]
         [JsonPropertyOrder(1)]
         public string Code { get; set; }
@@ -76,20 +77,27 @@ namespace OpenHolidaysApi
         /// </summary>
         /// <example>null</example>
         [Required]
-        [JsonPropertyOrder(7)]
+        [JsonPropertyOrder(8)]
         public List<LocalizedText> Comment { get; set; }
+
+        /// <summary>
+        /// List of group references
+        /// </summary>
+        /// <example>>["FR-ZA-BE,FR-ZA-DI"]</example>
+        [JsonPropertyOrder(7)]
+        public List<GroupReference> Groups { get; set; }
 
         /// <summary>
         /// ISO 3166-2 subdivision code (if defined)
         /// </summary>
-        /// <example>DE-BE</example>
+        /// <example>FR-BFC</example>
         [JsonPropertyOrder(2)]
         public string IsoCode { get; set; }
 
         /// <summary>
         /// Localized names of the subdivision
         /// </summary>
-        /// <example>[{"language":"DE","text":"Berlin"},{"language":"EN","text":"Berlin"}]</example>
+        /// <example>[{"language":"fr","text":"Bourgogne-Franche-Comté"}]</example>
         [Required]
         [JsonPropertyOrder(5)]
         public List<LocalizedText> Name { get; set; }
@@ -97,7 +105,7 @@ namespace OpenHolidaysApi
         /// <summary>
         /// Official languages as ISO-639-1 codes
         /// </summary>
-        /// <example>>["DE"]</example>
+        /// <example>>["fr"]</example>
         [Required]
         [JsonPropertyOrder(6)]
         public List<string> OfficialLanguages { get; set; }
@@ -105,7 +113,7 @@ namespace OpenHolidaysApi
         /// <summary>
         /// Short name for display
         /// </summary>
-        /// <example>BE</example>
+        /// <example>BF</example>
         [Required]
         [JsonPropertyOrder(3)]
         public string ShortName { get; set; }

@@ -95,7 +95,9 @@ namespace OpenHolidaysApi
                     "ShortName",
                     "Category",
                     "Name",
-                    "OfficialLanguages");
+                    "OfficialLanguages",
+                    "Children",
+                    "Groups");
 
                 foreach (var subdivision in subdivisions)
                 {
@@ -104,7 +106,31 @@ namespace OpenHolidaysApi
                     csvWriter.SetValue("ShortName", subdivision.ShortName);
                     csvWriter.SetValue("Category", subdivision.Category.ToSingleText("EN"));
                     csvWriter.SetValue("Name", subdivision.Name.ToSingleText("EN"));
-                    csvWriter.SetValue("OfficialLanguages", $"{string.Join(",", subdivision.OfficialLanguages)}");
+                    csvWriter.SetValue("OfficialLanguages", subdivision.OfficialLanguages != null ? $"{string.Join(",", subdivision.OfficialLanguages)}" : null);
+                    csvWriter.SetValue("Children", subdivision.Children != null ? $"{string.Join(",", subdivision.Children.Select(x => x.Code).ToList())}" : null);
+                    csvWriter.SetValue("Groups", subdivision.Groups != null ? $"{string.Join(",", subdivision.Groups.Select(x => x.Code).ToList())}" : null);
+                    await csvWriter.WriteAsync();
+                }
+            }
+            else if (context.Object is IEnumerable<GroupResponse> groups)
+            {
+                await csvWriter.WriteHeadersAsync(
+                    "Code",
+                    "IsoCode",
+                    "ShortName",
+                    "Category",
+                    "Name",
+                    "Children",
+                    "Subdivisions");
+
+                foreach (var group in groups)
+                {
+                    csvWriter.SetValue("Code", group.Code);
+                    csvWriter.SetValue("ShortName", group.ShortName);
+                    csvWriter.SetValue("Category", group.Category.ToSingleText("en"));
+                    csvWriter.SetValue("Name", group.Name.ToSingleText("en"));
+                    csvWriter.SetValue("Children", group.Children != null ? $"{string.Join(",", group.Children.Select(x => x.Code).ToList())}" : null);
+                    csvWriter.SetValue("Subdivisions", group.Subdivisions != null ? $"{string.Join(",", group.Subdivisions.Select(x => x.Code).ToList())}" : null);
                     await csvWriter.WriteAsync();
                 }
             }
@@ -118,8 +144,10 @@ namespace OpenHolidaysApi
                     "Name",
                     "RegionalScope",
                     "TemporalScope",
+                    "Tags",
                     "Nationwide",
                     "Subdivisions",
+                    "Groups",
                     "Comment");
 
                 foreach (var holiday in holidays)
@@ -131,8 +159,10 @@ namespace OpenHolidaysApi
                     csvWriter.SetValue("Name", holiday.Name.ToSingleText("EN"));
                     csvWriter.SetValue("RegionalScope", holiday.RegionalScope.ToString());
                     csvWriter.SetValue("TemporalScope", holiday.TemporalScope.ToString());
+                    csvWriter.SetValue("Tags", holiday.Tags.ToString());
                     csvWriter.SetValue("Nationwide", holiday.Nationwide);
                     csvWriter.SetValue("Subdivisions", $"{string.Join(",", holiday.Subdivisions.Select(x => x.Code).ToList())}");
+                    csvWriter.SetValue("Groups", $"{string.Join(",", holiday.Groups.Select(x => x.Code).ToList())}");
                     csvWriter.SetValue("Comment", holiday.Comment.ToSingleText("EN"));
                     await csvWriter.WriteAsync();
                 }
@@ -146,8 +176,10 @@ namespace OpenHolidaysApi
                     "Name",
                     "RegionalScope",
                     "TemporalScope",
+                    "Tags",
                     "Nationwide",
                     "Subdivisions",
+                    "Groups",
                     "Comment");
 
                 foreach (var holidayByDate in holidaysByDate)
@@ -158,8 +190,10 @@ namespace OpenHolidaysApi
                     csvWriter.SetValue("Name", holidayByDate.Name.ToSingleText("EN"));
                     csvWriter.SetValue("RegionalScope", holidayByDate.RegionalScope.ToString());
                     csvWriter.SetValue("TemporalScope", holidayByDate.TemporalScope.ToString());
+                    csvWriter.SetValue("Tags", holidayByDate.Tags.ToString());
                     csvWriter.SetValue("Nationwide", holidayByDate.Nationwide);
                     csvWriter.SetValue("Subdivisions", $"{string.Join(",", holidayByDate.Subdivisions.Select(x => x.Code).ToList())}");
+                    csvWriter.SetValue("Groups", $"{string.Join(",", holidayByDate.Groups.Select(x => x.Code).ToList())}");
                     csvWriter.SetValue("Comment", holidayByDate.Comment.ToSingleText("EN"));
                     await csvWriter.WriteAsync();
                 }

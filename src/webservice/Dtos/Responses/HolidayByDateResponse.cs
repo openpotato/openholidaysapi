@@ -46,14 +46,16 @@ namespace OpenHolidaysApi
             RegionalScope = (RegionalScope)holiday.RegionalScope;
             TemporalScope = (TemporalScope)holiday.TemporalScope;
             Nationwide = holiday.Nationwide;
-            Subdivisions = holiday.Subdivisions.Select(x => new SubdivisionReference() { Code = x.Code, ShortName = x.ShortName }).ToList();
+            Subdivisions = [.. holiday.Subdivisions.Select(x => new SubdivisionReference() { Code = x.Code, ShortName = x.ShortName })];
+            Groups = [.. holiday.Groups.Select(x => new GroupReference() { Code = x.Code, ShortName = x.ShortName })];
+            Tags = (HolidayTags)holiday.Tags;
             Comment = holiday.Comment.ToLocalizedList(languageCode);
         }
 
         /// <summary>
         /// Additional localized comments
         /// </summary>
-        [JsonPropertyOrder(8)]
+        [JsonPropertyOrder(10)]
         public List<LocalizedText> Comment { get; set; }
 
         /// <summary>
@@ -62,6 +64,12 @@ namespace OpenHolidaysApi
         [Required]
         [JsonPropertyOrder(1)]
         public CountryReference Country { get; set; }
+
+        /// <summary>
+        /// List of group references
+        /// </summary>
+        [JsonPropertyOrder(8)]
+        public List<GroupReference> Groups { get; set; }
 
         /// <summary>
         /// Unique holiday id
@@ -98,6 +106,13 @@ namespace OpenHolidaysApi
         /// </summary>
         [JsonPropertyOrder(7)]
         public List<SubdivisionReference> Subdivisions { get; set; }
+
+        /// <summary>
+        /// Additional holday tags
+        /// </summary>
+        /// <example>Recommended</example>
+        [JsonPropertyOrder(9)]
+        public HolidayTags Tags { get; set; }
 
         /// <summary>
         /// Temporal scope of a holiday

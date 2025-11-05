@@ -41,24 +41,35 @@ namespace OpenHolidaysApi
             if (string.IsNullOrEmpty(languageCode))
             {
                 // Without language code returns ALL localized text entires
-                return localizedTextList.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList();
+                return [.. localizedTextList.Select(x => new LocalizedText { Language = x.Language, Text = x.Text })];
             }
             else
             {
                 // With language code returns either the matching language, the default language or the first language in the array
                 if (localizedTextList.Any(x => x.Language == languageCode))
                 {
-                    return localizedTextList.Where(x => x.Language == languageCode).Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList();
+                    return [.. localizedTextList.Where(x => x.Language == languageCode).Select(x => new LocalizedText { Language = x.Language, Text = x.Text })];
                 }
                 else if (localizedTextList.Any(x => x.Language == defaultLanguageCode))
                 {
-                    return localizedTextList.Where(x => x.Language == defaultLanguageCode).Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).ToList();
+                    return [.. localizedTextList.Where(x => x.Language == defaultLanguageCode).Select(x => new LocalizedText { Language = x.Language, Text = x.Text })];
                 }
                 else
                 {
-                    return localizedTextList.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).Take(1).ToList();
+                    return [.. localizedTextList.Select(x => new LocalizedText { Language = x.Language, Text = x.Text }).Take(1)];
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates a list of <see cref="GroupResponse"/> instances from a list of <see cref="Group"/> instances.
+        /// </summary>
+        /// <param name="subdivisionList">List of zones</param>
+        /// <param name="languageCode">ISO-639-1 language code </param>
+        /// <returns>List of <see cref="GroupResponse"/> instances</returns>
+        public static List<GroupResponse> ToResponseList(this ICollection<Group> subdivisionList, string languageCode)
+        {
+            return [.. subdivisionList.Select(x => new GroupResponse(x, languageCode))];
         }
 
         /// <summary>
@@ -69,7 +80,7 @@ namespace OpenHolidaysApi
         /// <returns>List of <see cref="SubdivisionResponse"/> instances</returns>
         public static List<SubdivisionResponse> ToResponseList(this ICollection<Subdivision> subdivisionList, string languageCode)
         {
-            return subdivisionList.Select(x => new SubdivisionResponse(x, languageCode)).ToList();
+            return [.. subdivisionList.Select(x => new SubdivisionResponse(x, languageCode))];
         }
 
         /// <summary>

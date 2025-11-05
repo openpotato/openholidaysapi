@@ -40,6 +40,7 @@ namespace OpenHolidaysApi
         /// </summary>
         /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
         /// <param name="subdivisionCode" example="DE-BE">Code of the subdivision or empty</param>
+        /// <param name="cancellationToken">A cancellation token</param>
         /// <returns>Statistical data</returns>
         [HttpGet("PublicHolidays")]
         [ProducesResponseType(typeof(IEnumerable<StatisticsResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain)]
@@ -47,7 +48,8 @@ namespace OpenHolidaysApi
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
         public async Task<StatisticsResponse> GetPublicHolidaysAsync(
             [FromQuery, Required] string countryIsoCode,
-            [FromQuery] string subdivisionCode = null)
+            [FromQuery] string subdivisionCode = null,
+            CancellationToken cancellationToken = default)
         {
             DateOnly youngestDate;
             DateOnly oldestDate;
@@ -71,7 +73,7 @@ namespace OpenHolidaysApi
                     ))
                 .OrderBy(x => x.StartDate)
                 .Select(x => x.StartDate)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
 
             youngestDate = await _dbContext.Set<Holiday>()
                 .AsNoTracking()
@@ -89,7 +91,7 @@ namespace OpenHolidaysApi
                     ))
                 .OrderByDescending(x => x.StartDate)
                 .Select(x => x.StartDate)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
 
             return new StatisticsResponse(youngestDate, oldestDate);
         }
@@ -99,6 +101,8 @@ namespace OpenHolidaysApi
         /// </summary>
         /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
         /// <param name="subdivisionCode" example="DE-BE">Code of the subdivision or empty</param>
+        /// <param name="groupCode">Code of the holiday group or empty</param>
+        /// <param name="cancellationToken">A cancellation token</param>
         /// <returns>Statistical data</returns>
         [HttpGet("SchoolHolidays")]
         [ProducesResponseType(typeof(IEnumerable<StatisticsResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain)]
@@ -106,7 +110,9 @@ namespace OpenHolidaysApi
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
         public async Task<StatisticsResponse> GetSchoolHolidaysAsync(
             [FromQuery, Required] string countryIsoCode,
-            [FromQuery] string subdivisionCode = null)
+            [FromQuery] string subdivisionCode = null,
+            [FromQuery] string groupCode = null,
+            CancellationToken cancellationToken = default)
         {
             DateOnly youngestDate;
             DateOnly oldestDate;
@@ -114,41 +120,60 @@ namespace OpenHolidaysApi
             oldestDate = await _dbContext.Set<Holiday>()
                 .AsNoTracking()
                 .Where(x =>
-                    x.Country.IsoCode == countryIsoCode &&
                     (
-                            string.IsNullOrEmpty(subdivisionCode) ||
-                            x.Nationwide ||
-                            x.Subdivisions.Any(sd =>
-                                CodeUtils.BuildStackOfCodes(subdivisionCode).Contains(sd.Code) ||
-                                EF.Functions.Like(sd.Code, $"{subdivisionCode}-%")
-                            )
+                        x.Country.IsoCode == countryIsoCode
                     ) &&
                     (
-                        (HolidayType)x.Type == HolidayType.School || 
-                        (HolidayType)x.Type == HolidayType.BackToSchool || 
+                        string.IsNullOrEmpty(subdivisionCode) || x.Nationwide ||
+                        x.Subdivisions.Any(sd =>
+                            CodeUtils.BuildStackOfCodes(subdivisionCode).Contains(sd.Code) ||
+                            EF.Functions.Like(sd.Code, $"{subdivisionCode}-%")
+                        )
+                    ) &&
+                    (
+                        string.IsNullOrEmpty(groupCode) || x.Nationwide ||
+                        x.Groups.Any(zn =>
+                            CodeUtils.BuildStackOfCodes(groupCode).Contains(zn.Code) ||
+                            EF.Functions.Like(zn.Code, $"{groupCode}-%")
+                        )
+                    ) &&
+                    (
+                        (HolidayType)x.Type == HolidayType.School ||
+                        (HolidayType)x.Type == HolidayType.BackToSchool ||
                         (HolidayType)x.Type == HolidayType.EndOfLessons
                     ))
                 .OrderBy(x => x.StartDate)
                 .Select(x => x.StartDate)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
 
             youngestDate = await _dbContext.Set<Holiday>()
                 .AsNoTracking()
                 .Where(x =>
-                    x.Country.IsoCode == countryIsoCode &&
                     (
-                            string.IsNullOrEmpty(subdivisionCode) ||
-                            x.Nationwide ||
-                            x.Subdivisions.Any(sd => sd.Code == subdivisionCode || EF.Functions.Like(sd.Code, $"{subdivisionCode}-%"))
+                        x.Country.IsoCode == countryIsoCode
                     ) &&
                     (
-                        (HolidayType)x.Type == HolidayType.School || 
-                        (HolidayType)x.Type == HolidayType.BackToSchool || 
+                        string.IsNullOrEmpty(subdivisionCode) || x.Nationwide ||
+                        x.Subdivisions.Any(sd =>
+                            CodeUtils.BuildStackOfCodes(subdivisionCode).Contains(sd.Code) ||
+                            EF.Functions.Like(sd.Code, $"{subdivisionCode}-%")
+                        )
+                    ) &&
+                    (
+                        string.IsNullOrEmpty(groupCode) || x.Nationwide ||
+                        x.Groups.Any(zn =>
+                            CodeUtils.BuildStackOfCodes(groupCode).Contains(zn.Code) ||
+                            EF.Functions.Like(zn.Code, $"{groupCode}-%")
+                        )
+                    ) &&
+                    (
+                        (HolidayType)x.Type == HolidayType.School ||
+                        (HolidayType)x.Type == HolidayType.BackToSchool ||
                         (HolidayType)x.Type == HolidayType.EndOfLessons
                     ))
                 .OrderByDescending(x => x.StartDate)
                 .Select(x => x.StartDate)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
 
             return new StatisticsResponse(youngestDate, oldestDate);
         }

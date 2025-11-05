@@ -27,12 +27,9 @@ namespace OpenHolidaysApi.CLI
     {
         public static Command ImportDb(AppConfiguration appConfiguration)
         {
-            var command = new Command("importdb", "Imports public data to the OpenHolidays API database")
-            {
-            };
+            var command = new Command("importdb", "Imports public data to the OpenHolidays API database");
 
-            command.SetHandler(async ()
-                => await CommandHandlers.ImportDb(appConfiguration));
+            command.SetAction(parseResult => CommandHandlers.ImportDb(appConfiguration));
 
             return command;
         }
@@ -41,15 +38,21 @@ namespace OpenHolidaysApi.CLI
         {
             var command = new Command("initdb", "Creates or migrates an OpenHolidays API database")
             {
-                new Option<bool>(new[] { "--import", "-i" }, "Imports public data")
+                new Option<bool>("--import", "-i")
                 {
-                    IsRequired = false
+                    Description = "Imports public data",
+                    Required = false
                 }
             };
 
-            command.SetHandler(async (bool import)
-                => await CommandHandlers.InitDb(appConfiguration, import),
-                    command.Options[0] as Option<bool>);
+            command.SetAction(async parseResult => await CommandHandlers.InitDb(
+                appConfiguration,
+                parseResult.GetValue(command.Options[0] as Option<bool>))
+            );
+
+            //command.SetHandler(async (bool import)
+            //    => await CommandHandlers.InitDb(appConfiguration, import),
+            //        command.Options[0] as Option<bool>);
 
             return command;
         }

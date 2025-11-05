@@ -39,7 +39,7 @@ namespace OpenHolidaysApi.DataLayer
         /// </summary>
         [Column(TypeName = "jsonb")]
         [Comment("Additional localized comments")]
-        public ICollection<LocalizedText> Comment { get; set; } = new List<LocalizedText>();
+        public ICollection<LocalizedText> Comment { get; set; } = [];
 
         /// <summary>
         /// Reference to country
@@ -55,12 +55,31 @@ namespace OpenHolidaysApi.DataLayer
         public DateOnly EndDate { get; set; }
 
         /// <summary>
+        /// List of groups
+        /// </summary>
+        public virtual ICollection<Group> Groups { get; set; } = [];
+
+        /// <summary>
+        /// Has this holiday directly attached groups?
+        /// </summary>
+        [Required]
+        [Comment("Has this holiday directly attached groups?")]
+        public bool HasGroups { get; set; }
+
+        /// <summary>
+        /// Has this holiday directly attached subdivisions?
+        /// </summary>
+        [Required]
+        [Comment("Has this holiday directly attached subdivisions?")]
+        public bool HasSubdivisions { get; set; }
+
+        /// <summary>
         /// Localized names of the holiday
         /// </summary>
         [Required]
         [Column(TypeName = "jsonb")]
         [Comment("Localized names of the holiday")]
-        public ICollection<LocalizedText> Name { get; set; } = new List<LocalizedText>();
+        public ICollection<LocalizedText> Name { get; set; } = [];
 
         /// <summary>
         /// Is this a nationwide holiday?
@@ -86,7 +105,13 @@ namespace OpenHolidaysApi.DataLayer
         /// <summary>
         /// List of subdivisions 
         /// </summary>
-        public virtual ICollection<Subdivision> Subdivisions { get; set; } = new List<Subdivision>();
+        public virtual ICollection<Subdivision> Subdivisions { get; set; } = [];
+
+        /// <summary>
+        /// Additional holiday tags
+        /// </summary>
+        [Comment("Additional holiday tags")]
+        public HolidayTags Tags { get; set; }
 
         /// <summary>
         /// Temporal scope of a holiday

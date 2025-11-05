@@ -48,6 +48,7 @@ namespace OpenHolidaysApi
         /// <param name="validTo" example="2023-12-31">End of the date range</param>
         /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <param name="subdivisionCode" example="DE-BE">Code of the subdivision or empty</param>
+        /// <param name="cancellationToken">A cancellation token</param>
         /// <returns>List of holidays</returns>
         [HttpGet("PublicHolidays")]
         [ProducesResponseType(typeof(IEnumerable<HolidayResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain, MediaTypeNames.Text.Calendar, MediaTypeNames.Text.Csv)]
@@ -58,7 +59,8 @@ namespace OpenHolidaysApi
             [FromQuery, Required] DateOnly validFrom, 
             [FromQuery, Required] DateOnly validTo,
             [FromQuery] string languageIsoCode = null,
-            [FromQuery] string subdivisionCode = null)
+            [FromQuery] string subdivisionCode = null,
+            CancellationToken cancellationToken = default)
         {
             if (DateOnlyUtils.DaysBetween(validFrom, validTo) <= ValidDateRange)
             {
@@ -88,7 +90,7 @@ namespace OpenHolidaysApi
                         ))
                     .OrderBy(x => x.StartDate)
                     .Select(x => new HolidayResponse(x, languageIsoCode))
-                    .ToListAsync();
+                    .ToListAsync(cancellationToken);
             }
             else
             {
@@ -101,6 +103,7 @@ namespace OpenHolidaysApi
         /// </summary>
         /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <param name="date" example="2023-12-25">Date of interest</param>
+        /// <param name="cancellationToken">A cancellation token</param>
         /// <returns>List of holidays</returns>
         [HttpGet("PublicHolidaysByDate")]
         [ProducesResponseType(typeof(IEnumerable<HolidayByDateResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain, MediaTypeNames.Text.Csv)]
@@ -108,7 +111,8 @@ namespace OpenHolidaysApi
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
         public async Task<IEnumerable<HolidayByDateResponse>> GetPublicHolidaysByDateAsync(
             [FromQuery, Required] DateOnly date,
-            [FromQuery] string languageIsoCode = null)
+            [FromQuery] string languageIsoCode = null,
+            CancellationToken cancellationToken = default)
         {
             return await _dbContext.Set<Holiday>()
                 .AsNoTracking()
@@ -125,7 +129,7 @@ namespace OpenHolidaysApi
                     ))
                 .OrderBy(x => x.StartDate)
                 .Select(x => new HolidayByDateResponse(x, languageIsoCode))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
         /// <summary>
@@ -136,6 +140,8 @@ namespace OpenHolidaysApi
         /// <param name="validTo" example="2023-12-31">End of the date range</param>
         /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <param name="subdivisionCode" example="DE-MV">Code of the subdivision or empty</param>
+        /// <param name="groupCode">Code of a holiday group or empty</param>
+        /// <param name="cancellationToken">A cancellation token</param>
         /// <returns>List of holidays</returns>
         [HttpGet("SchoolHolidays")]
         [ProducesResponseType(typeof(IEnumerable<HolidayResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain, MediaTypeNames.Text.Calendar, MediaTypeNames.Text.Csv)]
@@ -146,7 +152,9 @@ namespace OpenHolidaysApi
             [FromQuery, Required] DateOnly validFrom,
             [FromQuery, Required] DateOnly validTo,
             [FromQuery] string languageIsoCode = null,
-            [FromQuery] string subdivisionCode = null)
+            [FromQuery] string subdivisionCode = null,
+            [FromQuery] string groupCode = null,
+            CancellationToken cancellationToken = default)
         {
             if (DateOnlyUtils.DaysBetween(validFrom, validTo) <= ValidDateRange)
             {
@@ -154,6 +162,7 @@ namespace OpenHolidaysApi
                     .AsNoTracking()
                     .Include(x => x.Country)
                     .Include(x => x.Subdivisions)
+                    .Include(x => x.Groups)
                     .Where(x =>
                         x.Country.IsoCode == countryIsoCode &&
                         (
@@ -162,6 +171,13 @@ namespace OpenHolidaysApi
                             x.Subdivisions.Any(sd =>
                                 CodeUtils.BuildStackOfCodes(subdivisionCode).Contains(sd.Code) ||
                                 EF.Functions.Like(sd.Code, $"{subdivisionCode}-%")
+                            )
+                        ) &&
+                        (
+                            string.IsNullOrEmpty(groupCode) || x.Nationwide ||
+                            x.Groups.Any(zn =>
+                                CodeUtils.BuildStackOfCodes(groupCode).Contains(zn.Code) ||
+                                EF.Functions.Like(zn.Code, $"{groupCode}-%")
                             )
                         ) &&
                         (
@@ -176,7 +192,7 @@ namespace OpenHolidaysApi
                         ))
                     .OrderBy(x => x.StartDate)
                     .Select(x => new HolidayResponse(x, languageIsoCode))
-                    .ToListAsync();
+                    .ToListAsync(cancellationToken);
             }
             else
             {
@@ -189,6 +205,7 @@ namespace OpenHolidaysApi
         /// </summary>
         /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
         /// <param name="date" example="2023-12-25">Date of interest</param>
+        /// <param name="cancellationToken">A cancellation token</param>
         /// <returns>List of holidays</returns>
         [HttpGet("SchoolHolidaysByDate")]
         [ProducesResponseType(typeof(IEnumerable<HolidayByDateResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain, MediaTypeNames.Text.Csv)]
@@ -196,12 +213,14 @@ namespace OpenHolidaysApi
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
         public async Task<IEnumerable<HolidayByDateResponse>> GetSchoolHolidaysByDateAsync(
             [FromQuery, Required] DateOnly date,
-            [FromQuery] string languageIsoCode = null)
+            [FromQuery] string languageIsoCode = null,
+            CancellationToken cancellationToken = default)
         {
             return await _dbContext.Set<Holiday>()
                 .AsNoTracking()
                 .Include(x => x.Country)
                 .Include(x => x.Subdivisions)
+                .Include(x => x.Groups)
                 .Where(x =>
                     (
                         (HolidayType)x.Type == HolidayType.School || 
@@ -213,7 +232,7 @@ namespace OpenHolidaysApi
                     ))
                 .OrderBy(x => x.StartDate)
                 .Select(x => new HolidayByDateResponse(x, languageIsoCode))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
     }
 }

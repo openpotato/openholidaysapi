@@ -40,7 +40,7 @@ namespace OpenHolidaysApi.CLI
         /// <summary>
         /// Localized language names 
         /// </summary>
-        public ICollection<CsvLocalizedText> Name { get; set; } = new List<CsvLocalizedText>();
+        public ICollection<CsvLocalizedText> Name { get; set; } = [];
 
         /// <summary>
         /// Adds this CSV record to the database
@@ -64,7 +64,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("No language names definied");
+                throw new CsvImportException("No language names definied");
             }
 
             dbContext.Set<Language>().Add(language);

@@ -32,45 +32,91 @@ namespace OpenHolidaysApi
     /// </summary>
     /// <param name="dbContext">Injected database context</param>
     [Route("/")]
-    [SwaggerTag("Reads countries, languages, subdivisions and organizational units")]
+    [SwaggerTag("Reads countries, languages, subdivisions and groups")]
     public class RegionalController(AppDbContext dbContext) : BaseController(dbContext)
     {
         /// <summary>
         /// Returns a list of all supported countries
         /// </summary>
         /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
+        /// <param name="cancellationToken">A cancellation token</param>
         /// <returns>List of countries</returns>
         [HttpGet("Countries")]
         [ProducesResponseType(typeof(IEnumerable<CountryResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain, MediaTypeNames.Text.Csv)]
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 400, MediaTypeNames.Application.ProblemDetails)]
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
         public async Task<IEnumerable<CountryResponse>> GetCountriesAsync(
-            [FromQuery] string languageIsoCode = null)
+            [FromQuery] string languageIsoCode = null,
+            CancellationToken cancellationToken = default)
         {
             return await _dbContext.Set<Country>()
                 .AsNoTracking()
                 .OrderBy(x => x.IsoCode)
                 .Select(x => new CountryResponse(x, languageIsoCode))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
+        }
+
+        /// <summary>
+        /// Returns a list of relevant holiday groups for a supported country (if any)
+        /// </summary>
+        /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
+        /// <param name="languageIsoCode" example="de">ISO-639-1 code of a language or empty</param>
+        /// <param name="subdivisionCode">Code of a subdivision or empty</param>
+        /// <param name="cancellationToken">A cancellation token</param>
+        /// <returns>List of groups</returns>
+        [HttpGet("Groups")]
+        [ProducesResponseType(typeof(IEnumerable<GroupResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain, MediaTypeNames.Text.Csv)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 400, MediaTypeNames.Application.ProblemDetails)]
+        [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
+        public async Task<IEnumerable<GroupResponse>> GetGroupsAsync(
+            [FromQuery, Required] string countryIsoCode,
+            [FromQuery] string languageIsoCode = null,
+            [FromQuery] string subdivisionCode = null,
+            CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Set<Group>()
+                .AsNoTracking()
+                .Include(x => x.Subdivisions)
+                .Include(x => x.Children).ThenInclude(x => x.Children)
+                .Where(x =>
+                    (
+                        x.Country.IsoCode == countryIsoCode
+                    ) &&
+                    (
+                        string.IsNullOrEmpty(subdivisionCode) ||
+                        x.Subdivisions.Any(sd =>
+                            CodeUtils.BuildStackOfCodes(subdivisionCode).Contains(sd.Code) ||
+                            EF.Functions.Like(sd.Code, $"{subdivisionCode}-%")
+                        )
+                    ) &&
+                    (
+                        x.ParentId == null
+                    )
+                )
+                .OrderBy(x => x.Code)
+                .Select(x => new GroupResponse(x, languageIsoCode))
+                .ToListAsync(cancellationToken);
         }
 
         /// <summary>
         /// Returns a list of all used languages
         /// </summary>
         /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
+        /// <param name="cancellationToken">A cancellation token</param>
         /// <returns>List of languages</returns>
         [HttpGet("Languages")]
         [ProducesResponseType(typeof(IEnumerable<LanguageResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain, MediaTypeNames.Text.Csv)]
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 400, MediaTypeNames.Application.ProblemDetails)]
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
         public async Task<IEnumerable<LanguageResponse>> GetLanguagesAsync(
-            [FromQuery] string languageIsoCode = null)
+            [FromQuery] string languageIsoCode = null,
+            CancellationToken cancellationToken = default)
         {
             return await _dbContext.Set<Language>()
                 .AsNoTracking()
                 .OrderBy(x => x.IsoCode)
                 .Select(x => new LanguageResponse(x, languageIsoCode))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
         /// <summary>
@@ -78,6 +124,7 @@ namespace OpenHolidaysApi
         /// </summary>
         /// <param name="countryIsoCode" example="DE">ISO 3166-1 code of the country</param>
         /// <param name="languageIsoCode" example="DE">ISO-639-1 code of a language or empty</param>
+        /// <param name="cancellationToken">A cancellation token</param>
         /// <returns>List of subdivisions</returns>
         [HttpGet("Subdivisions")]
         [ProducesResponseType(typeof(IEnumerable<SubdivisionResponse>), statusCode: 200, MediaTypeNames.Application.Json, MediaTypeNames.Text.Json, MediaTypeNames.Text.Plain, MediaTypeNames.Text.Csv)]
@@ -85,15 +132,25 @@ namespace OpenHolidaysApi
         [ProducesResponseType(typeof(ProblemDetails), statusCode: 500, MediaTypeNames.Application.ProblemDetails)]
         public async Task<IEnumerable<SubdivisionResponse>> GetSubdivisionsAsync(
             [FromQuery, Required] string countryIsoCode,
-            [FromQuery] string languageIsoCode = null)
+            [FromQuery] string languageIsoCode = null,
+            CancellationToken cancellationToken = default)
         {
             return await _dbContext.Set<Subdivision>()
                 .AsNoTracking()
-                .Include(x => x.Children)
-                .Where(x => x.Country.IsoCode == countryIsoCode && x.ParentId == null)
+                .Include(x => x.Groups)
+                .Include(x => x.Children).ThenInclude(x => x.Children)
+                .Where(x =>
+                    (
+                        x.Country.IsoCode == countryIsoCode
+                    ) &&
+                    (
+                        x.ParentId == null
+                    )
+                )
                 .OrderBy(x => x.Code)
                 .Select(x => new SubdivisionResponse(x, languageIsoCode))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
     }
 }
+

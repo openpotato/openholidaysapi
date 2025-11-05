@@ -46,6 +46,24 @@ namespace OpenHolidaysApi.DataLayer
                 x.HasOne(c => c.Parent)
                  .WithMany(c => c.Children)
                  .HasForeignKey(c => c.ParentId);
+                x.HasMany(left => left.Groups)
+                 .WithMany(right => right.Subdivisions)
+                 .UsingEntity(join => join.ToTable(DbTables.SubdivisionGroup, t => t.HasComment("Join table between Subdivision and Group")));
+                x.HasMany(left => left.Holidays)
+                 .WithMany(right => right.Subdivisions)
+                 .UsingEntity(join => join.ToTable(DbTables.SubdivisionHoliday, t => t.HasComment("Join table between Subdivision and Holiday")));
+            });
+            modelBuilder.Entity<Group>(x =>
+            {
+                x.HasOne(c => c.Parent)
+                 .WithMany(c => c.Children)
+                 .HasForeignKey(c => c.ParentId);
+                x.HasMany(left => left.Subdivisions)
+                 .WithMany(right => right.Groups)
+                 .UsingEntity(join => join.ToTable(DbTables.SubdivisionGroup, t => t.HasComment("Join table between Subdivision and Group")));
+                x.HasMany(left => left.Holidays)
+                 .WithMany(right => right.Groups)
+                 .UsingEntity(join => join.ToTable(DbTables.GroupHoliday, t => t.HasComment("Join table between Group and Holiday")));
             });
             modelBuilder.Entity<Holiday>();
         }

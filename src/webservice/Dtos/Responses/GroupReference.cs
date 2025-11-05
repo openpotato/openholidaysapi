@@ -19,7 +19,6 @@
  */
 #endregion
 
-using OpenHolidaysApi.DataLayer;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
@@ -27,45 +26,25 @@ using System.Text.Json.Serialization;
 namespace OpenHolidaysApi
 {
     /// <summary>
-    /// Representation of a country as defined in ISO 3166-1 
+    /// Representation of a holiday group reference 
     /// </summary>
     [SwaggerSchema(ReadOnly = true)]
-    public class CountryResponse
+    public class GroupReference
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CountryResponse"/> class.
+        /// Group code
         /// </summary>
-        /// <param name="country">Assigns data from <see cref="Country"/></param>
-        /// <param name="languageCode">Language code or null</param>
-        public CountryResponse(Country country, string languageCode)
-        {
-            IsoCode = country.IsoCode;
-            Name = country.Name.ToLocalizedList(languageCode);
-            OfficialLanguages = [.. country.OfficialLanguages];
-        }
-
-        /// <summary>
-        /// ISO 3166-1 country code
-        /// </summary>
-        /// <example>DE</example>
+        /// <example>FR-ZA</example>
         [Required]
         [JsonPropertyOrder(1)]
-        public string IsoCode { get; set; }
+        public string Code { get; set; }
 
         /// <summary>
-        /// Localized country names
+        /// Short name for display
         /// </summary>
-        /// <example>[{"language":"EN","text":"Germany"},{"language":"DE","text":"Deutschland"}]</example>
+        /// <example>ZA</example>
         [Required]
         [JsonPropertyOrder(2)]
-        public List<LocalizedText> Name { get; set; }
-
-        /// <summary>
-        /// Official ISO-639-1 language codes
-        /// </summary>
-        /// <example>["DE"]</example>
-        [Required]
-        [JsonPropertyOrder(4)]
-        public List<string> OfficialLanguages { get; set; }
+        public string ShortName { get; set; }
     }
 }

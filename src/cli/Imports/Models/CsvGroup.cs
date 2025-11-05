@@ -1,4 +1,4 @@
-﻿
+﻿#region OpenHolidays API - Copyright (C) STÜBER SYSTEMS GmbH
 /*    
  *    OpenHolidays API 
  *    
@@ -17,9 +17,11 @@
  *    along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#endregion
 
 using Microsoft.EntityFrameworkCore;
 using OpenHolidaysApi.DataLayer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -28,24 +30,24 @@ using System.Threading.Tasks;
 namespace OpenHolidaysApi.CLI
 {
     /// <summary>
-    /// A CSV subdivision record  (e.g. a federal state)
+    /// A CSV group record  (e.g. a holiday zone)
     /// </summary>
-    public class CsvSubdivision : CsvBase
+    public class CsvGroup : CsvBase
     {
         /// <summary>
-        /// Localized subdivision categories
+        /// Localized zone categories
         /// </summary>
-        public ICollection<CsvLocalizedText> Category { get; set; } = new List<CsvLocalizedText>();
+        public ICollection<CsvLocalizedText> Category { get; set; } = [];
 
         /// <summary>
-        /// Subdivision code
+        /// Zone code
         /// </summary>
         public string Code { get; set; }
 
         /// <summary>
         /// Additional localized notes
         /// </summary>
-        public ICollection<CsvLocalizedText> Comment { get; set; } = new List<CsvLocalizedText>();
+        public ICollection<CsvLocalizedText> Comment { get; set; } = [];
 
         /// <summary>
         /// ISO 3166-1 country code
@@ -53,32 +55,17 @@ namespace OpenHolidaysApi.CLI
         public string Country { get; set; }
 
         /// <summary>
-        /// List of groups
-        /// </summary>
-        public ICollection<string> Groups { get; set; } = [];
-
-        /// <summary>
-        /// ISO 3166-2 subdivision code (if available)
-        /// </summary>
-        public string IsoCode { get; set; }
-
-        /// <summary>
         /// Localized subdivision names 
         /// </summary>
-        public ICollection<CsvLocalizedText> Name { get; set; } = new List<CsvLocalizedText>();
+        public ICollection<CsvLocalizedText> Name { get; set; } = [];
 
         /// <summary>
-        /// Official languages as ISO-639-1 codes
-        /// </summary>
-        public ICollection<string> OfficialLanguages { get; set; } = new List<string>();
-
-        /// <summary>
-        /// Code of the parent subdivision 
+        /// Code of the parent zone
         /// </summary>
         public string Parent { get; set; }
 
         /// <summary>
-        /// Short name of the subdivision 
+        /// Short name of the zone
         /// </summary>
         public string ShortName { get; set; }
 
@@ -90,10 +77,9 @@ namespace OpenHolidaysApi.CLI
         /// <returns>A task that represents the asynchronous operation.</returns>
         internal override async Task AddToDatabase(AppDbContext dbContext, CancellationToken cancellationToken)
         {
-            var subdivision = new Subdivision
+            var group = new Group
             {
                 Code = Code,
-                IsoCode = IsoCode,
                 ShortName = ShortName
             };
 
@@ -101,18 +87,18 @@ namespace OpenHolidaysApi.CLI
             {
                 foreach (var csvName in Name)
                 {
-                    subdivision.Name.Add(new LocalizedText { Language = csvName.Language, Text = csvName.Text });
+                    group.Name.Add(new LocalizedText { Language = csvName.Language, Text = csvName.Text });
                 }
             }
             else
             {
-                throw new CsvImportException("No subdivision names definied");
+                throw new CsvImportException("No group names definied");
             }
 
             var countryId = await dbContext.Set<Country>().Where(x => x.IsoCode == Country).Select(x => x.Id).FirstOrDefaultAsync(cancellationToken);
             if (countryId != default)
             {
-                subdivision.CountryId = countryId;
+                group.CountryId = countryId;
             }
             else
             {
@@ -123,7 +109,7 @@ namespace OpenHolidaysApi.CLI
             {
                 foreach (var csvCategory in Category)
                 {
-                    subdivision.Category.Add(new LocalizedText { Language = csvCategory.Language, Text = csvCategory.Text });
+                    group.Category.Add(new LocalizedText { Language = csvCategory.Language, Text = csvCategory.Text });
                 }
             }
             else
@@ -131,47 +117,16 @@ namespace OpenHolidaysApi.CLI
                 throw new CsvImportException("No official country names definied");
             }
 
-            if (OfficialLanguages != null && OfficialLanguages.Count > 0)
-            {
-                foreach (var languageCode in OfficialLanguages)
-                {
-                    subdivision.OfficialLanguages.Add(languageCode);
-                }
-            }
-            else
-            {
-                throw new CsvImportException("No official languages definied");
-            }
-
-            if (Groups != null && Groups.Count > 0)
-            {
-                foreach (var csvGroup in Groups)
-                {
-                    var group = await dbContext.Set<Group>()
-                        .Where(x => x.CountryId == subdivision.CountryId && x.ShortName == csvGroup)
-                        .FirstOrDefaultAsync(cancellationToken);
-
-                    if (group != null)
-                    {
-                        subdivision.Groups.Add(group);
-                    }
-                    else
-                    {
-                        throw new CsvImportException("Unkown zone");
-                    }
-                }
-            }
-
             if (!string.IsNullOrEmpty(Parent))
             {
-                var parentId = await dbContext.Set<Subdivision>()
-                    .Where(x => x.CountryId == subdivision.CountryId && x.ShortName == Parent)
+                var parentId = await dbContext.Set<Group>()
+                    .Where(x => x.CountryId == group.CountryId && x.ShortName == Parent)
                     .Select(x => x.Id)
                     .FirstOrDefaultAsync(cancellationToken);
 
                 if (parentId != default)
                 {
-                    subdivision.ParentId = parentId;
+                    group.ParentId = parentId;
                 }
                 else
                 {
@@ -183,11 +138,11 @@ namespace OpenHolidaysApi.CLI
             {
                 foreach (var csvComment in Comment)
                 {
-                    subdivision.Comment.Add(new LocalizedText { Language = csvComment.Language, Text = csvComment.Text });
+                    group.Comment.Add(new LocalizedText { Language = csvComment.Language, Text = csvComment.Text });
                 }
             }
 
-            dbContext.Set<Subdivision>().Add(subdivision);
+            dbContext.Set<Group>().Add(group);
 
             await dbContext.SaveChangesAsync(cancellationToken);
         }

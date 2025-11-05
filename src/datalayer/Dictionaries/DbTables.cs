@@ -27,9 +27,12 @@ namespace OpenHolidaysApi.DataLayer
     public static class DbTables
     {
         public const string Country = "Countries";
+        public const string Group = "Groups";
+        public const string GroupHoliday = "GroupHolidays";
         public const string Holiday = "Holidays";
         public const string Language = "Languages";
-        public const string OUnit = "OUnits";
         public const string Subdivision = "Subdivisions";
+        public const string SubdivisionGroup = "SubdivisionGroups";
+        public const string SubdivisionHoliday = "SubdivisionHolidays";
     }
 }

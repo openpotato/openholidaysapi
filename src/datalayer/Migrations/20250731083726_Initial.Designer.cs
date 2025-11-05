@@ -13,7 +13,7 @@ using OpenHolidaysApi.DataLayer;
 namespace OpenHolidaysApi.DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241108114156_Initial")]
+    [Migration("20250731083726_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -21,10 +21,46 @@ namespace OpenHolidaysApi.DataLayer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "9.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("GroupHoliday", b =>
+                {
+                    b.Property<Guid>("GroupsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("HolidaysId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("GroupsId", "HolidaysId");
+
+                    b.HasIndex("HolidaysId");
+
+                    b.ToTable("GroupHolidays", null, t =>
+                        {
+                            t.HasComment("Join table between Group and Holiday");
+                        });
+                });
+
+            modelBuilder.Entity("GroupSubdivision", b =>
+                {
+                    b.Property<Guid>("GroupsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SubdivisionsId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("GroupsId", "SubdivisionsId");
+
+                    b.HasIndex("SubdivisionsId");
+
+                    b.ToTable("SubdivisionGroups", null, t =>
+                        {
+                            t.HasComment("Join table between Subdivision and Group");
+                        });
+                });
 
             modelBuilder.Entity("HolidaySubdivision", b =>
                 {
@@ -38,7 +74,10 @@ namespace OpenHolidaysApi.DataLayer.Migrations
 
                     b.HasIndex("SubdivisionsId");
 
-                    b.ToTable("HolidaySubdivision");
+                    b.ToTable("SubdivisionHolidays", null, t =>
+                        {
+                            t.HasComment("Join table between Subdivision and Holiday");
+                        });
                 });
 
             modelBuilder.Entity("OpenHolidaysApi.DataLayer.Country", b =>
@@ -74,6 +113,61 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         });
                 });
 
+            modelBuilder.Entity("OpenHolidaysApi.DataLayer.Group", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnOrder(0)
+                        .HasComment("Unique Id");
+
+                    b.Property<ICollection<LocalizedText>>("Category")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasComment("Localized categories");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasComment("Group code");
+
+                    b.Property<ICollection<LocalizedText>>("Comment")
+                        .HasColumnType("jsonb")
+                        .HasComment("Additional localized comments");
+
+                    b.Property<Guid>("CountryId")
+                        .HasColumnType("uuid")
+                        .HasComment("Reference to country");
+
+                    b.Property<ICollection<LocalizedText>>("Name")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasComment("Localized group names");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uuid")
+                        .HasComment("Reference to parent group");
+
+                    b.Property<string>("ShortName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasComment("Short name for display");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("CountryId", "ShortName")
+                        .IsUnique();
+
+                    b.ToTable("Groups", t =>
+                        {
+                            t.HasComment("Representation of a group (e.g. a holiday zone)");
+                        });
+                });
+
             modelBuilder.Entity("OpenHolidaysApi.DataLayer.Holiday", b =>
                 {
                     b.Property<Guid>("Id")
@@ -93,6 +187,14 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .HasColumnType("date")
                         .HasComment("End date of the holiday");
 
+                    b.Property<bool>("HasGroups")
+                        .HasColumnType("boolean")
+                        .HasComment("Has this holiday directly attached groups?");
+
+                    b.Property<bool>("HasSubdivisions")
+                        .HasColumnType("boolean")
+                        .HasComment("Has this holiday directly attached subdivisions?");
+
                     b.Property<ICollection<LocalizedText>>("Name")
                         .IsRequired()
                         .HasColumnType("jsonb")
@@ -109,6 +211,10 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date")
                         .HasComment("Start date of the holiday");
+
+                    b.Property<int>("Tags")
+                        .HasColumnType("integer")
+                        .HasComment("Additional holiday tags");
 
                     b.Property<int>("TemporalScope")
                         .HasColumnType("integer")
@@ -220,6 +326,36 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         });
                 });
 
+            modelBuilder.Entity("GroupHoliday", b =>
+                {
+                    b.HasOne("OpenHolidaysApi.DataLayer.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OpenHolidaysApi.DataLayer.Holiday", null)
+                        .WithMany()
+                        .HasForeignKey("HolidaysId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GroupSubdivision", b =>
+                {
+                    b.HasOne("OpenHolidaysApi.DataLayer.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OpenHolidaysApi.DataLayer.Subdivision", null)
+                        .WithMany()
+                        .HasForeignKey("SubdivisionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("HolidaySubdivision", b =>
                 {
                     b.HasOne("OpenHolidaysApi.DataLayer.Holiday", null)
@@ -233,6 +369,23 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .HasForeignKey("SubdivisionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("OpenHolidaysApi.DataLayer.Group", b =>
+                {
+                    b.HasOne("OpenHolidaysApi.DataLayer.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OpenHolidaysApi.DataLayer.Group", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Country");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("OpenHolidaysApi.DataLayer.Holiday", b =>
@@ -266,6 +419,11 @@ namespace OpenHolidaysApi.DataLayer.Migrations
             modelBuilder.Entity("OpenHolidaysApi.DataLayer.Country", b =>
                 {
                     b.Navigation("Subdivisions");
+                });
+
+            modelBuilder.Entity("OpenHolidaysApi.DataLayer.Group", b =>
+                {
+                    b.Navigation("Children");
                 });
 
             modelBuilder.Entity("OpenHolidaysApi.DataLayer.Subdivision", b =>

@@ -6,7 +6,7 @@ The service behind the OpenHolidays API. Build with [.NET 9](https://dotnet.micr
 
 ## Technology stack
 
-+ [PostgreSQL 17](https://www.postgresql.org/) as database
++ [PostgreSQL 17+](https://www.postgresql.org/) as database
 + [ASP.NET 9](https://dotnet.microsoft.com/apps/aspnet) as web framework
 + [Entity Framework Core 9](https://docs.microsoft.com/ef/) as ORM layer
 + [Swagger UI](https://swagger.io/tools/swagger-ui/) for OpenAPI based documentation

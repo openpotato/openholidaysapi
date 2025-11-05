@@ -88,7 +88,14 @@ namespace OpenHolidaysApi
 
                     if (!holiday.Nationwide)
                     {
-                        icsEvent.Summary.Value = $"{icsEvent.Summary.Value} ({string.Join(",", holiday.Subdivisions.Select(x => x.ShortName).ToList())})";
+                        if (holiday.Subdivisions?.Count > 0)
+                        {
+                            icsEvent.Summary.Value = $"{icsEvent.Summary.Value} ({string.Join(",", holiday.Subdivisions.Select(x => x.ShortName).ToList())})";
+                        }
+                        if (holiday.Groups?.Count > 0)
+                        {
+                            icsEvent.Summary.Value = $"{icsEvent.Summary.Value} [{string.Join(",", holiday.Groups.Select(x => x.ShortName).ToList())}]";
+                        }
                     }
 
                     if (holiday.Comment.Count > 0)

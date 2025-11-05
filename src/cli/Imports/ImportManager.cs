@@ -119,6 +119,17 @@ namespace OpenHolidaysApi.CLI
                     // Get base regional folder
                     var regionalFolder = new DirectoryInfo(Path.Combine(importFolder.FullName, regionalSource.CountryFolderName));
 
+                    // Import groups
+                    if (!string.IsNullOrEmpty(regionalSource.GroupsFileName))
+                    {
+                        var groupsFile = new FileInfo(Path.Combine(regionalFolder.FullName, regionalSource.GroupsFileName));
+
+                        if (groupsFile.Exists)
+                        {
+                            await ImportToDatabaseAsync<CsvGroup>(dbContext, groupsFile, cancellationToken);
+                        }
+                    }
+
                     // Import subdivisions
                     if (!string.IsNullOrEmpty(regionalSource.SubdivisionsFileName))
                     {

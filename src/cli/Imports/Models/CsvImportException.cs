@@ -19,36 +19,17 @@
  */
 #endregion
 
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace OpenHolidaysApi.DataLayer
+namespace OpenHolidaysApi.CLI
 {
     /// <summary>
-    /// Representation of a language
+    /// Represents an error that occurs during CSV import.
     /// </summary>
-    [Table(DbTables.Language)]
-    [Index(nameof(IsoCode), IsUnique = true)]
-    [Comment("Representation of a language")]
-    public class Language : BaseEntity
+    public class CsvImportException : Exception
     {
-        /// <summary>
-        /// ISO-639-1 language code
-        /// </summary>
-        [Required]
-        [Comment("ISO-639-1 language code")]
-        public string IsoCode { get; set; }
-
-        /// <summary>
-        /// Language name
-        /// </summary>
-        [Required]
-        [Column(TypeName = "jsonb")]
-        [Comment("Localized language names")]
-        public ICollection<LocalizedText> Name { get; set; } = [];
+        public CsvImportException(string message)
+            : base(message)
+        { }
     }
 }
-

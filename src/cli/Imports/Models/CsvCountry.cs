@@ -40,12 +40,12 @@ namespace OpenHolidaysApi.CLI
         /// <summary>
         /// Localized country names 
         /// </summary>
-        public ICollection<CsvLocalizedText> Name { get; set; } = new List<CsvLocalizedText>();
+        public ICollection<CsvLocalizedText> Name { get; set; } = [];
 
         /// <summary>
         /// ISO-639-1 languages codes
         /// </summary>
-        public ICollection<string> OfficialLanguages { get; set; } = new List<string>();
+        public ICollection<string> OfficialLanguages { get; set; } = [];
 
         /// <summary>
         /// Adds this CSV record to the database
@@ -69,7 +69,7 @@ namespace OpenHolidaysApi.CLI
             }
             else
             {
-                throw new Exception("No country names definied");
+                throw new CsvImportException("No country names definied");
             }
 
             if (OfficialLanguages != null && OfficialLanguages.Count > 0)

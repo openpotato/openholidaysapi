@@ -19,49 +19,34 @@
  */
 #endregion
 
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OpenHolidaysApi.DataLayer
 {
     /// <summary>
-    /// Representation of a country
+    /// Additional holiday tags
     /// </summary>
-    [Table(DbTables.Country)]
-    [Index(nameof(IsoCode), IsUnique = true)]
-    [Comment("Representation of a country")]
-    public class Country : BaseEntity
+    [Flags]
+    public enum HolidayTags
     {
         /// <summary>
-        /// ISO 3166-1 country code
+        /// A recommended holiday date
         /// </summary>
-        [Required]
-        [Comment("ISO 3166-1 country code")]
-        public string IsoCode { get; set; }
+        Recommended = 1,
 
         /// <summary>
-        /// Localized country names 
+        /// A provisional holiday date
         /// </summary>
-        [Required]
-        [Column(TypeName = "jsonb")]
-        [Comment("Localized country names")]
-        public ICollection<LocalizedText> Name { get; set; } = [];
+        Provisional = 2,
 
         /// <summary>
-        /// ISO-639-1 language codes
+        /// An one-time holiday date
         /// </summary>
-        [Required]
-        [Column(TypeName = "jsonb")]
-        [Comment("ISO-639-1 language codes")]
-        public ICollection<string> OfficialLanguages { get; set; } = [];
+        OneTime = 4,
 
         /// <summary>
-        /// List of relevant subdivisions 
+        /// A holiday date which is an exception from the rule
         /// </summary>
-        public virtual ICollection<Subdivision> Subdivisions { get; set; }
+        Exception = 8
     }
 }
-
