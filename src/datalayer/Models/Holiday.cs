@@ -111,7 +111,7 @@ namespace OpenHolidaysApi.DataLayer
         /// Additional holiday tags
         /// </summary>
         [Comment("Additional holiday tags")]
-        public HolidayTags Tags { get; set; }
+        public HolidayTags? Tags { get; set; }
 
         /// <summary>
         /// Temporal scope of a holiday

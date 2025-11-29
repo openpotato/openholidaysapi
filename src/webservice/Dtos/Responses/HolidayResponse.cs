@@ -49,7 +49,7 @@ namespace OpenHolidaysApi
             Nationwide = holiday.Nationwide;
             Subdivisions = [.. holiday.Subdivisions.Select(x => new SubdivisionReference() { Code = x.Code, ShortName = x.ShortName })];
             Groups = [.. holiday.Groups.Select(x => new GroupReference() { Code = x.Code, ShortName = x.ShortName })];
-            Tags = (HolidayTags)holiday.Tags;
+            Tags = (HolidayTags)holiday.Tags == 0 ? null : (HolidayTags)holiday.Tags;
             Comment = holiday.Comment.ToLocalizedList(languageCode);
         }
 
@@ -122,7 +122,7 @@ namespace OpenHolidaysApi
         /// </summary>
         /// <example>Recommended</example>
         [JsonPropertyOrder(10)]
-        public HolidayTags Tags { get; set; }
+        public HolidayTags? Tags { get; set; }
 
         /// <summary>
         /// Temporal scope of a holiday
