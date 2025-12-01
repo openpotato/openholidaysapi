@@ -161,19 +161,19 @@ namespace OpenHolidaysApi.CLI
 
             if (Groups != null && Groups.Count > 0)
             {
-                foreach (var csvZone in Groups)
+                foreach (var csvGroup in Groups)
                 {
-                    var zone = await dbContext.Set<Group>()
+                    var group = await dbContext.Set<Group>()
                         .Include(x => x.Subdivisions)
-                        .Where(x => x.CountryId == holiday.CountryId && x.ShortName == csvZone)
+                        .Where(x => x.CountryId == holiday.CountryId && x.ShortName == csvGroup)
                         .FirstOrDefaultAsync(cancellationToken);
 
-                    if (zone != null)
+                    if (group != null)
                     {
-                        holiday.Groups.Add(zone);
+                        holiday.Groups.Add(group);
                         if (holiday.Subdivisions.Count == 0)
                         {
-                            foreach (var subdivision in zone.Subdivisions)
+                            foreach (var subdivision in group.Subdivisions)
                             {
                                 holiday.Subdivisions.Add(subdivision);
                             }

@@ -157,7 +157,7 @@ namespace OpenHolidaysApi.CLI
                     }
                     else
                     {
-                        throw new CsvImportException("Unkown zone");
+                        throw new CsvImportException("Unkown group");
                     }
                 }
             }

@@ -28,7 +28,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace OpenHolidaysApi.DataLayer
 {
     /// <summary>
-    /// Representation of a zone (e.g. a holiday zone)
+    /// Representation of a group (e.g. a holiday zone)
     /// </summary>
     [Table(DbTables.Group)]
     [Index(nameof(Code), IsUnique = true)]
@@ -45,7 +45,7 @@ namespace OpenHolidaysApi.DataLayer
         public ICollection<LocalizedText> Category { get; set; } = [];
 
         /// <summary>
-        /// List of zone children
+        /// List of group children
         /// </summary>
         public virtual ICollection<Group> Children { get; set; } = [];
 

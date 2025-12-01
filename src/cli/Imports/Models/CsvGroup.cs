@@ -35,12 +35,12 @@ namespace OpenHolidaysApi.CLI
     public class CsvGroup : CsvBase
     {
         /// <summary>
-        /// Localized zone categories
+        /// Localized group categories
         /// </summary>
         public ICollection<CsvLocalizedText> Category { get; set; } = [];
 
         /// <summary>
-        /// Zone code
+        /// group code
         /// </summary>
         public string Code { get; set; }
 
@@ -60,12 +60,12 @@ namespace OpenHolidaysApi.CLI
         public ICollection<CsvLocalizedText> Name { get; set; } = [];
 
         /// <summary>
-        /// Code of the parent zone
+        /// Code of the parent group
         /// </summary>
         public string Parent { get; set; }
 
         /// <summary>
-        /// Short name of the zone
+        /// Short name of the group
         /// </summary>
         public string ShortName { get; set; }
 

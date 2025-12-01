@@ -57,7 +57,7 @@ namespace OpenHolidaysApi
         public List<LocalizedText> Category { get; set; }
 
         /// <summary>
-        /// Child zones
+        /// Child groups
         /// </summary>
         [JsonPropertyOrder(7)]
         public List<GroupResponse> Children { get; set; }

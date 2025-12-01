@@ -64,12 +64,12 @@ namespace OpenHolidaysApi
         /// <summary>
         /// Creates a list of <see cref="GroupResponse"/> instances from a list of <see cref="Group"/> instances.
         /// </summary>
-        /// <param name="subdivisionList">List of zones</param>
+        /// <param name="groupList">List of groups</param>
         /// <param name="languageCode">ISO-639-1 language code </param>
         /// <returns>List of <see cref="GroupResponse"/> instances</returns>
-        public static List<GroupResponse> ToResponseList(this ICollection<Group> subdivisionList, string languageCode)
+        public static List<GroupResponse> ToResponseList(this ICollection<Group> groupList, string languageCode)
         {
-            return [.. subdivisionList.Select(x => new GroupResponse(x, languageCode))];
+            return [.. groupList.Select(x => new GroupResponse(x, languageCode))];
         }
 
         /// <summary>
