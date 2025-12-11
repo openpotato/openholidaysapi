@@ -24,7 +24,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using OpenHolidaysApi;
 using OpenHolidaysApi.DataLayer;
 using System.Collections;
@@ -102,7 +102,6 @@ builder.Services.AddSwaggerGen(setup =>
     setup.EnableAnnotations();
     setup.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "OpenHolidaysApi.WebService.xml"));
     setup.OrderActionsBy((apiDesc) => apiDesc.RelativePath);
-    setup.UseDateOnlyTimeOnlyStringConverters();
 });
 
 // Create a PostgreSQL data source 

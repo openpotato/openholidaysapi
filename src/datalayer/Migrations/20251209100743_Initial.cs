@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Migrations;
+using OpenHolidaysApi.DataLayer;
 
 #nullable disable
 
@@ -19,7 +20,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false, comment: "Unique Id"),
                     IsoCode = table.Column<string>(type: "text", nullable: false, comment: "ISO 3166-1 country code"),
                     Name = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: false, comment: "Localized country names"),
-                    OfficialLanguages = table.Column<ICollection<string>>(type: "jsonb", nullable: false, comment: "ISO-639-1 language codes")
+                    OfficialLanguages = table.Column<string>(type: "jsonb", nullable: false, comment: "ISO-639-1 language codes")
                 },
                 constraints: table =>
                 {
@@ -84,7 +85,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                     Nationwide = table.Column<bool>(type: "boolean", nullable: false, comment: "Is this a nationwide holiday?"),
                     RegionalScope = table.Column<int>(type: "integer", nullable: false, comment: "Regional scope of a holiday"),
                     StartDate = table.Column<DateOnly>(type: "date", nullable: false, comment: "Start date of the holiday"),
-                    Tags = table.Column<int>(type: "integer", nullable: false, comment: "Additional holiday tags"),
+                    Tags = table.Column<int>(type: "integer", nullable: true, comment: "Additional holiday tags"),
                     TemporalScope = table.Column<int>(type: "integer", nullable: false, comment: "Temporal scope of a holiday"),
                     Type = table.Column<int>(type: "integer", nullable: false, comment: "Type of holiday"),
                     CountryId = table.Column<Guid>(type: "uuid", nullable: false, comment: "Reference to country")
@@ -111,7 +112,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                     Comment = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: true, comment: "Additional localized comments"),
                     IsoCode = table.Column<string>(type: "text", nullable: true, comment: "Subdivision ISO 3166-2 code (if available)"),
                     Name = table.Column<ICollection<LocalizedText>>(type: "jsonb", nullable: false, comment: "Localized subdivision names"),
-                    OfficialLanguages = table.Column<ICollection<string>>(type: "jsonb", nullable: false, comment: "Official languages as ISO-639-1 codes"),
+                    OfficialLanguages = table.Column<string>(type: "jsonb", nullable: false, comment: "Official languages as ISO-639-1 codes"),
                     ShortName = table.Column<string>(type: "text", nullable: false, comment: "Short name for display"),
                     CountryId = table.Column<Guid>(type: "uuid", nullable: false, comment: "Reference to country"),
                     ParentId = table.Column<Guid>(type: "uuid", nullable: true, comment: "Reference to parent subdivision")

@@ -21,7 +21,6 @@
 
 using Microsoft.EntityFrameworkCore;
 using OpenHolidaysApi.DataLayer;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;

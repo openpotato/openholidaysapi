@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/cli/OpenHolidaysApi.CLI.csproj" />
+  <Project Path="src/datalayer/OpenHolidaysApi.DataLayer.csproj" />
+  <Project Path="src/webservice/OpenHolidaysApi.WebService.csproj" />
+</Solution>

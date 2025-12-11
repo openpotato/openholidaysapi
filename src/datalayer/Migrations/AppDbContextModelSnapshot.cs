@@ -18,7 +18,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.6")
+                .HasAnnotation("ProductVersion", "10.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -94,7 +94,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .HasColumnType("jsonb")
                         .HasComment("Localized country names");
 
-                    b.Property<ICollection<string>>("OfficialLanguages")
+                    b.PrimitiveCollection<string>("OfficialLanguages")
                         .IsRequired()
                         .HasColumnType("jsonb")
                         .HasComment("ISO-639-1 language codes");
@@ -209,7 +209,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .HasColumnType("date")
                         .HasComment("Start date of the holiday");
 
-                    b.Property<int>("Tags")
+                    b.Property<int?>("Tags")
                         .HasColumnType("integer")
                         .HasComment("Additional holiday tags");
 
@@ -293,7 +293,7 @@ namespace OpenHolidaysApi.DataLayer.Migrations
                         .HasColumnType("jsonb")
                         .HasComment("Localized subdivision names");
 
-                    b.Property<ICollection<string>>("OfficialLanguages")
+                    b.PrimitiveCollection<string>("OfficialLanguages")
                         .IsRequired()
                         .HasColumnType("jsonb")
                         .HasComment("Official languages as ISO-639-1 codes");
